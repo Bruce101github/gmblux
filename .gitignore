@@ -1,0 +1,33 @@
+# Node dependencies
+node_modules/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Logs and debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+
+# Local output and temp files
+*.log
+coverage/
+*.zip
+
+# Supabase local config
+.supabase/
