@@ -14,3 +14,21 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.custom-clip {
+  clip-path: polygon(
+    50% 15%,
+    50% 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 30%,
+    40% 30%,
+    40% 15%
+  );
+}
+
+.path {
+  clip-path: url(#myClip);
+  background: tomato;
+}
