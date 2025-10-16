@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Bed, ShowerHead, LandPlot } from "lucide-react";
 
-function Listings({ lgCols = 3, limit = 3 }) {
+function Listings({ lgCols = 3, smCols = 1, limit = 3 }) {
   const [properties, setProperties] = useState([]);
 
   const lgGridClass =
@@ -13,6 +13,13 @@ function Listings({ lgCols = 3, limit = 3 }) {
       4: "lg:grid-cols-4",
       5: "lg:grid-cols-5",
     }[lgCols] || "lg:grid-cols-3";
+
+  const smGridClass =
+    {
+      1: "sm:grid-cols-1",
+      2: "sm:grid-cols-2",
+      3: "grid-cols-3 min-w-[1000px]",
+    }[smCols] || "sm:grid-cols-3";
 
   useEffect(() => {
     async function fetchProperties() {
@@ -30,7 +37,9 @@ function Listings({ lgCols = 3, limit = 3 }) {
     fetchProperties();
   }, []);
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass} gap-4 m-0`}>
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass}  ${smGridClass}  gap-4 m-0 `}
+    >
       {properties.slice(0, limit).map((p) => (
         <div key={p.id} className="bg-white/15 rounded-3xl shadow p-4">
           <img
