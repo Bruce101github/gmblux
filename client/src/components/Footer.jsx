@@ -1,7 +1,7 @@
 import { PhoneCall, ChevronUp, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-function Footer() {
+export default function Footer() {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -81,4 +81,71 @@ function Footer() {
   );
 }
 
-export default Footer;
+export function MobileFooter() {
+  return (
+    <div className="bg-[#232323]">
+      <div className="bg-[#1D1D1D] flex px-[10%] py-[25px] justify-center items-center gap-2">
+        <div className="h-[42px] min-w-[42px] rounded-full bg-white/5 p-3">
+          <PhoneCall className="h-full w-full object-cover" />
+        </div>
+
+        <p className="text-sm ">
+          {" "}
+          Our support team can assist you with reservation{" "}
+          <span className="text-base font-bold">+233 55 394 4428</span>
+        </p>
+      </div>
+
+      <div className="px-[5%] py-[10%] flex flex-col gap-2">
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-3">
+            <p className="text-sm font-bold">GMB Lux</p>
+            <Link className="text-xs text-white/50">Terms and Conditions</Link>
+            <Link className="text-xs text-white/50">Privacy Policy</Link>
+            <Link className="text-xs text-white/50">Cancellation Policy</Link>
+            <Link className="text-xs text-white/50">Viewing Policy</Link>
+            <Link className="text-xs text-white/50">Booking Guide</Link>
+          </div>
+          <div className="flex flex-col gap-3">
+            <p className="text-sm font-bold">About</p>
+            <Link className="text-xs text-white/50">Our Story</Link>
+            <Link className="text-xs text-white/50">Contact</Link>
+            <Link className="text-xs text-white/50">Blog</Link>
+            <Link className="text-xs text-white/50">F.A.Q</Link>
+          </div>
+          <div className="flex gap-3 flex-col">
+            <p className="text-sm font-bold">Properties</p>
+            <Link className="text-xs text-white/50">Houses</Link>
+            <Link className="text-xs text-white/50">Apartments</Link>
+            <Link className="text-xs text-white/50">Land</Link>
+          </div>
+        </div>
+        <div className="flex py-10 justify-center">
+          <div className="flex flex-col gap-3 justify-end">
+            <p className="text-sm">
+              Copyright © 2025. GMBRealEstate. All rights reserved.
+            </p>
+            <label className="text-lg font-bold">
+              Subscribe to our newsletter
+            </label>
+            <div className="relative h-[42px] full">
+              <input
+                placeholder="Email address"
+                className="border-b border-white/15 py-2 outline-none w-full"
+              />
+              <button className="h-[40px] w-[47px] bg-white/5 flex justify-center items-center rounded-full absolute top-0 right-0">
+                <ChevronRight />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p className="text-xs text-center">
+            Website created by{" "}
+            <a className="text-green-500 font-bold">Mckot Digital</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
