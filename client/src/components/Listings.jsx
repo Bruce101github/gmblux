@@ -78,8 +78,8 @@ function Listings({ lgCols = 3, smCols = 1, limit = 3 }) {
               </div>
               <p className="mt-2 font-bold text-blue-500">
                 {p.listing_type === "rent"
-                  ? `GH₵${p.price}/month`
-                  : `$${p.price}`}
+                  ? `GH₵${Number(p.price).toLocaleString("en-GH")}/month`
+                  : `USD$${Number(p.price).toLocaleString("en-GH")}`}
               </p>
             </div>
           </div>
