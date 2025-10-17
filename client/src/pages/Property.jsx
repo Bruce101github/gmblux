@@ -86,7 +86,7 @@ function Property() {
         </p>
         <h1 className="text-3xl lg:text-5xl font-bold">
           {property.currency == "ghs" ? "GH₵" : "USD$"}
-          {property.price}
+          {Number(property.price).toLocaleString("en-GH")}
           {property.listing_type == "rent" ? (
             <span className="text-xl font-medium"> /month</span>
           ) : null}
