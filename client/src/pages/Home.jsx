@@ -104,7 +104,7 @@ function DesktopHero() {
     <>
       <h1 className="text-[clamp(3vw,6vw,8vw)]/[1] font-bold text-white">
         Homes That fit <br />
-        You Perfect
+        You Perfectly
       </h1>
       <svg width="0" height="0">
         <clipPath id="myClip" clipPathUnits="objectBoundingBox">
@@ -127,7 +127,7 @@ function DesktopHero() {
 function MobileHero() {
   return (
     <>
-      <h1 className="text-5xl mt-5 text-white">Homes That fit You Perfect</h1>
+      <h1 className="text-5xl mt-5 text-white">Homes That fit You Perfectly</h1>
       <div className="w-full h-[48vh] mt-5">
         <img src={HeroImg} className="w-full h-full object-cover rounded-2xl" />
       </div>
