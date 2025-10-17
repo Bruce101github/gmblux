@@ -10,7 +10,7 @@ export default function Footer() {
   };
 
   return (
-    <div className="bg-[#232323]">
+    <div className="bg-[#232323] text-white">
       <div className="flex items-center gap-4 justify-center py-10 bg-[#1D1D1D] px-[10%]">
         <div className="h-[70px] w-[70px] rounded-full bg-white/5 p-5">
           <PhoneCall className="h-full w-full object-cover" />
@@ -83,8 +83,8 @@ export default function Footer() {
 
 export function MobileFooter() {
   return (
-    <div className="bg-[#232323]">
-      <div className="bg-[#1D1D1D] flex px-[10%] py-[25px] justify-center items-center gap-2">
+    <div className="bg-[#232323] text-white">
+      <div className="bg-[#1D1D1D] flex px-[10%] py-[18px] justify-center items-center gap-2">
         <div className="h-[42px] min-w-[42px] rounded-full bg-white/5 p-3">
           <PhoneCall className="h-full w-full object-cover" />
         </div>

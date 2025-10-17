@@ -1,0 +1,138 @@
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "../supabaseClient";
+import "../index.css";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+
+import { Bed, ShowerHead, LandPlot, VectorSquare, MapPin } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { sentenceCase } from "@/utils/changeCase";
+
+function Property() {
+  const { id } = useParams();
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchProperty() {
+      try {
+        const { data, error } = await supabase
+          .from("properties")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (error) throw error;
+        setProperty(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProperty();
+  }, [id]);
+
+  if (loading)
+    return (
+      <div className="">
+        <Skeleton className="h-[60vh] w-full mb-2 rounded-none" />
+        <div className="px-[5%] py-[20px]">
+          <Skeleton className="h-[14px] w-[100px] mb-2" />
+          <Skeleton className="h-[32px] w-[250px] rounded-3xl mb-2" />
+          <Skeleton className="h-[14px] w-[200px] mb-2" />
+          <Skeleton className="h-[18px] w-[150px] mb-2" />
+        </div>
+      </div>
+    );
+  if (error) return <p className="text-red-400 text-center">{error}</p>;
+  if (!property)
+    return <p className="text-gray-400 text-center">Property not found.</p>;
+
+  return (
+    <div className="text-white px-0 lg:px-[10%] pb-10">
+      <Carousel>
+        <CarouselContent>
+          {property.images.map((p) => (
+            <CarouselItem>
+              {" "}
+              <img
+                src={p}
+                alt={property.title}
+                className=" mb-2 w-full h-[60vh] object-cover"
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        {/* pagination dots!!! Work on this later */}
+        <div className="absolute bottom-5 left-1/2 tranform -translate-x-1/2 flex gap-2 items-center">
+          <button className="h-2 w-2 bg-white/80 rounded-full"></button>
+          <button className="h-2 w-2 bg-white/50 rounded-full"></button>
+          <button className="h-2 w-2 bg-white/50 rounded-full"></button>
+          <button className="h-1.5 w-1.5 bg-white/50 rounded-full"></button>
+          <button className="h-1 w-1 bg-white/50 rounded-full"></button>
+        </div>
+      </Carousel>
+      <div className="px-[5%] py-[20px] flex flex-col gap-2">
+        <p className="text-md text-blue-400 font-medium">
+          {property.bedrooms} Bedroom {""}
+          {property.property_type} for {property.listing_type}
+        </p>
+        <h1 className="text-3xl lg:text-5xl font-bold">
+          {property.currency == "ghs" ? "GH₵" : "USD$"}
+          {property.price}
+          {property.listing_type == "rent" ? (
+            <span className="text-xl font-medium"> /month</span>
+          ) : null}
+        </h1>
+        <div className="flex text-white/60 items-center gap-1">
+          <MapPin size={16} />
+          <p className="text-md font-medium">{property.location}</p>
+        </div>
+        <div className="flex gap-2 items-center  text-white/60 mt-2">
+          {" "}
+          <div className="flex gap-2 items-center border border-white/50 py-1 px-4 rounded-3xl">
+            {/*<Bed size={16} />*/}
+            <p className="text-sm">
+              <span className="text-white">{property.bedrooms}</span> Beds
+            </p>
+          </div>
+          <div className="flex gap-2 items-center border border-white/50 py-1 px-4 rounded-3xl">
+            {/*<ShowerHead size={16} />*/}
+            <p className="text-sm">
+              <span className="text-white">{property.bathrooms}</span> Bath
+            </p>
+          </div>
+          {!property.size ? null : (
+            <div className="flex gap-2 items-center border border-white/50 py-1 px-4 rounded-3xl">
+              {/*<VectorSquare size={16} />*/}
+              <p className="text-sm">
+                <span className="text-white">{property.size}</span> sqft
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="border-b border-white/10 my-5 pb-5 flex flex-col gap-1">
+          <p className="font-medium text-lg">Property description</p>
+          <p className="text-base text-white/60">{property.description}</p>
+        </div>
+        <div className="flex grid-cols-2 gap-2">
+          <button className="w-full py-2 border border-white/40 rounded-3xl">
+            Contact
+          </button>
+          <button className="w-full py-2 bg-yellow-400 rounded-3xl font-medium">
+            Request a tour
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Property;
