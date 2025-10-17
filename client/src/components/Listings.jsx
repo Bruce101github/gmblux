@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Bed, ShowerHead, LandPlot } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Listings({ lgCols = 3, smCols = 1, limit = 3 }) {
   const [properties, setProperties] = useState([]);
@@ -16,10 +17,10 @@ function Listings({ lgCols = 3, smCols = 1, limit = 3 }) {
 
   const smGridClass =
     {
-      1: "sm:grid-cols-1",
-      2: "sm:grid-cols-2",
+      1: "grid-cols-1",
+      2: "grid-cols-2",
       3: "grid-cols-3 min-w-[1000px]",
-    }[smCols] || "sm:grid-cols-3";
+    }[smCols] || "grid-cols-3";
 
   useEffect(() => {
     async function fetchProperties() {
@@ -41,43 +42,48 @@ function Listings({ lgCols = 3, smCols = 1, limit = 3 }) {
       className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass}  ${smGridClass}  gap-4 m-0 `}
     >
       {properties.slice(0, limit).map((p) => (
-        <div key={p.id} className="bg-white/15 rounded-3xl shadow p-4">
-          <img
-            src={p.images?.[0]}
-            alt={p.title}
-            className="w-full h-[200px] object-cover rounded-2xl"
-          />
-          <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
-          <p className="text-white/60 text-sm">{p.location}</p>
-          <div className="flex justify-between items-center">
-            <div className="flex gap-1 text-xs items-center">
-              <div className="flex text-white gap-1 items-center">
-                <div className="text-blue-500">
-                  <Bed size={16} />
+        <Link to={`/listing/${p.id}`}>
+          <div
+            key={p.id}
+            className="bg-white/15 rounded-3xl shadow p-4 text-white"
+          >
+            <img
+              src={p.images?.[0]}
+              alt={p.title}
+              className="w-full h-[200px] object-cover rounded-2xl"
+            />
+            <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
+            <p className="text-white/60 text-sm">{p.location}</p>
+            <div className="flex justify-between items-center">
+              <div className="flex gap-3 text-xs items-center">
+                <div className="flex text-white gap-1.5 items-center">
+                  <div className="text-blue-500">
+                    <Bed size={16} />
+                  </div>{" "}
+                  {p.bedrooms}
                 </div>{" "}
-                {p.bedrooms}
-              </div>{" "}
-              <div className="flex">
-                {" "}
-                <div className="text-blue-500">
-                  <ShowerHead size={16} />
+                <div className="flex">
+                  {" "}
+                  <div className="text-blue-500">
+                    <ShowerHead size={16} />
+                  </div>
+                  {p.bathrooms}
+                </div>{" "}
+                <div className="flex">
+                  <div className="text-blue-500">
+                    <LandPlot size={16} />
+                  </div>{" "}
+                  {p.size}
                 </div>
-                {p.bathrooms}
-              </div>{" "}
-              <div className="flex">
-                <div className="text-blue-500">
-                  <LandPlot size={16} />
-                </div>
-                • {p.size}
               </div>
+              <p className="mt-2 font-bold text-blue-500">
+                {p.listing_type === "rent"
+                  ? `GH₵${p.price}/month`
+                  : `$${p.price}`}
+              </p>
             </div>
-            <p className="mt-2 font-bold text-blue-500">
-              {p.listing_type === "rent"
-                ? `GH₵${p.price}/month`
-                : `$${p.price}`}
-            </p>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

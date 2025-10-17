@@ -20,7 +20,7 @@ function Home() {
       <h2 className="flex text-white text-3xl font-md lg:hidden md:hidden pb-3  pt-[30px]">
         Listed Properties
       </h2>
-      <div className="flex items-end mb-4 gap-x-4 overflow-x-auto no-scrollbar scroll-smooth">
+      <div className="flex items-end mb-4 gap-x-4 overflow-x-auto no-scrollbar scroll-smooth text-white">
         <div className="bg-white/15 rounded-3xl shadow px-6 py-10 h-[315px] lg:h-[400px] min-w-[300px] flex flex-col justify-end">
           <div className="h-[70px] w-[70px] bg-white/5 rounded-full p-5 mb-5 flex flex-col justify-left items-end">
             <PhoneCall className="h-full w-full object-cover" />
@@ -36,7 +36,7 @@ function Home() {
           <Listings smCols={3} />
         </div>
       </div>
-      <div className="flex w-full gap-4 overflow-x-auto no-scrollbar">
+      <div className="flex w-full gap-4 overflow-x-auto no-scrollbar text-white">
         <div className="bg-white rounded-xl p-4  flex gap-x-2 items-center min-w-[350px]">
           <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
             <Building2 className="w-full h-full object-cover" />
@@ -80,7 +80,7 @@ function Home() {
       <div className="my-[100px]">
         <div className="flex justify-between my-10">
           <div className="flex gap-4">
-            <button className="bg-yellow-400 rounded-3xl py-2 px-6 font-bold">
+            <button className="bg-yellow-400 rounded-3xl py-2 px-6 font-bold text-white">
               Rent
             </button>
             <button className="border border-gray-500 text-gray-500 rounded-3xl px-6 py-2">
@@ -102,7 +102,7 @@ function Home() {
 function DesktopHero() {
   return (
     <>
-      <h1 className="text-[clamp(3vw,6vw,8vw)]/[1] font-bold">
+      <h1 className="text-[clamp(3vw,6vw,8vw)]/[1] font-bold text-white">
         Homes That fit <br />
         You Perfect
       </h1>
@@ -115,7 +115,7 @@ function DesktopHero() {
       <div className="w-full h-[60vh] mt-[-18vh] path">
         <img src={HeroImg} className="w-full h-full object-cover" />
       </div>
-      <div className="h-[120px] w-[120px] bg-yellow-400 rounded-full p-[5px] transform -translate-y-1/2 mx-auto">
+      <div className="h-[120px] w-[120px] bg-yellow-400 rounded-full p-[5px] transform -translate-y-1/2 mx-auto text-white">
         <div className="h-[110px] w-[110px] border border-white rounded-full p-5">
           <ArrowDown className="w-full h-full object-cover" />
         </div>
@@ -127,11 +127,11 @@ function DesktopHero() {
 function MobileHero() {
   return (
     <>
-      <h1 className="text-5xl mt-5">Homes That fit You Perfect</h1>
+      <h1 className="text-5xl mt-5 text-white">Homes That fit You Perfect</h1>
       <div className="w-full h-[48vh] mt-5">
         <img src={HeroImg} className="w-full h-full object-cover rounded-2xl" />
       </div>
-      <div className="h-[80px] w-[80px] bg-yellow-400 rounded-full p-[5px] transform -translate-y-1/2 mx-auto">
+      <div className="h-[80px] w-[80px] bg-yellow-400 rounded-full p-[5px] transform -translate-y-1/2 mx-auto text-white">
         <div className="h-[70px] w-[70px] border border-white rounded-full p-3">
           <ArrowDown className="w-full h-full object-cover" />
         </div>
