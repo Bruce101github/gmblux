@@ -4,6 +4,7 @@ import PropertyLising from "./pages/PropertyListing";
 import Property from "./pages/Property";
 import Navbar, { MobileNavbar } from "./components/Navbar";
 import Footer, { MobileFooter } from "./components/Footer";
+import BookingModal from "./components/BookingModal";
 import { useMediaQuery } from "react-responsive";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/listings" element={<PropertyLising />} />
         <Route path="/listing/:id" element={<Property />} />
+        <Route path="/booking" element={<BookingModal />} />
       </Routes>
       {isMobile ? <MobileFooter /> : <Footer />}
     </main>

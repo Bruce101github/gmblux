@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import "../index.css";
@@ -38,6 +38,8 @@ function Property() {
 
     fetchProperty();
   }, [id]);
+
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   if (loading)
     return (
@@ -123,12 +125,31 @@ function Property() {
           <p className="text-base text-white/60">{property.description}</p>
         </div>
         <div className="flex grid-cols-2 gap-2">
-          <button className="w-full py-2 border border-white/40 rounded-3xl">
-            Contact
-          </button>
-          <button className="w-full py-2 bg-yellow-400 rounded-3xl font-medium">
-            Request a tour
-          </button>
+          {property.listing_type == "sale" ? (
+            <Link
+              to="/booking"
+              state={{ preset: "buy", propertyId: property.id }}
+              className="w-full py-2 border border-white/40 rounded-3xl"
+            >
+              <p className="text-center">Buy</p>
+            </Link>
+          ) : (
+            <Link
+              to="/booking"
+              state={{ preset: "rent", propertyId: property.id }}
+              className="w-full py-2 border border-white/40 rounded-3xl"
+            >
+              <p className="text-center">Rent</p>
+            </Link>
+          )}
+
+          <Link
+            to="/booking"
+            state={{ preset: "tour", propertyId: property.id }}
+            className="w-full py-2 bg-yellow-400 rounded-3xl font-medium"
+          >
+            <p className="text-center font-bold">Request a tour</p>
+          </Link>
         </div>
       </div>
     </div>
