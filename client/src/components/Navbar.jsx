@@ -8,7 +8,8 @@ import {
   EllipsisVertical,
 } from "lucide-react";
 import Logo from "../assets/gmblogo.JPG";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { bookingPresets } from "@/utils/bookingPreset";
 
 export default function Navbar() {
   return (
@@ -45,6 +46,7 @@ export function MobileNavbar() {
   // choose navbar style based on route
   const isHome = path === "/";
   const isListing = path.startsWith("/listing");
+  const isBooking = path.startsWith("/booking");
 
   if (isListing)
     return (
@@ -56,6 +58,13 @@ export function MobileNavbar() {
     return (
       <>
         <MobileNavbar1 />
+      </>
+    );
+
+  if (isBooking)
+    return (
+      <>
+        <MobileNavbar3 />
       </>
     );
 }
@@ -93,7 +102,17 @@ function MobileNavbar1() {
 }
 
 function MobileNavbar2() {
+  const navigate = useNavigate();
   const location = useLocation();
+
+  const handleBack = () => {
+    // If there's no history, fallback to home
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/"); // fallback
+    }
+  };
 
   const handleShare = async () => {
     const shareData = {
@@ -116,11 +135,12 @@ function MobileNavbar2() {
 
   return (
     <div className="flex justify-between w-full p-[5%] text-white absolute top-0 z-999">
-      <Link to="/">
-        <button className="bg-black/15 p-2 rounded-full m-auto backdrop-blur-sm">
-          <ChevronLeft size={24} />
-        </button>
-      </Link>
+      <button
+        onClick={handleBack}
+        className="bg-black/15 p-2 rounded-full backdrop-blur-sm w-10 h-10"
+      >
+        <ChevronLeft size={24} />
+      </button>
       <div className="flex justify-between gap-3">
         <button
           onClick={handleShare}
@@ -132,6 +152,55 @@ function MobileNavbar2() {
           <EllipsisVertical size={20} />
         </button>
       </div>
+    </div>
+  );
+}
+
+function MobileNavbar3() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const presetName = location.state?.preset;
+  const preset = bookingPresets.find((p) => p.name === presetName);
+
+  const handleBack = () => {
+    // If there's no history, fallback to home
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/"); // fallback
+    }
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "Check out this property!",
+      text: "Found a great place on GMBLux!",
+      url: window.location.origin + location.pathname, // e.g. https://gmblux.com/listings/123
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        alert("Link copied!");
+      }
+    } catch (err) {
+      console.error("Share failed:", err);
+    }
+  };
+
+  return (
+    <div className="flex items-center grid grid-cols-3 w-full p-[5%] text-white z-999">
+      <button
+        onClick={handleBack}
+        className="bg-white/10 p-2 rounded-full backdrop-blur-sm w-10 h-10"
+      >
+        <ChevronLeft size={24} />
+      </button>
+      <h2 className="text-lg font-medium min-w-[120px] text-center">
+        {preset.title}
+      </h2>
     </div>
   );
 }
