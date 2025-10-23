@@ -9,9 +9,27 @@ import {
 } from "lucide-react";
 import Logo from "../assets/gmblogo.JPG";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { bookingPresets } from "@/utils/bookingPreset";
+import { useSearch } from "../components/SearchContext";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const { searchTerm, setSearchTerm, setSubmittedSearch, submittedSearch } =
+    useSearch();
+
+  function handleKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault(); // prevents form reload
+      console.log("Submitted:", e.target.value);
+      setSearchTerm(e.target.value);
+      setSubmittedSearch(searchTerm);
+      setTimeout(() => {
+        navigate("/search");
+      }, 100);
+    }
+  }
+
   return (
     <div className="flex w-auto justify-between px-[10%] pt-[20px] pb-[5%] text-white">
       <div className="flex gap-4">
@@ -23,6 +41,9 @@ export default function Navbar() {
           <input
             className="text-black w-[90%] pr-[42px] focus:outline-hidden placeholder-black/25"
             placeholder="search something..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
 
           <div className="h-[42px] w-[42px] bg-yellow-400 rounded-full flex justify-center items-center">
@@ -45,15 +66,25 @@ export function MobileNavbar() {
 
   // choose navbar style based on route
   const isHome = path === "/";
-  const isListing = path.startsWith("/listing");
+  const isListing = path.startsWith("/listings");
+  const isProperty = path.startsWith("/listing/");
   const isBooking = path.startsWith("/booking");
+  const isSearch = path.startsWith("/search");
 
   if (isListing)
+    return (
+      <>
+        <MobileNavbar4 />
+      </>
+    );
+
+  if (isProperty)
     return (
       <>
         <MobileNavbar2 />
       </>
     );
+
   if (isHome)
     return (
       <>
@@ -67,9 +98,33 @@ export function MobileNavbar() {
         <MobileNavbar3 />
       </>
     );
+
+  if (isSearch)
+    return (
+      <>
+        <MobileNavbar4 />
+      </>
+    );
 }
 
 function MobileNavbar1() {
+  const [value, setValue] = useState("");
+  const navigate = useNavigate();
+  const { searchTerm, setSearchTerm, setSubmittedSearch, submittedSearch } =
+    useSearch();
+
+  function handleKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault(); // prevents form reload
+      console.log("Submitted:", e.target.value);
+      setSearchTerm(e.target.value);
+      setSubmittedSearch(searchTerm);
+      setTimeout(() => {
+        navigate("/search");
+      }, 100);
+    }
+  }
+
   return (
     <div>
       <div className="flex flex-col gap-3 p-[5%] text-white">
@@ -90,6 +145,9 @@ function MobileNavbar1() {
           <input
             className="text-black w-full pr-[42px] focus:outline-hidden placeholder-black/25"
             placeholder="search something..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <div className="h-[42px] w-[42px] bg-yellow-400 rounded-full flex justify-center items-center absolute right-[1px]">
             {" "}
@@ -134,7 +192,7 @@ function MobileNavbar2() {
   };
 
   return (
-    <div className="flex justify-between w-full p-[5%] text-white absolute top-0 z-999">
+    <div className="flex justify-between w-full p-[5%] text-white z-999 absolute top-0">
       <button
         onClick={handleBack}
         className="bg-black/15 p-2 rounded-full backdrop-blur-sm w-10 h-10"
@@ -201,6 +259,65 @@ function MobileNavbar3() {
       <h2 className="text-lg font-medium min-w-[120px] text-center">
         {preset.title}
       </h2>
+    </div>
+  );
+}
+
+function MobileNavbar4() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const presetName = location.state?.preset;
+  const preset = bookingPresets.find((p) => p.name === presetName);
+  const { searchTerm, setSearchTerm, submittedSearch, setSubmittedSearch } =
+    useSearch();
+
+  function handleKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault(); // prevents form reload
+      console.log("Submitted:", e.target.value);
+      setSearchTerm(e.target.value);
+      setSubmittedSearch(searchTerm);
+    }
+  }
+
+  const handleBack = () => {
+    // If there's no history, fallback to home
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/"); // fallback
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-10 p-[5%] text-white">
+      <div className="flex items-center grid grid-cols-3 ">
+        <button
+          onClick={handleBack}
+          className="bg-white/10 p-2 rounded-full backdrop-blur-sm w-10 h-10"
+        >
+          <ChevronLeft size={24} />
+        </button>
+        <h2 className="text-lg font-medium min-w-[135px] text-center">
+          Search Property
+        </h2>
+      </div>
+      <div className="flex justify-between">
+        <div className="relative w-[85%]  h-[45px] bg-white rounded-4xl flex items-center px-1">
+          <Search className="text-black/20 px-2" size={38} />
+          <input
+            className="text-black w-full pr-[42px] focus:outline-hidden placeholder-black/25"
+            placeholder="search something..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>{" "}
+        <div className="h-[42px] w-[42px] bg-yellow-400 rounded-full flex justify-center items-center">
+          {" "}
+          <SlidersHorizontal />
+        </div>
+      </div>
     </div>
   );
 }

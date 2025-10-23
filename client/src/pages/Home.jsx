@@ -87,7 +87,7 @@ function Home() {
               Sale
             </button>
           </div>
-          <div className="">
+          <div className="text-white">
             <button>
               <SlidersHorizontal />
             </button>
