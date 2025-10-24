@@ -60,7 +60,7 @@ export default function Navbar() {
   );
 }
 
-export function MobileNavbar() {
+export function MobileNavbar({ menuOpen, setMenuOpen }) {
   const location = useLocation();
   const path = location.pathname;
 
@@ -88,7 +88,7 @@ export function MobileNavbar() {
   if (isHome)
     return (
       <>
-        <MobileNavbar1 />
+        <MobileNavbar1 menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       </>
     );
 
@@ -107,7 +107,7 @@ export function MobileNavbar() {
     );
 }
 
-function MobileNavbar1() {
+function MobileNavbar1({ menuOpen, setMenuOpen }) {
   const [value, setValue] = useState("");
   const navigate = useNavigate();
   const { searchTerm, setSearchTerm, setSubmittedSearch, submittedSearch } =
@@ -135,7 +135,12 @@ function MobileNavbar1() {
             </div>
           </Link>
           <Link to="">
-            <button className="bg-white/5 p-2 rounded-full m-auto">
+            <button
+              className="bg-white/5 p-2 rounded-full m-auto"
+              onClick={() => {
+                setMenuOpen(true);
+              }}
+            >
               <TextAlignJustify />
             </button>
           </Link>
@@ -149,10 +154,10 @@ function MobileNavbar1() {
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}
           />
-          <div className="h-[42px] w-[42px] bg-yellow-400 rounded-full flex justify-center items-center absolute right-[1px]">
+          <button className="h-[42px] w-[42px] bg-yellow-400 rounded-full flex justify-center items-center absolute right-[1px]">
             {" "}
             <SlidersHorizontal />
-          </div>
+          </button>
         </div>
       </div>
     </div>

@@ -6,16 +6,22 @@ import {
   Building2,
   CalendarCheck2,
   MapPin,
+  X,
 } from "lucide-react";
 import HeroImg from "../assets/hero.jpg";
 import "../index.css";
 import { useMediaQuery } from "react-responsive";
+import { motion } from "framer-motion";
+import { Link, useParams } from "react-router-dom";
 
-function Home() {
+function Home({ menuOpen, setMenuOpen }) {
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   return (
     <div className="px-[5%] w-full">
+      {menuOpen ? (
+        <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      ) : null}
       {isMobile ? <MobileHero /> : <DesktopHero />}
       <h2 className="flex text-white text-3xl font-md lg:hidden md:hidden pb-3  pt-[30px]">
         Listed Properties
@@ -137,6 +143,42 @@ function MobileHero() {
         </div>
       </div>
     </>
+  );
+}
+
+function SideMenu({ menuOpen, setMenuOpen }) {
+  return (
+    <motion.div
+      initial={{ x: "100%" }}
+      animate={{ x: menuOpen ? 0 : "100%" }}
+      transition={
+        menuOpen
+          ? { duration: 0.6, ease: "easeOut" }
+          : { duration: 0.4, ease: "easeIn" }
+      }
+      className="absolute top-0 w-full h-full bg-[#121420] mx-[-5%] px-[5%] fixed py-[20px] z-1000"
+    >
+      <div className="flex justify-end ">
+        <button
+          className="text-white/90"
+          onClick={() => {
+            setMenuOpen(false);
+          }}
+        >
+          <X size={38} />
+        </button>
+      </div>
+      <div className="text-white text-5xl flex flex-col gap-2 mt-10">
+        <Link to="/listings">Listings</Link>
+        <Link>Consultation</Link>
+        <Link>Rent</Link>
+        <Link>Buy</Link>
+        <Link to="/booking" state={{ preset: "tour" }}>
+          Contact
+        </Link>
+      </div>
+      <div></div>
+    </motion.div>
   );
 }
 
