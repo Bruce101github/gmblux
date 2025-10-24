@@ -20,4 +20,18 @@ export const bookingPresets = [
     type: "Tour Request",
     title: "Request a tour",
   },
+  {
+    name: "contact",
+    preText:
+      "I’d like to get in touch to ask a few questions about your services or available properties.",
+    type: "General Inquiry",
+    title: "Contact Us",
+  },
+  {
+    name: "consultation",
+    preText:
+      "I’m interested in scheduling a consultation to discuss my real estate goals and get professional guidance.",
+    type: "Consultation Request",
+    title: "Book a Consultation",
+  },
 ];

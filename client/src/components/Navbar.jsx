@@ -145,16 +145,18 @@ function MobileNavbar1({ menuOpen, setMenuOpen }) {
             </button>
           </Link>
         </div>
-        <div className="relative w-full  h-[45px] bg-white rounded-4xl flex items-center px-1">
-          <Search className="text-black/20 px-2" size={38} />
-          <input
-            className="text-black w-full pr-[42px] focus:outline-hidden placeholder-black/25"
-            placeholder="search something..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <button className="h-[42px] w-[42px] bg-yellow-400 rounded-full flex justify-center items-center absolute right-[1px]">
+        <div className="flex justify-between items-center gap-4">
+          <div className="relative w-[85%]  h-[45px] bg-white rounded-4xl flex items-center ">
+            <Search className="text-black/20 px-2" size={38} />
+            <input
+              className="text-black w-full pr-[24px] focus:outline-hidden placeholder-black/25"
+              placeholder="search something..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>{" "}
+          <button className=" bg-yellow-400 rounded-full flex justify-center items-center p-2">
             {" "}
             <SlidersHorizontal />
           </button>
