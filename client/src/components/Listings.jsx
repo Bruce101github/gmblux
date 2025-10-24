@@ -10,12 +10,15 @@ function Listings({
   search = "",
   properties: propsProperties,
   setProperties: propsSetProperties,
+  filters,
+  setFilters,
 }) {
   const [localProperties, setLocalProperties] = useState([]);
 
   // Use passed-in props if available, else fallback to local state
   const properties = propsProperties ?? localProperties;
   const setProperties = propsSetProperties ?? setLocalProperties;
+  let query = supabase.from("properties").select("*");
 
   const lgGridClass =
     {
@@ -34,14 +37,39 @@ function Listings({
     }[smCols] || "grid-cols-3";
 
   useEffect(() => {
-    fetchProperties(search);
-  }, [search]);
+    fetchProperties(search, filters, setFilters);
+  }, [search, filters]);
 
-  async function fetchProperties(search) {
+  async function fetchProperties(search, filters, setFilters) {
     console.log("Received search term in fetchProperties:", search);
+    console.log("This is the filters", filters);
+    let query = supabase.from("properties").select("*");
+
+    if (filters?.type) {
+      if (filters.type.toLowerCase() === "all") {
+        query = query.neq("listing_type", "none");
+      } else {
+        query = query.eq("listing_type", filters.type.toLowerCase());
+      }
+    }
+
+    if (filters?.bedrooms != null) {
+      query = query.eq("bedrooms", filters.bedrooms);
+    }
+
+    if (filters?.bathrooms != null) {
+      query = query.eq("bathrooms", filters.bathrooms);
+    }
+
+    if (filters?.propertyType != null) {
+      query = query.eq("property_type", filters.propertyType.toLowerCase());
+    }
+
+    let { data, error } = await query;
+
     // if no search, show all properties
     if (!search || search.trim() === "") {
-      const { data, error } = await supabase
+      const result = await supabase
         .from("properties")
         .select("*")
         .order("created_at", { ascending: false });
@@ -55,7 +83,7 @@ function Listings({
     }
 
     // full-text search using the fts column
-    const { data, error } = await supabase
+    const result = await supabase
       .from("properties")
       .select("*")
       .textSearch("fts", search, {
@@ -63,6 +91,9 @@ function Listings({
         type: "websearch", // allows natural queries like “3 bedroom house”
       })
       .order("created_at", { ascending: false });
+
+    data = result.data;
+    error = result.error;
 
     if (error) {
       console.error("Error fetching search results:", error);

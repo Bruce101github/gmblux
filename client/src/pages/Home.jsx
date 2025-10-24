@@ -1,4 +1,5 @@
 import Listings from "../components/Listings";
+import Pills from "@/components/Pills";
 import {
   PhoneCall,
   SlidersHorizontal,
@@ -13,9 +14,17 @@ import "../index.css";
 import { useMediaQuery } from "react-responsive";
 import { motion } from "framer-motion";
 import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function Home({ menuOpen, setMenuOpen }) {
   const isMobile = useMediaQuery({ maxWidth: 767 });
+  const [filters, setFilters] = useState({
+    type: "sale", // rent / sale / all
+    bedrooms: null, // e.g. 2
+    bathrooms: null, // e.g. 3
+    propertyType: null, // e.g. "apartment", "house"
+  });
+  useEffect(() => {}, [filters]);
 
   return (
     <div className="px-[5%] w-full">
@@ -85,21 +94,19 @@ function Home({ menuOpen, setMenuOpen }) {
       </div>
       <div className="my-[100px]">
         <div className="flex justify-between my-10">
-          <div className="flex gap-4">
-            <button className="bg-yellow-400 rounded-3xl py-2 px-6 font-bold text-white">
-              Rent
-            </button>
-            <button className="border border-gray-500 text-gray-500 rounded-3xl px-6 py-2">
-              Sale
-            </button>
-          </div>
+          <Pills filters={filters} setFilters={setFilters} />;
           <div className="text-white">
             <button>
               <SlidersHorizontal />
             </button>
           </div>
         </div>
-        <Listings lgCols={4} limit={8} />
+        <Listings
+          lgCols={4}
+          limit={8}
+          filters={filters}
+          setFilters={setFilters}
+        />
       </div>
     </div>
   );
