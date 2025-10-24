@@ -6,15 +6,25 @@ import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 function PropertyLising() {
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = HouseImg;
+    img.onload = () => setImgLoaded(true);
+  }, []);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleLoad = () => {
-      setTimeout(() => {
-        setLoading(false);
-      }, 300);
+      if (imgLoaded) {
+        setTimeout(() => {
+          setLoading(false);
+        }, 300);
+      }
     };
-    if (document.readyState === "complete") {
+    if (document.readyState === "complete" && imgLoaded) {
       setTimeout(() => {
         setLoading(false);
       }, 300);
@@ -23,7 +33,7 @@ function PropertyLising() {
     }
 
     return () => window.removeEventListener("load", handleLoad);
-  }, []);
+  }, [imgLoaded]);
 
   const [filters, setFilters] = useState({
     type: "sale", // rent / sale / all
