@@ -160,7 +160,7 @@ function SideMenu({ menuOpen, setMenuOpen }) {
     >
       <div className="flex justify-end ">
         <button
-          className="text-white/90"
+          className="text-white/90 bg-white/5 p-1.5 rounded-full w-10 h-10 flex justify-center items-center"
           onClick={() => {
             setMenuOpen(false);
           }}
@@ -169,11 +169,46 @@ function SideMenu({ menuOpen, setMenuOpen }) {
         </button>
       </div>
       <div className="text-white text-5xl flex flex-col gap-2 mt-10">
-        <Link to="/listings">Listings</Link>
-        <Link>Consultation</Link>
-        <Link>Rent</Link>
-        <Link>Buy</Link>
-        <Link to="/booking" state={{ preset: "tour" }}>
+        <Link
+          to="/listings"
+          onClick={() => {
+            setMenuOpen(false);
+          }}
+        >
+          Listings
+        </Link>
+        <Link
+          to="/booking"
+          state={{ preset: "consultation" }}
+          onClick={() => {
+            setMenuOpen(false);
+          }}
+        >
+          Consultation
+        </Link>
+        <Link
+          to="/listings"
+          onClick={() => {
+            setMenuOpen(false);
+          }}
+        >
+          Rent
+        </Link>
+        <Link
+          to="/listings"
+          onClick={() => {
+            setMenuOpen(false);
+          }}
+        >
+          Buy
+        </Link>
+        <Link
+          to="/booking"
+          state={{ preset: "contact" }}
+          onClick={() => {
+            setMenuOpen(false);
+          }}
+        >
           Contact
         </Link>
       </div>
