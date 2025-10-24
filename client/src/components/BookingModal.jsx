@@ -3,8 +3,28 @@ import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/supabaseClient";
 import { useState, useEffect, useRef } from "react";
 import { bookingPresets } from "../utils/bookingPreset";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 function BookingModal({ setBookingOpen }) {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const handleLoad = () => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+    };
+    if (document.readyState === "complete") {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+    } else {
+      window.addEventListener("load", handleLoad);
+    }
+
+    return () => window.removeEventListener("load", handleLoad);
+  }, []);
+
   const location = useLocation();
   const presetName = location.state?.preset || "rent"; // fallback
   const preset = bookingPresets.find((p) => p.name === presetName);
@@ -40,6 +60,24 @@ function BookingModal({ setBookingOpen }) {
       console.error("Error inserting booking!");
     }
   }
+
+  if (loading) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-[#121420] transition-opacity duration-400 ${
+          loading ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <Spinner
+          className="text-blue-500"
+          size={64}
+          variant={"ring"}
+          className="text-yellow-500"
+        />
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={submitBooking}
