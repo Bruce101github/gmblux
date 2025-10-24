@@ -3,8 +3,28 @@ import HouseImg from "../assets/Modern-House-PNG-Clipart.png";
 import { Link } from "react-router-dom";
 import Pills from "@/components/Pills";
 import { useState, useEffect } from "react";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 function PropertyLising() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const handleLoad = () => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+    };
+    if (document.readyState === "complete") {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+    } else {
+      window.addEventListener("load", handleLoad);
+    }
+
+    return () => window.removeEventListener("load", handleLoad);
+  }, []);
+
   const [filters, setFilters] = useState({
     type: "sale", // rent / sale / all
     bedrooms: null, // e.g. 2
@@ -12,6 +32,23 @@ function PropertyLising() {
     propertyType: null, // e.g. "apartment", "house"
   });
   useEffect(() => {}, [filters]);
+
+  if (loading) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-[#121420] transition-opacity duration-400 ${
+          loading ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <Spinner
+          className="text-blue-500"
+          size={64}
+          variant={"ring"}
+          className="text-yellow-500"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="px-[5%] lg:px-[10%] my-2">

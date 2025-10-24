@@ -13,10 +13,35 @@ import HeroImg from "../assets/hero.jpg";
 import "../index.css";
 import { useMediaQuery } from "react-responsive";
 import { motion } from "framer-motion";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 function Home({ menuOpen, setMenuOpen }) {
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleLoad = () => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+    };
+    if (document.readyState === "complete") {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+    } else {
+      window.addEventListener("load", handleLoad);
+    }
+
+    return () => window.removeEventListener("load", handleLoad);
+  }, []);
+
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [filters, setFilters] = useState({
     type: "sale", // rent / sale / all
@@ -25,6 +50,23 @@ function Home({ menuOpen, setMenuOpen }) {
     propertyType: null, // e.g. "apartment", "house"
   });
   useEffect(() => {}, [filters]);
+
+  if (loading) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-[#121420] transition-opacity duration-400 ${
+          loading ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <Spinner
+          className="text-blue-500"
+          size={64}
+          variant={"ring"}
+          className="text-yellow-500"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="px-[5%] w-full">
@@ -176,46 +218,13 @@ function SideMenu({ menuOpen, setMenuOpen }) {
         </button>
       </div>
       <div className="text-white text-5xl flex flex-col gap-2 mt-10">
-        <Link
-          to="/listings"
-          onClick={() => {
-            setMenuOpen(false);
-          }}
-        >
-          Listings
-        </Link>
-        <Link
-          to="/booking"
-          state={{ preset: "consultation" }}
-          onClick={() => {
-            setMenuOpen(false);
-          }}
-        >
+        <Link to="/listings">Listings</Link>
+        <Link to="/booking" state={{ preset: "consultation" }}>
           Consultation
         </Link>
-        <Link
-          to="/listings"
-          onClick={() => {
-            setMenuOpen(false);
-          }}
-        >
-          Rent
-        </Link>
-        <Link
-          to="/listings"
-          onClick={() => {
-            setMenuOpen(false);
-          }}
-        >
-          Buy
-        </Link>
-        <Link
-          to="/booking"
-          state={{ preset: "contact" }}
-          onClick={() => {
-            setMenuOpen(false);
-          }}
-        >
+        <Link to="/listings">Rent</Link>
+        <Link to="/listings">Buy</Link>
+        <Link to="/booking" state={{ preset: "contact" }}>
           Contact
         </Link>
       </div>
