@@ -18,6 +18,14 @@ import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 function Home({ menuOpen, setMenuOpen }) {
+  const [heroLoaded, setHeroLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = HeroImg;
+    img.onload = () => setHeroLoaded(true);
+  }, []);
+
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
@@ -27,9 +35,11 @@ function Home({ menuOpen, setMenuOpen }) {
 
   useEffect(() => {
     const handleLoad = () => {
-      setTimeout(() => {
-        setLoading(false);
-      }, 300);
+      if (heroLoaded) {
+        setTimeout(() => {
+          setLoading(false);
+        }, 300);
+      }
     };
     if (document.readyState === "complete") {
       setTimeout(() => {
@@ -40,7 +50,7 @@ function Home({ menuOpen, setMenuOpen }) {
     }
 
     return () => window.removeEventListener("load", handleLoad);
-  }, []);
+  }, [heroLoaded]);
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [filters, setFilters] = useState({
