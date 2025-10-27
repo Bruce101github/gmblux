@@ -42,7 +42,7 @@ function Filter({ filterOpen, setFilterOpen, filters, setFilters }) {
             ? { duration: 0.6, ease: "easeOut" }
             : { duration: 0.4, ease: "easeIn" }
         }
-        className="bg-[#121420] h-[85%] w-full px-[5%] py-[20px] border-t border-white/15 rounded-t-4xl absolute bottom-0 flex flex-col justify-between"
+        className="bg-[#121420] h-[85%] w-full px-[5%] py-[20px] border-t border-white/15 rounded-t-4xl absolute bottom-0 flex flex-col gap-2.5"
       >
         <div className="flex justify-end">
           <button
@@ -56,11 +56,11 @@ function Filter({ filterOpen, setFilterOpen, filters, setFilters }) {
           </button>
         </div>
         <div className="text-white ">
-          <p className="text-lg font-medium mb-2">Listing Type</p>
+          <p className="text-lg font-medium mb-1">Listing Type</p>
           <Pills filters={localFilters} setFilters={setLocalFilters} />
         </div>
         <div className="text-white">
-          <p className="text-lg font-medium mb-2">Property Type</p>
+          <p className="text-lg font-medium mb-1">Property Type</p>
           <Pills
             filters={localFilters}
             setFilters={setLocalFilters}
@@ -68,7 +68,7 @@ function Filter({ filterOpen, setFilterOpen, filters, setFilters }) {
           />
         </div>
         <div className="text-white">
-          <p className="text-lg font-medium mb-2">Bedrooms</p>
+          <p className="text-lg font-medium mb-1">Bedrooms</p>
           <Pills
             filters={localFilters}
             setFilters={setLocalFilters}
@@ -76,7 +76,7 @@ function Filter({ filterOpen, setFilterOpen, filters, setFilters }) {
           />
         </div>
         <div className="text-white">
-          <p className="text-lg font-medium mb-3">Bathrooms</p>
+          <p className="text-lg font-medium mb-1">Bathrooms</p>
           <Pills
             filters={localFilters}
             setFilters={setLocalFilters}
@@ -84,8 +84,8 @@ function Filter({ filterOpen, setFilterOpen, filters, setFilters }) {
           />
         </div>
         <div className="text-white ">
-          <p className="text-lg font-medium mb-2">Pricing</p>
-          <div className="flex w-full max-w-md flex-col gap-2 ">
+          <p className="text-lg font-medium mb-1">Pricing</p>
+          <div className="flex w-full max-w-md flex-col gap-1 ">
             <Slider
               id="slider"
               max={10000000}
@@ -99,15 +99,15 @@ function Filter({ filterOpen, setFilterOpen, filters, setFilters }) {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 my-2.5">
           <button
-            className="text-white/70 text-base border border-white/40 px-2 py-3 rounded-4xl my-5 "
+            className="text-white/70 text-base border border-white/40 px-2 py-3 rounded-4xl  "
             onClick={resetFilters}
           >
             Reset
           </button>
           <button
-            className="bg-yellow-400 px-2 py-3 rounded-4xl my-5 text-base text-white font-bold"
+            className="bg-yellow-400 px-2 py-3 rounded-4xl text-base text-white font-bold"
             onClick={handleFilters}
           >
             See properties
