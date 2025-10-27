@@ -42,8 +42,7 @@ function Filter({ filterOpen, setFilterOpen, filters, setFilters }) {
             ? { duration: 0.6, ease: "easeOut" }
             : { duration: 0.4, ease: "easeIn" }
         }
-        className="bg-[#121420] h-[85%] w-full px-[5%] py-[20px] border-top
-                                                                                                        rounded-4xl"
+        className="bg-[#121420] h-[85%] w-full px-[5%] py-[20px] border-t border-white/30 rounded-4xl absolute bottom-0"
       >
         <div className="flex justify-end">
           <button
