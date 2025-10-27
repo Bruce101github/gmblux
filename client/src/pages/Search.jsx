@@ -3,8 +3,9 @@ import { useSearch } from "../components/SearchContext";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import Filter from "@/components/Filter";
 
-function Search() {
+function Search({ filters, setFilters, filterOpen, setFilterOpen }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,18 +37,21 @@ function Search() {
           loading ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <Spinner
-          className="text-blue-500"
-          size={64}
-          variant={"ring"}
-          className="text-yellow-500"
-        />
+        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
       </div>
     );
   }
 
   return (
     <div className="px-[5%] lg:px-[10%] my-2">
+      {filterOpen ? (
+        <Filter
+          filterOpen={filterOpen}
+          setFilterOpen={setFilterOpen}
+          setFilters={setFilters}
+          filters={filters}
+        />
+      ) : null}
       <div className="my-5">
         <h2 className="text-2xl text-white font-medium">{submittedSearch}</h2>
         <p className="text-white/50">
@@ -62,6 +66,8 @@ function Search() {
           search={submittedSearch}
           properties={properties}
           setProperties={setProperties}
+          setFilters={setFilters}
+          filters={filters}
         />
       </div>
     </div>

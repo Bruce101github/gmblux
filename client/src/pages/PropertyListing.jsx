@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import Pills from "@/components/Pills";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import Filter from "@/components/Filter";
 
-function PropertyLising() {
+function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
   const [imgLoaded, setImgLoaded] = useState(false);
 
   useEffect(() => {
@@ -35,12 +36,7 @@ function PropertyLising() {
     return () => window.removeEventListener("load", handleLoad);
   }, [imgLoaded]);
 
-  const [filters, setFilters] = useState({
-    type: "sale", // rent / sale / all
-    bedrooms: null, // e.g. 2
-    bathrooms: null, // e.g. 3
-    propertyType: null, // e.g. "apartment", "house"
-  });
+  const [localFilters, setLocalFilters] = useState(filters);
   useEffect(() => {}, [filters]);
 
   if (loading) {
@@ -50,18 +46,21 @@ function PropertyLising() {
           loading ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <Spinner
-          className="text-blue-500"
-          size={64}
-          variant={"ring"}
-          className="text-yellow-500"
-        />
+        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
       </div>
     );
   }
 
   return (
     <div className="px-[5%] lg:px-[10%] my-2">
+      {filterOpen ? (
+        <Filter
+          filterOpen={filterOpen}
+          setFilterOpen={setFilterOpen}
+          setFilters={setFilters}
+          filters={filters}
+        />
+      ) : null}
       <div className="flex gap-2 overflow-x-auto no-scrollbar">
         <Pills filters={filters} setFilters={setFilters} />
       </div>

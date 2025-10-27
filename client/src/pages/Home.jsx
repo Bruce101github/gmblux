@@ -16,8 +16,18 @@ import { motion } from "framer-motion";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { Label } from "@/components/ui/label";
 
-function Home({ menuOpen, setMenuOpen }) {
+import Filter from "@/components/Filter";
+
+function Home({
+  menuOpen,
+  setMenuOpen,
+  filterOpen,
+  setFilterOpen,
+  filters,
+  setFilters,
+}) {
   const [heroLoaded, setHeroLoaded] = useState(false);
 
   useEffect(() => {
@@ -53,12 +63,6 @@ function Home({ menuOpen, setMenuOpen }) {
   }, [heroLoaded]);
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const [filters, setFilters] = useState({
-    type: "sale", // rent / sale / all
-    bedrooms: null, // e.g. 2
-    bathrooms: null, // e.g. 3
-    propertyType: null, // e.g. "apartment", "house"
-  });
   useEffect(() => {}, [filters]);
 
   if (loading) {
@@ -68,12 +72,7 @@ function Home({ menuOpen, setMenuOpen }) {
           loading ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <Spinner
-          className="text-blue-500"
-          size={64}
-          variant={"ring"}
-          className="text-yellow-500"
-        />
+        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
       </div>
     );
   }
@@ -82,6 +81,14 @@ function Home({ menuOpen, setMenuOpen }) {
     <div className="px-[5%] w-full">
       {menuOpen ? (
         <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      ) : null}
+      {filterOpen ? (
+        <Filter
+          filterOpen={filterOpen}
+          setFilterOpen={setFilterOpen}
+          setFilters={setFilters}
+          filters={filters}
+        />
       ) : null}
       {isMobile ? <MobileHero /> : <DesktopHero />}
       <h2 className="flex text-white text-3xl font-md lg:hidden md:hidden pb-3  pt-[30px]">
@@ -100,7 +107,7 @@ function Home({ menuOpen, setMenuOpen }) {
           <h2 className="hidden text-white text-5xl font-md ml-5 mb-5 sm:flex">
             Listed Properties
           </h2>
-          <Listings smCols={3} />
+          <Listings smCols={3} limit={3} />
         </div>
       </div>
       <div className="flex w-full gap-4 overflow-x-auto no-scrollbar text-white">
@@ -148,7 +155,11 @@ function Home({ menuOpen, setMenuOpen }) {
         <div className="flex justify-between my-10">
           <Pills filters={filters} setFilters={setFilters} />;
           <div className="text-white">
-            <button>
+            <button
+              onClick={() => {
+                setFilterOpen(true);
+              }}
+            >
               <SlidersHorizontal />
             </button>
           </div>

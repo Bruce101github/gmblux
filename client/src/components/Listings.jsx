@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 function Listings({
   lgCols = 3,
   smCols = 1,
-  limit = 3,
+  limit = undefined,
   search = "",
   properties: propsProperties,
   setProperties: propsSetProperties,
@@ -47,24 +47,34 @@ function Listings({
     console.log("This is the filters", filters);
     let query = supabase.from("properties").select("*");
 
-    if (filters?.type) {
-      if (filters.type.toLowerCase() === "all") {
-        query = query.neq("listing_type", "none");
-      } else {
-        query = query.eq("listing_type", filters.type.toLowerCase());
-      }
+    if (filters?.listingType != "all") {
+      query = query.eq("listing_type", filters.listingType);
     }
 
-    if (filters?.bedrooms != null) {
+    if (filters?.propertyType != "all") {
+      query = query.eq("property_type", filters.propertyType);
+    }
+
+    if (filters?.bedrooms != "any") {
       query = query.eq("bedrooms", filters.bedrooms);
     }
 
-    if (filters?.bathrooms != null) {
+    if (filters?.bathrooms != "any") {
       query = query.eq("bathrooms", filters.bathrooms);
     }
+    if (filters?.price) {
+      query = query
+        .gte("price", filters.price[0])
+        .lte("price", filters.price[1]);
+    }
 
-    if (filters?.propertyType != null) {
-      query = query.eq("property_type", filters.propertyType.toLowerCase());
+    if (search) {
+      query = query
+        .textSearch("fts", search, {
+          config: "english",
+          type: "websearch", // allows natural queries like “3 bedroom house”
+        })
+        .order("created_at", { ascending: false });
     }
 
     let { data, error } = await query;
@@ -112,7 +122,7 @@ function Listings({
       className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass}  ${smGridClass}  gap-4 m-0 `}
     >
       {loading
-        ? Array.from({ length: limit }).map((_, index) => (
+        ? Array.from({ length: !limit ? 5 : limit }).map((_, index) => (
             <div className="bg-white/15 rounded-3xl shadow p-4 text-white">
               <Skeleton className="w-full h-[200px] rounded-2xl" />
               <Skeleton className="h-7 w-[70%] mt-2" />

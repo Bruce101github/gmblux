@@ -60,7 +60,7 @@ export default function Navbar() {
   );
 }
 
-export function MobileNavbar({ menuOpen, setMenuOpen }) {
+export function MobileNavbar({ menuOpen, setMenuOpen, setFilterOpen }) {
   const location = useLocation();
   const path = location.pathname;
 
@@ -74,7 +74,7 @@ export function MobileNavbar({ menuOpen, setMenuOpen }) {
   if (isListing)
     return (
       <>
-        <MobileNavbar4 />
+        <MobileNavbar4 setFilterOpen={setFilterOpen} />
       </>
     );
 
@@ -88,7 +88,11 @@ export function MobileNavbar({ menuOpen, setMenuOpen }) {
   if (isHome)
     return (
       <>
-        <MobileNavbar1 menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+        <MobileNavbar1
+          menuOpen={menuOpen}
+          setMenuOpen={setMenuOpen}
+          setFilterOpen={setFilterOpen}
+        />
       </>
     );
 
@@ -102,12 +106,12 @@ export function MobileNavbar({ menuOpen, setMenuOpen }) {
   if (isSearch)
     return (
       <>
-        <MobileNavbar4 />
+        <MobileNavbar4 setFilterOpen={setFilterOpen} />
       </>
     );
 }
 
-function MobileNavbar1({ menuOpen, setMenuOpen }) {
+function MobileNavbar1({ menuOpen, setMenuOpen, setFilterOpen }) {
   const [value, setValue] = useState("");
   const navigate = useNavigate();
   const { searchTerm, setSearchTerm, setSubmittedSearch, submittedSearch } =
@@ -156,7 +160,12 @@ function MobileNavbar1({ menuOpen, setMenuOpen }) {
               onKeyDown={handleKeyDown}
             />
           </div>{" "}
-          <button className=" bg-yellow-400 rounded-full flex justify-center items-center p-2">
+          <button
+            className=" bg-yellow-400 rounded-full flex justify-center items-center p-2"
+            onClick={() => {
+              setFilterOpen(true);
+            }}
+          >
             {" "}
             <SlidersHorizontal />
           </button>
@@ -270,7 +279,7 @@ function MobileNavbar3() {
   );
 }
 
-function MobileNavbar4() {
+function MobileNavbar4({ setFilterOpen }) {
   const navigate = useNavigate();
   const location = useLocation();
   const presetName = location.state?.preset;
@@ -320,10 +329,15 @@ function MobileNavbar4() {
             onKeyDown={handleKeyDown}
           />
         </div>{" "}
-        <div className="h-[42px] w-[42px] bg-yellow-400 rounded-full flex justify-center items-center">
+        <button
+          className="h-[42px] w-[42px] bg-yellow-400 rounded-full flex justify-center items-center p-2"
+          onClick={() => {
+            setFilterOpen(true);
+          }}
+        >
           {" "}
           <SlidersHorizontal />
-        </div>
+        </button>
       </div>
     </div>
   );
