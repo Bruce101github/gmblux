@@ -124,7 +124,7 @@ function MobileNavbar1({ menuOpen, setMenuOpen, setFilterOpen }) {
       setSearchTerm(e.target.value);
       setSubmittedSearch(searchTerm);
       setTimeout(() => {
-        navigate("/search");
+        navigate("/listings");
       }, 100);
     }
   }

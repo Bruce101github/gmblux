@@ -5,6 +5,7 @@ import Pills from "@/components/Pills";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import Filter from "@/components/Filter";
+import { useSearch } from "@/components/SearchContext";
 
 function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -37,6 +38,8 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
   }, [imgLoaded]);
 
   const [localFilters, setLocalFilters] = useState(filters);
+  const [properties, setProperties] = useState([]);
+  const { searchTerm, submittedSearch } = useSearch();
   useEffect(() => {}, [filters]);
 
   if (loading) {
@@ -64,7 +67,13 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
       <div className="flex gap-2 overflow-x-auto no-scrollbar">
         <Pills filters={filters} setFilters={setFilters} />
       </div>
-      <div className="overflow-x-auto no-scrollbar flex flex-col gap-4 my-[10%]">
+      <h2 className="text-2xl text-white font-medium mt-4">
+        {submittedSearch ? `Search "${submittedSearch}"` : null}
+      </h2>
+      <p className="text-white/50">
+        {submittedSearch ? `${properties.length} Properties are found!` : null}
+      </p>
+      <div className="overflow-x-auto no-scrollbar flex flex-col gap-4 my-[5%]">
         <Link to="/booking" state={{ preset: "consultation" }}>
           <div className="bg-yellow-400 w-full h-[180px] rounded-3xl relative overflow-hidden flex items-center">
             <div className="bg-[#232323] rounded-full h-[180px] w-[180px] absolute left-[70%] bottom-[30%]"></div>{" "}
@@ -82,6 +91,9 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
           limit={8}
           filters={filters}
           setFilters={setFilters}
+          search={submittedSearch}
+          setProperties={setProperties}
+          properties={properties}
         />
       </div>
     </div>

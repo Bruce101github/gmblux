@@ -68,45 +68,18 @@ function Listings({
         .lte("price", filters.price[1]);
     }
 
-    if (search) {
-      query = query
-        .textSearch("fts", search, {
-          config: "english",
-          type: "websearch", // allows natural queries like “3 bedroom house”
-        })
-        .order("created_at", { ascending: false });
+    if (search && search.trim() !== "") {
+      query = query.textSearch("fts", search, {
+        config: "english",
+        type: "websearch", // allows natural queries like “3 bedroom house”
+      });
     }
+
+    query = query.order("created_at", { ascending: false });
 
     let { data, error } = await query;
 
     // if no search, show all properties
-    if (!search || search.trim() === "") {
-      const result = await supabase
-        .from("properties")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching all:", error);
-        return [];
-      }
-      setProperties(data);
-      setLoading(false);
-      return;
-    }
-
-    // full-text search using the fts column
-    const result = await supabase
-      .from("properties")
-      .select("*")
-      .textSearch("fts", search, {
-        config: "english",
-        type: "websearch", // allows natural queries like “3 bedroom house”
-      })
-      .order("created_at", { ascending: false });
-
-    data = result.data;
-    error = result.error;
 
     if (error) {
       console.error("Error fetching search results:", error);

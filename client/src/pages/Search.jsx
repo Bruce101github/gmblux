@@ -53,7 +53,9 @@ function Search({ filters, setFilters, filterOpen, setFilterOpen }) {
         />
       ) : null}
       <div className="my-5">
-        <h2 className="text-2xl text-white font-medium">{submittedSearch}</h2>
+        <h2 className="text-2xl text-white font-medium">
+          Search "{submittedSearch}"
+        </h2>
         <p className="text-white/50">
           {properties.length} Properties are found!
         </p>
