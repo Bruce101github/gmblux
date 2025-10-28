@@ -117,7 +117,7 @@ export function MobileFooter() {
             <p className="text-sm font-bold">Properties</p>
             <Link className="text-xs text-white/50">Houses</Link>
             <Link className="text-xs text-white/50">Apartments</Link>
-            <Link className="text-xs text-white/50">Land</Link>
+            <Link className="text-xs text-white/50">Lands</Link>
           </div>
         </div>
         <div className="flex py-10 justify-center">

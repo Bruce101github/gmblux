@@ -146,9 +146,9 @@ function BookingModal({ setBookingOpen }) {
           <Link to="/" className="underline">
             Privacy Policy
           </Link>{" "}
-          for more information. When you click "Send request", we'll send your
-          inquiry to the property manager so they can reach out and answer your
-          questions
+          for more information. When you click "Send request", we’ll forward
+          your inquiry to the property manager, who will reach out to you
+          swiftly to answer your questions.
         </p>
       </div>
     </form>

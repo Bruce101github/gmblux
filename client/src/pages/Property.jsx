@@ -2,13 +2,21 @@ import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import "../index.css";
+import Whatsapp from "@/assets/whatsapp.png";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
 
-import { Bed, ShowerHead, LandPlot, VectorSquare, MapPin } from "lucide-react";
+import {
+  Bed,
+  ShowerHead,
+  LandPlot,
+  VectorSquare,
+  MapPin,
+  Phone,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sentenceCase } from "@/utils/changeCase";
 
@@ -86,13 +94,26 @@ function Property() {
           {property.bedrooms} Bedroom {""}
           {property.property_type} for {property.listing_type}
         </p>
-        <h1 className="text-3xl lg:text-5xl font-bold">
-          {property.currency == "ghs" ? "GH₵" : "USD$"}
-          {Number(property.price).toLocaleString("en-GH")}
-          {property.listing_type == "rent" ? (
-            <span className="text-xl font-medium"> /month</span>
-          ) : null}
-        </h1>
+        <div className="flex justify-between">
+          {" "}
+          <h1 className="text-3xl lg:text-5xl font-bold">
+            {property.currency == "ghs" ? "GH₵" : "USD$"}
+            {Number(property.price).toLocaleString("en-GH")}
+            {property.listing_type == "rent" ? (
+              <span className="text-xl font-medium"> /month</span>
+            ) : null}
+          </h1>
+          <div className="flex gap-2">
+            <a
+              className="p-2 rounded-full bg-white/10"
+              href="tel:+233553944428"
+            >
+              {" "}
+              <Phone />
+            </a>
+            <WhatsAppButton property={property} />
+          </div>
+        </div>
         <div className="flex text-white/60 items-center gap-1">
           <MapPin size={16} />
           <p className="text-md font-medium">{property.location}</p>
@@ -153,6 +174,20 @@ function Property() {
         </div>
       </div>
     </div>
+  );
+}
+
+function WhatsAppButton({ property }) {
+  const number = "233553944428";
+  const message = `Hi, I am interested in this property and would like to talk some more.
+  
+Here’s the link: https://gmblux.com/property/${property.id}`;
+  const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+
+  return (
+    <a href={url} className="p-2 rounded-full bg-white/10">
+      <img src={Whatsapp} className="h-[25px]" />
+    </a>
   );
 }
 
