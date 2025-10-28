@@ -181,7 +181,7 @@ function WhatsAppButton({ property }) {
   const number = "233553944428";
   const message = `Hi, I am interested in this property and would like to talk some more.
   
-Here’s the link: https://gmblux.com/property/${property.id}`;
+Here’s the link: https://gmblux.com/listing/${property.id}`;
   const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 
   return (
