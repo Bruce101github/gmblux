@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "../supabaseClient";
 import { Bed, ShowerHead, LandPlot } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,10 +16,56 @@ function Listings({
 }) {
   const [loading, setLoading] = useState(true);
   const [localProperties, setLocalProperties] = useState([]);
-
-  // Use passed-in props if available, else fallback to local state
   const properties = propsProperties ?? localProperties;
   const setProperties = propsSetProperties ?? setLocalProperties;
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const perPage = 15;
+
+  const iRef = useRef();
+
+  useEffect(() => {
+    const checkCount = async () => {
+      const { count } = await supabase
+        .from("properties")
+        .select("*", { count: "exact", head: true });
+
+      if (properties.length >= count) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
+      }
+    };
+    checkCount();
+  }, [properties]);
+
+  useEffect(() => {
+    if (!iRef.current || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.2 },
+    );
+    if (hasMore) {
+      observer.observe(iRef.current);
+    } else {
+      observer.disconnect(); // stop observing if there's no more
+    }
+
+    return () => observer.disconnect();
+  }, [properties]);
+
+  useEffect(() => {
+    setHasMore(true);
+    setPage(0);
+  }, [search, filters]);
+
+  // Use passed-in props if available, else fallback to local state
   let query = supabase.from("properties").select("*");
 
   const lgGridClass =
@@ -39,12 +85,13 @@ function Listings({
     }[smCols] || "grid-cols-3";
 
   useEffect(() => {
-    fetchProperties(search, filters, setFilters);
-  }, [search, filters]);
+    fetchProperties(search, filters, setFilters, page);
+  }, [search, filters, page]);
 
-  async function fetchProperties(search, filters, setFilters) {
-    console.log("Received search term in fetchProperties:", search);
-    console.log("This is the filters", filters);
+  async function fetchProperties(search, filters, setFilters, page = 0) {
+    const from = limit === undefined ? page * perPage : 0;
+    const to = limit === undefined ? from + perPage - 1 : limit;
+
     let query = supabase.from("properties").select("*");
 
     if (filters?.listingType != "all") {
@@ -75,7 +122,7 @@ function Listings({
       });
     }
 
-    query = query.order("created_at", { ascending: false });
+    query = query.order("created_at", { ascending: false }).range(from, to);
 
     let { data, error } = await query;
 
@@ -85,7 +132,11 @@ function Listings({
       console.error("Error fetching search results:", error);
       return [];
     }
-    setProperties(data);
+    if (page === 0) {
+      setProperties(data);
+    } else if (page > 0) {
+      setProperties((prev) => [...prev, ...data]);
+    }
     setLoading(false);
     return;
   }
@@ -110,11 +161,11 @@ function Listings({
               </div>
             </div>
           ))
-        : properties.slice(0, limit).map((p) => (
-            <Link to={`/listing/${p.id}`}>
+        : properties.slice(0, limit).map((p, index) => (
+            <Link to={`/listing/${p.id}`} key={p.id}>
               <div
-                key={p.id}
                 className="bg-white/15 rounded-3xl shadow p-4 text-white"
+                ref={index === properties.length - 1 ? iRef : null}
               >
                 <img
                   src={p.images?.[0]}
@@ -165,7 +216,7 @@ function smallLisings() {
     <div
       className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass}  ${smGridClass}  gap-4 m-0 `}
     >
-      {properties.slice(0, limit).map((p) => (
+      {properties.slice(0, limit).map((p, index) => (
         <Link to={`/listing/${p.id}`}>
           <div
             key={p.id}

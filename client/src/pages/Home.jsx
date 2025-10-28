@@ -170,6 +170,7 @@ function Home({
           filters={filters}
           setFilters={setFilters}
         />
+        <button>All listings</button>
       </div>
     </div>
   );

@@ -40,7 +40,7 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
   const [localFilters, setLocalFilters] = useState(filters);
   const [properties, setProperties] = useState([]);
   const { searchTerm, submittedSearch } = useSearch();
-  useEffect(() => {}, [filters]);
+  useEffect(() => {}, [filters, properties]);
 
   if (loading) {
     return (
@@ -73,7 +73,7 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
       <p className="text-white/50">
         {submittedSearch ? `${properties.length} Properties are found!` : null}
       </p>
-      <div className="overflow-x-auto no-scrollbar flex flex-col gap-4 my-[5%]">
+      <div className="overflow-x-auto no-scrollbar flex flex-col gap-4 mt-[5%] mb-[100px]">
         <Link to="/booking" state={{ preset: "consultation" }}>
           <div className="bg-yellow-400 w-full h-[180px] rounded-3xl relative overflow-hidden flex items-center">
             <div className="bg-[#232323] rounded-full h-[180px] w-[180px] absolute left-[70%] bottom-[30%]"></div>{" "}
@@ -88,7 +88,6 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
         <Listings
           smCols={1}
           lgCols={4}
-          limit={8}
           filters={filters}
           setFilters={setFilters}
           search={submittedSearch}

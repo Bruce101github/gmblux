@@ -98,7 +98,7 @@ function Property() {
           ))}
         </CarouselContent>
         {/* pagination dots!!! Work on this later */}
-        <div className="absolute bottom-5 right-5 bg-black/15 backdrop-blur-sm px-3 py-1 rounded-sm text-xs">
+        <div className="absolute bottom-5 right-5 bg-black/15 backdrop-blur-sm px-2 py-1 rounded-3xl text-xs">
           {current} / {count}
         </div>
       </Carousel>
