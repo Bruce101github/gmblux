@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import * as React from "react";
 import { supabase } from "../supabaseClient";
 import "../index.css";
 import Whatsapp from "@/assets/whatsapp.png";
@@ -25,6 +26,22 @@ function Property() {
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [api, setApi] = React.useState(null);
+  const [current, setCurrent] = React.useState(0);
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!api) return;
+
+    // Set initial values
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    // Update when user scrolls
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   useEffect(() => {
     async function fetchProperty() {
@@ -67,7 +84,7 @@ function Property() {
 
   return (
     <div className="text-white px-0 lg:px-[10%] pb-10">
-      <Carousel>
+      <Carousel setApi={setApi}>
         <CarouselContent>
           {property.images.map((p) => (
             <CarouselItem>
@@ -81,12 +98,8 @@ function Property() {
           ))}
         </CarouselContent>
         {/* pagination dots!!! Work on this later */}
-        <div className="absolute bottom-5 left-1/2 tranform -translate-x-1/2 flex gap-2 items-center">
-          <button className="h-2 w-2 bg-white/80 rounded-full"></button>
-          <button className="h-2 w-2 bg-white/50 rounded-full"></button>
-          <button className="h-2 w-2 bg-white/50 rounded-full"></button>
-          <button className="h-1.5 w-1.5 bg-white/50 rounded-full"></button>
-          <button className="h-1 w-1 bg-white/50 rounded-full"></button>
+        <div className="absolute bottom-5 right-5 bg-black/15 backdrop-blur-sm px-3 py-1 rounded-sm text-xs">
+          {current} / {count}
         </div>
       </Carousel>
       <div className="px-[5%] py-[20px] flex flex-col gap-2">
@@ -186,7 +199,7 @@ Here’s the link: https://gmblux.com/listing/${property.id}`;
 
   return (
     <a href={url} className="p-2 rounded-full bg-white/10">
-      <img src={Whatsapp} className="h-[25px]" />
+      <img src={Whatsapp} className="h-[25px] w-[25px]" />
     </a>
   );
 }
