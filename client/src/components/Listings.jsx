@@ -13,6 +13,7 @@ function Listings({
   setProperties: propsSetProperties,
   filters,
   setFilters,
+  tags = [],
 }) {
   const [loading, setLoading] = useState(true);
   const [localProperties, setLocalProperties] = useState([]);
@@ -122,7 +123,11 @@ function Listings({
       });
     }
 
-    query = query.order("created_at", { ascending: false }).range(from, to);
+    if (tags.length >= 1) {
+      query = query.contains("tags", [...tags]);
+    }
+
+    query = query.order("created_at", { ascending: true }).range(from, to);
 
     let { data, error } = await query;
 

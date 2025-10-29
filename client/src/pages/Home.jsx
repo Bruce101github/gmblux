@@ -33,6 +33,7 @@ function Home({
   setFilters,
 }) {
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const [localProperties, setLocalProperties] = useState([]);
 
   useEffect(() => {
     const img = new Image();
@@ -111,7 +112,14 @@ function Home({
           <h2 className="hidden text-white text-5xl font-md ml-5 mb-5 sm:flex">
             Listed Properties
           </h2>
-          <Listings smCols={3} limit={3} />
+          <Listings
+            smCols={3}
+            limit={3}
+            tags={["best"]}
+            filters={filters}
+            properties={localProperties}
+            setProperties={setLocalProperties}
+          />
         </div>
       </div>
       <div className="flex w-full gap-4 overflow-x-auto no-scrollbar text-white">
