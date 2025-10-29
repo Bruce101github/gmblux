@@ -282,28 +282,28 @@ function SideMenu({ menuOpen, setMenuOpen }) {
             target="_blank"
             className="text-white text-lg font-medium  group-hover:text-white/90 hover:text-yellow-400"
           >
-            Instagram
+            <img src={instagram} className="h-5 w-5" />
           </a>
           <a
             href="https://www.tiktok.com/@gmb_realestateghana?_t=ZM-90x9p6ChCrT&_r=1"
             target="_blank"
             className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
           >
-            TikTok
+            <img src={tiktok} className="h-5 w-5" />
           </a>
           <a
             href="https://www.facebook.com/profile.php?id=100071139317552"
             target="_blank"
             className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
           >
-            Facebook
+            <img src={fb} className="h-5 w-5" />
           </a>
           <a
             href="https://wa.me/233553944428?"
             target="_blank"
             className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
           >
-            Whatsapp
+            <img src={whatsapp} className="h-5 w-5" />
           </a>
         </div>
       </div>
