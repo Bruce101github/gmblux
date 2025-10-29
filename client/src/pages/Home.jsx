@@ -241,13 +241,17 @@ function SideMenu({ menuOpen, setMenuOpen }) {
       </div>
       <div className="text-white text-5xl flex flex-col gap-2 mt-10">
         <Link to="/listings">Listings</Link>
-        <Link to="/booking" state={{ preset: "consultation" }}>
-          Consultation
+        <Link to="/listings" state={{ preset: "rent" }}>
+          Rent
         </Link>
-        <Link to="/listings">Rent</Link>
-        <Link to="/listings">Buy</Link>
+        <Link to="/listings" state={{ preset: "sale" }}>
+          Buy
+        </Link>
         <Link to="/booking" state={{ preset: "contact" }}>
           Contact
+        </Link>{" "}
+        <Link to="/booking" state={{ preset: "consultation" }}>
+          Consultation
         </Link>
       </div>
       <div></div>

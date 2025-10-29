@@ -1,6 +1,6 @@
 import Listings from "../components/Listings";
 import HouseImg from "../assets/Modern-House-PNG-Clipart.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Pills from "@/components/Pills";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
@@ -37,10 +37,19 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
     return () => window.removeEventListener("load", handleLoad);
   }, [imgLoaded]);
 
-  const [localFilters, setLocalFilters] = useState(filters);
   const [properties, setProperties] = useState([]);
   const { searchTerm, submittedSearch } = useSearch();
+  const location = useLocation();
+  const presetFilter = location.state?.preset;
+
   useEffect(() => {}, [filters, properties]);
+
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      listingType: presetFilter || "all",
+    }));
+  }, []);
 
   if (loading) {
     return (

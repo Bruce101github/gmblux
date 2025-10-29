@@ -68,12 +68,7 @@ function BookingModal({ setBookingOpen }) {
           loading ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <Spinner
-          className="text-blue-500"
-          size={64}
-          variant={"ring"}
-          className="text-yellow-500"
-        />
+        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
       </div>
     );
   }

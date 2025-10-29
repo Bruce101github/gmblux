@@ -34,4 +34,10 @@ export const bookingPresets = [
     type: "Consultation Request",
     title: "Book a Consultation",
   },
+  {
+    listingTYpe: "rent",
+  },
+  {
+    listingTYpe: "buy",
+  },
 ];
