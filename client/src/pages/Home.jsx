@@ -231,7 +231,7 @@ function SideMenu({ menuOpen, setMenuOpen }) {
           ? { duration: 0.6, ease: "easeOut" }
           : { duration: 0.4, ease: "easeIn" }
       }
-      className="absolute top-0 w-full h-full bg-[#121420] mx-[-5%] px-[5%] fixed py-[20px] z-1000"
+      className="absolute top-0 w-full h-full bg-[#121420] mx-[-5%] px-[5%] fixed py-[20px] z-1000 overflow-hidden"
     >
       <div className="flex justify-end ">
         <button
