@@ -1,3 +1,5 @@
+import { useEffect, useState, useRef } from "react";
+import { supabase } from "../supabaseClient";
 import { PhoneCall, ChevronUp, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import instagram from "@/assets/instagram.svg";
@@ -86,6 +88,22 @@ export default function Footer() {
 }
 
 export function MobileFooter() {
+  const [email, setEmail] = useState("");
+
+  async function handleSubmit() {
+    const { error } = await supabase
+      .from("email_list")
+      .insert({ email: { email } })
+      .eq("id", 1);
+
+    if (error) {
+      console.log("Error inserting email", error);
+    } else {
+      console.log("Insert success");
+    }
+
+    setEmail("");
+  }
   return (
     <div className="bg-[#232323] text-white">
       <div className="bg-[#1D1D1D] flex px-[10%] py-[18px] justify-center items-center gap-2">
@@ -136,8 +154,13 @@ export function MobileFooter() {
               <input
                 placeholder="Email address"
                 className="border-b border-white/15 py-2 outline-none w-full"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <button className="h-[40px] w-[47px] bg-white/5 flex justify-center items-center rounded-full absolute top-0 right-0">
+              <button
+                onClick={handleSubmit}
+                className="h-[40px] w-[47px] bg-white/5 flex justify-center items-center rounded-full absolute top-0 right-0"
+              >
                 <ChevronRight />
               </button>
             </div>
