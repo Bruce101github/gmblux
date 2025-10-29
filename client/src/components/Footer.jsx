@@ -1,5 +1,9 @@
 import { PhoneCall, ChevronUp, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import instagram from "@/assets/instagram.svg";
+import tiktok from "@/assets/tiktok.svg";
+import facebook from "@/assets/fb.svg";
+import whatsapp from "@/assets/whatsapp.svg";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -139,7 +143,38 @@ export function MobileFooter() {
             </div>
           </div>
         </div>
-        <div>
+        <div className="flex justify-between items-end">
+          <div className=" text-white flex gap-4 group">
+            <a
+              href="https://www.instagram.com/gmb_realestate_ghana/"
+              target="_blank"
+              className="text-white text-lg font-medium  group-hover:text-white/90 hover:text-yellow-400"
+            >
+              <img src={instagram} className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.tiktok.com/@gmb_realestateghana?_t=ZM-90x9p6ChCrT&_r=1"
+              target="_blank"
+              className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
+            >
+              <img src={tiktok} className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=100071139317552"
+              target="_blank"
+              className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
+            >
+              <img src={facebook} className="h-5 w-5" />
+            </a>
+            <a
+              href="https://wa.me/233553944428?"
+              target="_blank"
+              className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
+            >
+              <img src={whatsapp} className="h-5 w-5" />
+            </a>
+          </div>
+
           <p className="text-xs text-center">
             Website created by{" "}
             <a className="text-green-500 font-bold">Mckot Digital</a>
