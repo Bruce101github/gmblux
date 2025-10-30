@@ -77,22 +77,28 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
         <Pills filters={filters} setFilters={setFilters} />
       </div>
       <h2 className="text-2xl text-white font-medium mt-4">
-        {submittedSearch ? `Search "${submittedSearch}"` : null}
+        {submittedSearch && properties.length > 0
+          ? `Search "${submittedSearch}"`
+          : null}
       </h2>
       <p className="text-white/50">
-        {submittedSearch ? `${properties.length} Properties are found!` : null}
+        {submittedSearch && properties.length > 0
+          ? `${properties.length} Properties are found!`
+          : null}
       </p>
       <div className="overflow-x-auto no-scrollbar flex flex-col gap-4 mt-[5%] mb-[100px]">
         <Link to="/booking" state={{ preset: "consultation" }}>
-          <div className="bg-yellow-400 w-full h-[180px] rounded-3xl relative overflow-hidden flex items-center">
-            <div className="bg-[#232323] rounded-full h-[180px] w-[180px] absolute left-[70%] bottom-[30%]"></div>{" "}
-            <div className="h-[180px] w-[250px] absolute left-[65%] top-[5%]">
-              <img src={HouseImg} className="h-full w-full object-cover" />
+          {properties.length > 0 ? (
+            <div className="bg-yellow-400 w-full h-[180px] rounded-3xl relative overflow-hidden flex items-center">
+              <div className="bg-[#232323] rounded-full h-[180px] w-[180px] absolute left-[70%] bottom-[30%]"></div>{" "}
+              <div className="h-[180px] w-[250px] absolute left-[65%] top-[5%]">
+                <img src={HouseImg} className="h-full w-full object-cover" />
+              </div>
+              <h3 className="text-4xl font-bold w-[70%] px-[6%]  text-white/90">
+                Need Real Estate Advice?
+              </h3>
             </div>
-            <h3 className="text-4xl font-bold w-[70%] px-[6%]  text-white/90">
-              Need Real Estate Advice?
-            </h3>
-          </div>{" "}
+          ) : null}{" "}
         </Link>
         <Listings
           smCols={1}

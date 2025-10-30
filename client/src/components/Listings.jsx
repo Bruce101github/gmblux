@@ -150,68 +150,78 @@ function Listings({
     <div
       className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass}  ${smGridClass}  gap-4 m-0 `}
     >
-      {loading
-        ? Array.from({ length: !limit ? 5 : limit }).map((_, index) => (
-            <div className="bg-white/15 rounded-3xl shadow p-4 text-white">
-              <Skeleton className="w-full h-[200px] rounded-2xl" />
-              <Skeleton className="h-7 w-[70%] mt-2" />
-              <Skeleton className="h-4 w-[35%] mt-2" />
-              <div className="flex justify-between">
-                {" "}
-                <Skeleton className="h-5 w-[8%] mt-2" />
-                <Skeleton className="h-5 w-[8%] mt-2" />
-                <Skeleton className="h-5 w-[8%] mt-2" />
-                <div className="w-15"></div>
-                <Skeleton className="h-6 w-[45%] mt-2" />
+      {loading ? (
+        Array.from({ length: !limit ? 5 : limit }).map((_, index) => (
+          <div className="bg-white/15 rounded-3xl shadow p-4 text-white">
+            <Skeleton className="w-full h-[200px] rounded-2xl" />
+            <Skeleton className="h-7 w-[70%] mt-2" />
+            <Skeleton className="h-4 w-[35%] mt-2" />
+            <div className="flex justify-between">
+              {" "}
+              <Skeleton className="h-5 w-[8%] mt-2" />
+              <Skeleton className="h-5 w-[8%] mt-2" />
+              <Skeleton className="h-5 w-[8%] mt-2" />
+              <div className="w-15"></div>
+              <Skeleton className="h-6 w-[45%] mt-2" />
+            </div>
+          </div>
+        ))
+      ) : properties.length > 0 ? (
+        properties.slice(0, limit).map((p, index) => (
+          <Link to={`/listing/${p.id}`} key={p.id}>
+            <div
+              className="bg-white/15 rounded-3xl shadow p-4 text-white"
+              ref={index === properties.length - 1 ? iRef : null}
+            >
+              <img
+                src={p.images?.[0]}
+                alt={p.title}
+                className="w-full h-[200px] object-cover rounded-2xl"
+              />
+              <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
+              <p className="text-white/60 text-sm">{p.location}</p>
+              <div className="flex justify-between items-center">
+                <div className="flex gap-3 text-xs items-center">
+                  <div className="flex text-white gap-1.5 items-center">
+                    <div className="text-blue-500">
+                      <Bed size={16} />
+                    </div>{" "}
+                    {p.bedrooms}
+                  </div>{" "}
+                  <div className="flex">
+                    {" "}
+                    <div className="text-blue-500">
+                      <ShowerHead size={16} />
+                    </div>
+                    {p.bathrooms}
+                  </div>{" "}
+                  <div className="flex">
+                    <div className="text-blue-500">
+                      <LandPlot size={16} />
+                    </div>{" "}
+                    {p.size}
+                  </div>
+                </div>
+                <p className="mt-2 font-bold text-blue-500">
+                  {p.listing_type === "rent"
+                    ? `GH₵${Number(p.price).toLocaleString("en-GH")}/month`
+                    : `USD$${Number(p.price).toLocaleString("en-GH")}`}
+                </p>
               </div>
             </div>
-          ))
-        : properties.slice(0, limit).map((p, index) => (
-            <Link to={`/listing/${p.id}`} key={p.id}>
-              <div
-                className="bg-white/15 rounded-3xl shadow p-4 text-white"
-                ref={index === properties.length - 1 ? iRef : null}
-              >
-                <img
-                  src={p.images?.[0]}
-                  alt={p.title}
-                  className="w-full h-[200px] object-cover rounded-2xl"
-                />
-                <h2 className="text-md font-medium mt-2 text-white">
-                  {p.title}
-                </h2>
-                <p className="text-white/60 text-sm">{p.location}</p>
-                <div className="flex justify-between items-center">
-                  <div className="flex gap-3 text-xs items-center">
-                    <div className="flex text-white gap-1.5 items-center">
-                      <div className="text-blue-500">
-                        <Bed size={16} />
-                      </div>{" "}
-                      {p.bedrooms}
-                    </div>{" "}
-                    <div className="flex">
-                      {" "}
-                      <div className="text-blue-500">
-                        <ShowerHead size={16} />
-                      </div>
-                      {p.bathrooms}
-                    </div>{" "}
-                    <div className="flex">
-                      <div className="text-blue-500">
-                        <LandPlot size={16} />
-                      </div>{" "}
-                      {p.size}
-                    </div>
-                  </div>
-                  <p className="mt-2 font-bold text-blue-500">
-                    {p.listing_type === "rent"
-                      ? `GH₵${Number(p.price).toLocaleString("en-GH")}/month`
-                      : `USD$${Number(p.price).toLocaleString("en-GH")}`}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
+          </Link>
+        ))
+      ) : (
+        <div className="h-[50vh] flex flex-col justify-center">
+          <p className="text-white text-center text-2xl font-medium">
+            Oops! 😕 No properties found.
+          </p>
+          <p className="text-white text-center text-sm">
+            Try checking for typos or spelling errors, or use different filters
+            or search terms to explore more options.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
