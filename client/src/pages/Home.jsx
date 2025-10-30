@@ -122,44 +122,46 @@ function Home({
           />
         </div>
       </div>
-      <div className="flex w-full gap-4 overflow-x-auto no-scrollbar text-white">
-        <div className="bg-white rounded-xl p-4  flex gap-x-2 items-center min-w-[350px]">
-          <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
-            <Building2 className="w-full h-full object-cover" />
+      <div className="overflow-x-auto md:overflow-x-visible no-scrollbar">
+        <div className="flex md:grid md:grid-cols-3 gap-4 w-max md:w-full text-white">
+          <div className="bg-white rounded-xl p-4  flex gap-x-2 items-center min-w-[250px]">
+            <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
+              <Building2 className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 className="text-blue-600 text-xl font-bold ">
+                Property Management
+              </h3>
+              <p className="text-black text-sm">
+                Hassle-free management for your investments.
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-blue-600 text-xl font-bold ">
-              Property Management
-            </h3>
-            <p className="text-black text-sm">
-              Hassle-free management for your investments.
-            </p>
+          <div className="bg-white rounded-lg p-4 flex gap-4 items-center min-w-[250px]">
+            <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
+              <CalendarCheck2 className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 className="text-blue-600 text-lg font-bold">
+                Fast & Easy Booking
+              </h3>
+              <p className="text-black text-sm ">
+                Schedule your consultation quickly and conveniently.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 flex gap-4 items-center min-w-[350px]">
-          <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
-            <CalendarCheck2 className="w-full h-full object-cover" />
-          </div>
-          <div>
-            <h3 className="text-blue-600 text-lg font-bold">
-              Fast & Easy Booking
-            </h3>
-            <p className="text-black text-sm ">
-              Schedule your consultation quickly and conveniently.
-            </p>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-4 flex gap-x-2 items-center min-w-[350px]">
-          <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
-            <MapPin className="w-full h-full object-cover" />
-          </div>
-          <div>
-            <h3 className="text-blue-600 text-lg font-bold">
-              Property Listings
-            </h3>
-            <p className="text-black text-sm">
-              Browse handpicked properties for every need.
-            </p>
+          <div className="bg-white rounded-xl p-4 flex gap-x-2 items-center min-w-[250px]">
+            <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
+              <MapPin className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 className="text-blue-600 text-lg font-bold">
+                Property Listings
+              </h3>
+              <p className="text-black text-sm">
+                Browse handpicked properties for every need.
+              </p>
+            </div>
           </div>
         </div>
       </div>
