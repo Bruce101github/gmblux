@@ -218,7 +218,7 @@ function Listings({
           </p>
           <p className="text-white text-center text-sm">
             Try checking for typos or spelling errors, or use different filters
-            or search terms to explore more options.
+            or search terms to explore more properties.
           </p>
         </div>
       )}
