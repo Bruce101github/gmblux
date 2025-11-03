@@ -10,6 +10,7 @@ import { useMediaQuery } from "react-responsive";
 import ScrollToTop from "@/components/ScrollToTop";
 import { SearchProvider } from "./components/SearchContext";
 import { useState } from "react";
+import { Toaster, toast } from "react-hot-toast";
 
 function App() {
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -77,6 +78,7 @@ function App() {
           />
         </Routes>
         {isMobile ? <MobileFooter /> : <Footer />}
+        <Toaster position="bottom-right" />
       </main>
     </SearchProvider>
   );

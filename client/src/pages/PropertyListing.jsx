@@ -88,7 +88,7 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
       </p>
       <div className="overflow-x-auto no-scrollbar flex flex-col gap-4 mt-[5%] mb-[100px]">
         <Link to="/booking" state={{ preset: "consultation" }}>
-          {properties.length > 0 ? (
+          {!submittedSearch && properties.length > 0 ? (
             <div className="bg-yellow-400 w-full h-[180px] rounded-3xl relative overflow-hidden flex items-center">
               <div className="bg-[#232323] rounded-full h-[180px] w-[180px] absolute left-[70%] bottom-[30%]"></div>{" "}
               <div className="h-[180px] w-[250px] absolute left-[65%] top-[5%]">

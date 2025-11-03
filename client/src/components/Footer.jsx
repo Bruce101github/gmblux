@@ -6,14 +6,56 @@ import instagram from "@/assets/instagram.svg";
 import tiktok from "@/assets/tiktok.svg";
 import facebook from "@/assets/fb.svg";
 import whatsapp from "@/assets/whatsapp.svg";
+import { toast } from "react-hot-toast";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth", // smooth scrolling
     });
   };
+
+  async function handleSubmit() {
+    if (!email) return;
+    const { error } = await supabase
+      .from("email_list")
+      .insert({ email: { email } })
+      .eq("id", 1);
+
+    if (error) {
+      setTimeout(() => {
+        toast.dismiss(); // remove the loading one
+        toast.error(`Looks like something went wrong. Mind trying again`, {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        setFormData({ ...formPreset });
+        // show success
+      }, 2000);
+    } else {
+      setTimeout(() => {
+        toast.dismiss(); // remove the loading one
+        toast.success("subscribed!", {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        setFormData({ ...formPreset });
+        // show success
+      }, 2000);
+    }
+
+    setEmail("");
+  }
 
   return (
     <div className="bg-[#232323] text-white">
@@ -39,6 +81,10 @@ export default function Footer() {
             <input
               placeholder="Email address"
               className="border-b border-white/15 py-2 outline-none w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
             />
             <button className="h-[40px] w-[47px] bg-white/5 flex justify-center items-center rounded-full absolute top-0 right-0">
               <ChevronRight />
@@ -91,15 +137,40 @@ export function MobileFooter() {
   const [email, setEmail] = useState("");
 
   async function handleSubmit() {
+    if (!email) return;
     const { error } = await supabase
       .from("email_list")
       .insert({ email: { email } })
       .eq("id", 1);
 
     if (error) {
-      console.log("Error inserting email", error);
+      setTimeout(() => {
+        toast.dismiss(); // remove the loading one
+        toast.error(`Looks like something went wrong. Mind trying again`, {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        setFormData({ ...formPreset });
+        // show success
+      }, 2000);
     } else {
-      console.log("Insert success");
+      setTimeout(() => {
+        toast.dismiss(); // remove the loading one
+        toast.success("subscribed!", {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        setFormData({ ...formPreset });
+        // show success
+      }, 2000);
     }
 
     setEmail("");
@@ -156,6 +227,8 @@ export function MobileFooter() {
                 className="border-b border-white/15 py-2 outline-none w-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                required
               />
               <button
                 onClick={handleSubmit}

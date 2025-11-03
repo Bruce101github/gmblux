@@ -4,9 +4,24 @@ import { supabase } from "@/supabaseClient";
 import { useState, useEffect, useRef } from "react";
 import { bookingPresets } from "../utils/bookingPreset";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { Toaster, toast } from "react-hot-toast";
 
 function BookingModal({ setBookingOpen }) {
+  const location = useLocation();
+  const presetName = location.state?.preset || "rent"; // fallback
+  const preset = bookingPresets.find((p) => p.name === presetName);
+  const property_id = location.state?.propertyId;
   const [loading, setLoading] = useState(true);
+  const formPreset = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    number: "",
+    message: preset.preText,
+    request_type: preset.type,
+    property_id: property_id,
+  };
+  const [formData, setFormData] = useState({ ...formPreset });
 
   useEffect(() => {
     const handleLoad = () => {
@@ -25,21 +40,6 @@ function BookingModal({ setBookingOpen }) {
     return () => window.removeEventListener("load", handleLoad);
   }, []);
 
-  const location = useLocation();
-  const presetName = location.state?.preset || "rent"; // fallback
-  const preset = bookingPresets.find((p) => p.name === presetName);
-  const property_id = location.state?.propertyId;
-
-  const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    number: "",
-    message: preset.preText,
-    request_type: preset.type,
-    property_id: property_id,
-  });
-
   function handleState(e) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -48,17 +48,47 @@ function BookingModal({ setBookingOpen }) {
 
   async function submitBooking(e) {
     e.preventDefault();
+    toast.loading("Sending...", {
+      style: {
+        borderRadius: "10px",
+        background: "#121420",
+        color: "#fff",
+        border: "0.4px solid gray",
+      },
+    }); // show loading toast
     try {
       const { data, error } = await supabase
         .from("booking")
         .insert({ ...formData });
 
       if (error) throw error;
-      alert("✅ Booking added successfully!");
-      window.location.reload();
+      setTimeout(() => {
+        toast.dismiss(); // remove the loading one
+        toast.success("Form submitted successfully!", {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        setFormData({ ...formPreset });
+        // show success
+      }, 2000);
     } catch (err) {
       console.error("Error inserting booking!");
+      toast.dismiss(); // remove the loading one
+      toast.error("Failed to submit!", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
     }
+
+    // Example async action
   }
 
   if (loading) {
