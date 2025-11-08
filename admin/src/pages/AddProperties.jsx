@@ -3,13 +3,13 @@ import DropArea, { DropButton } from "@/components/DropArea";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { X } from "lucide-react";
+import { Toaster, toast } from "react-hot-toast";
 
 function AddProperties() {
   const [files, setFiles] = useState([]);
   const [focus, setFocus] = useState(0);
   const [title, setTitle] = useState("");
-
-  const [formData, setFormData] = useState({
+  const formPreset = {
     title: "",
     description: "",
     currency: "ghs",
@@ -19,7 +19,9 @@ function AddProperties() {
     listing_type: "rent",
     bedrooms: "",
     bathrooms: "",
-  });
+  };
+
+  const [formData, setFormData] = useState({ ...formPreset });
 
   useEffect(() => {
     console.log("Updated files:", files);
@@ -34,6 +36,15 @@ function AddProperties() {
 
   async function insertProperty() {
     try {
+      // Show a loading toast while the property is being added
+      toast.loading("addding property...", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
       // Push Images to supabase storage bucket
       const imageUrls = [];
       for (const file of files) {
@@ -65,10 +76,31 @@ function AddProperties() {
         .insert({ ...formData, images: imageUrls });
 
       if (error) throw error;
-      alert("✅ Property added successfully!");
-      window.location.reload();
+      setTimeout(() => {
+        toast.dismiss(); // remove the loading one
+        toast.success("Property added successfully!", {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        setFormData({ ...formPreset });
+        setFiles([]);
+        // show success
+      }, 1000);
     } catch (err) {
       console.error("Error inserting property:", err);
+      toast.dismiss(); // remove the loading one
+      toast.error("Failed to insert property!", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
     }
   }
 

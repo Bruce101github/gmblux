@@ -38,6 +38,7 @@ import { NavLink } from "react-router-dom";
 import Logo from "../assets/gmblogo.JPG";
 import TotalBooking from "../components/TotalBooking";
 import { useEffect, useState } from "react";
+import { Toaster, toast } from "react-hot-toast";
 
 const items = [
   {
@@ -212,6 +213,7 @@ export default function DashboardLayout({ children }) {
             <SidebarTrigger mobile={true} className="!text-white/80 my-5" />
           </div>{" "}
           <Outlet />
+          <Toaster position="bottom-right" />
         </main>
       </div>
     </SidebarProvider>
