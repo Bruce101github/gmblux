@@ -78,7 +78,7 @@ function App() {
           />
         </Routes>
         {isMobile ? <MobileFooter /> : <Footer />}
-        <Toaster position="bottom-right" />
+        <Toaster position="top-right" />
       </main>
     </SearchProvider>
   );

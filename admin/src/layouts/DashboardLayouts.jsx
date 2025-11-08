@@ -213,7 +213,7 @@ export default function DashboardLayout({ children }) {
             <SidebarTrigger mobile={true} className="!text-white/80 my-5" />
           </div>{" "}
           <Outlet />
-          <Toaster position="bottom-right" />
+          <Toaster position="top-right" />
         </main>
       </div>
     </SidebarProvider>
