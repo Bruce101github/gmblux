@@ -22,14 +22,19 @@ export function DataTable({ columns, data }) {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  console.log("table", data);
+
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="overflow-hidden text-white">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-white/10 rounded-3xl text-white rounded-md">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="rounded-md">
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead
+                  key={header.id}
+                  className="text-white/60 font-medium"
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -47,6 +52,7 @@ export function DataTable({ columns, data }) {
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() ? "selected" : undefined}
+                className="border-b border-b-white/10"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
