@@ -78,7 +78,7 @@ function AddProperties() {
       newFiles.splice(index, 1);
       setFocus((prevFocus) => {
         // If no files left, clear focus
-        if (newFiles.length === 0) return null;
+        if (newFiles.length === 0) return 0;
         // If prevFocus is beyond last index, move focus back
         if (prevFocus >= newFiles.length) return newFiles.length - 1;
         // Otherwise keep same focus
