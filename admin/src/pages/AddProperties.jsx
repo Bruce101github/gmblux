@@ -75,7 +75,7 @@ function AddProperties() {
   const deleteImg = (index) => {
     setFiles((prev) => {
       const newFiles = [...prev];
-
+      newFiles.splice(index, 1);
       setFocus((prevFocus) => {
         // If no files left, clear focus
         if (newFiles.length === 0) return null;
@@ -84,8 +84,6 @@ function AddProperties() {
         // Otherwise keep same focus
         return prevFocus;
       });
-
-      newFiles.splice(index, 1);
       return newFiles;
     });
   };
