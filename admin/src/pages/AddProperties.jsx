@@ -129,7 +129,7 @@ function AddProperties() {
           {files.length > 0 ? (
             <div className="w-full max-h-[40vh] lg:min-h-[400px] rounded-lg">
               <img
-                src={files[focus].preview}
+                src={files[focus]?.preview}
                 className="w-full h-full rounded-lg object-cover"
               />
             </div>
