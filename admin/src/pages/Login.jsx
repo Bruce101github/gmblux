@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [email, setEmail] = useState("brucethiombiano@gmail.com"); // prefill while testing
+  const [email, setEmail] = useState(""); // prefill while testing
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -25,27 +25,27 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-[#121420] px-[5%]">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm p-6 bg-white rounded shadow"
+        className="w-full max-w-sm p-6 bg-white/10 rounded shadow rounded-2xl"
       >
-        <h2 className="text-xl font-bold mb-4">Admin Login</h2>
+        <h2 className="text-xl font-bold mb-4 text-white/60">Sign in</h2>
         <input
-          className="w-full mb-3 p-2 border"
+          className="w-full mb-3 p-2 border border-white/10 rounded-md text-white placeholder:text-white/40"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"
-          className="w-full mb-3 p-2 border"
+          className="w-full mb-3 p-2 border border-white/10 rounded-md text-white placeholder:text-white/40"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          className="w-full p-2 bg-blue-600 text-white rounded"
+          className="w-full p-2 bg-yellow-400 text-white rounded-md font-bold"
           disabled={loading}
         >
           {loading ? "Signing in..." : "Sign in"}
