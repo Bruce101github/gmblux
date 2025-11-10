@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState(""); // prefill while testing
@@ -17,11 +18,18 @@ export default function Login() {
     });
     setLoading(false);
     if (error) {
-      alert(error.message);
+      toast.error(error.message || "Failed to login. Try again!", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
       return;
     }
     // on success the auth listener will update AuthContext
-    navigate("/admin", { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (
