@@ -115,8 +115,18 @@ export default function SetPassword() {
     }
 
     const { error } = await supabase.auth.updateUser({ password });
-    if (error) setStatus(error.message);
-    else toast.error("Password updated! You can now log in.", {
+    if (error) {
+      console.error('updateUser error', error);
+      toast.error(error.message, {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
+      return;      
+    } else toast.success("Password updated! You can now log in.", {
       style: {
         borderRadius: "10px",
         background: "#121420",
