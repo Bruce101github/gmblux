@@ -1,4 +1,3 @@
-"use client";
 import { EllipsisVertical } from "lucide-react";
 import { parseISO, format } from "date-fns";
 

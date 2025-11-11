@@ -43,12 +43,12 @@ import { Toaster, toast } from "react-hot-toast";
 const items = [
   {
     title: "Dashboard",
-    url: "/admin/",
+    url: "/",
     icon: LayoutDashboard,
   },
   {
     title: "Properties",
-    url: "admin/addproperties/",
+    url: "/Properties",
     icon: ListPlus,
   },
   {
@@ -141,13 +141,13 @@ export default function DashboardLayout({ children }) {
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
-              <div className="relative my-3 ">
+              <div className="relative my-3">
                 <Search
                   className="absolute top-5 right-2 transform -translate-y-2/3"
                   size={18}
                   color="white"
                 />
-                <SidebarInput className="pr-8" />
+                <SidebarInput className="pr-8 border-1 border-white/10" />
               </div>
               <SidebarGroupContent>
                 <SidebarMenu>

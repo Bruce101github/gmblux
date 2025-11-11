@@ -7,12 +7,23 @@ import {
 } from "@tanstack/react-table";
 
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
+import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
+  TableFooter,
 } from "@/components/ui/table";
 
 export function DataTable({ columns, data }) {
@@ -26,8 +37,8 @@ export function DataTable({ columns, data }) {
 
   return (
     <div className="overflow-hidden text-white">
-      <Table>
-        <TableHeader className="bg-white/10 rounded-3xl text-white rounded-md">
+      <Table className="relative">
+        <TableHeader className="bg-white/10 rounded-3xl text-white rounded-md ">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="rounded-md">
               {headerGroup.headers.map((header) => (
@@ -46,7 +57,7 @@ export function DataTable({ columns, data }) {
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className="overflow-y">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow

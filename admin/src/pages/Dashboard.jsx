@@ -14,6 +14,7 @@ import {
   UsersRound,
   TrendingUp,
   TrendingDown,
+  ArrowRight,
 } from "lucide-react";
 
 import {
@@ -108,12 +109,19 @@ export default function Dashboard() {
             <h2 className="text-white/60 font-bold text-md">New Request</h2>
             <p className="text-2xl font-bold text-white">{newRequest}</p>
           </Card>
-          <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center">
-            <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl">
-              <TrendingUp color="#93FF96" size={18} />{" "}
-              <p className="text-[#93FF96]  text-xs lg:text-sm">17%</p>
+          <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center text-white/60 text-xs lg:text-sm justify-between">
+            <div className="flex gap-1.5">
+              {" "}
+              <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
+                <TrendingUp color="#93FF96" size={18} />{" "}
+                <p className="text-[#93FF96]  text-xs lg:text-sm">17%</p>
+              </div>
+              <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
-            <p className="text-white/60 text-xs lg:text-sm">vrs last month</p>
+            <span className="flex items-center gap-1.5">
+              <p>show more</p>
+              <ArrowRight size={16} />
+            </span>
           </div>
         </Card>
         <Card className="p-0 gap-1 bg-[#121420] border-white/10">
@@ -124,12 +132,19 @@ export default function Dashboard() {
             <h2 className="text-white/60 font-bold text-md">Total Request</h2>
             <p className="text-2xl font-bold text-white">{totalRequest}</p>
           </Card>
-          <div className="h-[30px] flex   px-2 lg:px-5 gap-2 items-center">
-            <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl">
-              <TrendingUp color="#93FF96" size={18} />{" "}
-              <p className="text-[#93FF96] text-xs lg:text-sm">17%</p>
+          <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center text-white/60 text-xs lg:text-sm justify-between">
+            <div className="flex gap-1.5">
+              {" "}
+              <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
+                <TrendingUp color="#93FF96" size={18} />{" "}
+                <p className="text-[#93FF96]  text-xs lg:text-sm">9%</p>
+              </div>
+              <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
-            <p className="text-white/60 text-xs lg:text-sm">vrs last month</p>
+            <span className="flex items-center gap-1.5">
+              <p>show more</p>
+              <ArrowRight size={16} />
+            </span>
           </div>
         </Card>
         <Card className="p-0 gap-1 bg-[#121420] border-white/10">
@@ -140,12 +155,19 @@ export default function Dashboard() {
             <h2 className="text-white/60 font-bold text-md">Upcoming Tour</h2>
             <p className="text-2xl font-bold text-white">{upcomingTour}</p>
           </Card>
-          <div className="h-[30px] flex  px-2 lg:px-5 gap-2 items-center">
-            <div className="flex gap-1 bg-red-400/10 px-1.5 rounded-3xl">
-              <TrendingDown color="red" size={18} />{" "}
-              <p className="text-red-500 text-xs lg:text-sm">6%</p>
+          <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center text-white/60 text-xs lg:text-sm justify-between">
+            <div className="flex gap-1.5">
+              {" "}
+              <div className="flex gap-1 bg-red-400/10 px-1.5 rounded-3xl ">
+                <TrendingDown color="red" size={18} />{" "}
+                <p className="text-red-500  text-xs lg:text-sm">10%</p>
+              </div>
+              <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
-            <p className="text-white/60 text-xs lg:text-sm">vrs last month</p>
+            <span className="flex items-center gap-1.5">
+              <p>show more</p>
+              <ArrowRight size={16} />
+            </span>
           </div>
         </Card>
         <Card className="p-0 gap-1 bg-[#121420] border-white/10">
@@ -156,12 +178,19 @@ export default function Dashboard() {
             <h2 className="text-white/60 font-bold text-md">Canceled</h2>
             <p className="text-2xl font-bold text-white">{canceled}</p>
           </Card>
-          <div className="h-[30px] flex  px-2 lg:px-5 gap-2 items-center">
-            <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl">
-              <TrendingUp color="#93FF96" size={18} />{" "}
-              <p className="text-[#93FF96] text-xs lg:text-sm">17%</p>
+          <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center text-white/60 text-xs lg:text-sm justify-between">
+            <div className="flex gap-1.5">
+              {" "}
+              <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
+                <TrendingUp color="#93FF96" size={18} />{" "}
+                <p className="text-[#93FF96]  text-xs lg:text-sm">10%</p>
+              </div>
+              <p className="text-white/60 text-xs lg:text-sm">last year</p>
             </div>
-            <p className="text-white/60  text-xs lg:text-sm">vrs last year</p>
+            <span className="flex items-center gap-1.5">
+              <p>show more</p>
+              <ArrowRight size={16} />
+            </span>
           </div>
         </Card>
       </div>

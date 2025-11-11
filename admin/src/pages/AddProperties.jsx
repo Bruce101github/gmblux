@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import DropArea, { DropButton } from "@/components/DropArea";
 import { useState, useEffect, useRef } from "react";
@@ -91,9 +92,9 @@ function AddProperties() {
         // show success
       }, 1000);
     } catch (err) {
-      console.error("Error inserting property:", err);
+      console.error("Error adding property:", err);
       toast.dismiss(); // remove the loading one
-      toast.error("Failed to insert property!", {
+      toast.error("Failed to add property!", {
         style: {
           borderRadius: "10px",
           background: "#121420",
@@ -142,9 +143,12 @@ function AddProperties() {
           Add New Property
         </h2>
         <div className="hidden lg:flex lg:gap-6 gap-2">
-          <button className="border border-gray-400 px-4 py-2 rounded-sm text-gray-500">
+          <Link
+            to="/properties"
+            className="border border-gray-400 px-4 py-2 rounded-sm text-gray-500"
+          >
             Discard
-          </button>
+          </Link>
           <button
             className="bg-yellow-400 px-4 py-2 rounded-sm text-white font-bold"
             form="propertyForm"
