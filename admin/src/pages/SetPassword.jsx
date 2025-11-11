@@ -126,7 +126,14 @@ export default function SetPassword() {
         },
       });
       return;      
-    } else toast.success("Password updated! You can now log in.", {
+    } else {
+      setPassword("");
+      setConfirmPassword("");
+      setVisibility({
+        password: false,
+        confirmPassword: false,
+      });
+      toast.success("Password updated! You can now log in.", {
       style: {
         borderRadius: "10px",
         background: "#121420",
@@ -134,6 +141,8 @@ export default function SetPassword() {
         border: "0.4px solid gray",
       },
     });
+    setTimeout(() => navigate('/'), 300);
+  }
   };
 
   const handleVisibility = (inputId) => {
