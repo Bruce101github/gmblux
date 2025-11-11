@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { EyeOff, Eye } from "lucide-react";
 
 export default function SetPassword() {
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [visibility, setVisibility] = useState({
@@ -48,12 +49,15 @@ export default function SetPassword() {
       supabase.auth
         .verifyOtp({ email, token, type: "invite" })
         .then(({ error }) => {
-          if (error) toast.error(error.message, {style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },});
+          if (error)
+            toast.error(error.message, {
+              style: {
+                borderRadius: "10px",
+                background: "#121420",
+                color: "#fff",
+                border: "0.4px solid gray",
+              },
+            });
         });
     }
   }, [location.search]);
@@ -98,7 +102,7 @@ export default function SetPassword() {
     }
 
     const { data: sessionData } = await supabase.auth.getSession();
-    console.log('hasSession', sessionData?.session);
+    console.log("hasSession", sessionData?.session);
     if (!sessionData?.session) {
       toast.error(
         "No active session. Open this page from your invite email link.",
@@ -116,7 +120,7 @@ export default function SetPassword() {
 
     const { error } = await supabase.auth.updateUser({ password });
     if (error) {
-      console.error('updateUser error', error);
+      console.error("updateUser error", error);
       toast.error(error.message, {
         style: {
           borderRadius: "10px",
@@ -125,16 +129,16 @@ export default function SetPassword() {
           border: "0.4px solid gray",
         },
       });
-      return;      
-    } 
-    
-      setPassword("");
-      setConfirmPassword("");
-      setVisibility({
-        password: false,
-        confirmPassword: false,
-      });
-      toast.success("Password updated! You can now log in.", {
+      return;
+    }
+
+    setPassword("");
+    setConfirmPassword("");
+    setVisibility({
+      password: false,
+      confirmPassword: false,
+    });
+    toast.success("Password updated! You can now log in.", {
       style: {
         borderRadius: "10px",
         background: "#121420",
@@ -142,8 +146,7 @@ export default function SetPassword() {
         border: "0.4px solid gray",
       },
     });
-    setTimeout(() => navigate('/'), 300);
-  
+    setTimeout(() => navigate("/"), 300);
   };
 
   const handleVisibility = (inputId) => {
