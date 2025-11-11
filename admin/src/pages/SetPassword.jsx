@@ -120,18 +120,7 @@ export default function SetPassword() {
     try {
       const { data, error } = await supabase.auth.updateUser({ password });
       console.log("Update response:", { data, error });
-      if (error) {
-        console.error("updateUser error", error);
-        toast.error(error.message, {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
-        });
-        return;
-      } else {
+      if (!error) {
         setPassword("");
         setConfirmPassword("");
         setVisibility({
@@ -147,6 +136,17 @@ export default function SetPassword() {
           },
         });
         setTimeout(() => navigate("/"), 300);
+      } else {
+        console.error("updateUser error", error);
+        toast.error(error.message, {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        return;
       }
     } catch (err) {
       toast.error("Unexpected error occurred", {
@@ -162,8 +162,6 @@ export default function SetPassword() {
   };
 
   const handleVisibility = (inputId) => {
-    console.log(inputId);
-
     setVisibility((prev) => ({
       ...prev,
       [inputId]: !prev[inputId],
