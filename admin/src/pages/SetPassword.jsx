@@ -98,6 +98,7 @@ export default function SetPassword() {
     }
 
     const { data: sessionData } = await supabase.auth.getSession();
+    console.log('hasSession', sessionData?.session);
     if (!sessionData?.session) {
       toast.error(
         "No active session. Open this page from your invite email link.",
