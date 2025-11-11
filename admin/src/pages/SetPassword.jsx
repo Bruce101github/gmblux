@@ -130,6 +130,8 @@ export default function SetPassword() {
         },
       });
       return;
+    } else {
+      console.log("password success");
     }
 
     setPassword("");
