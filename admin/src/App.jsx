@@ -3,6 +3,7 @@ import Dashboard from "./pages/Dashboard";
 import Properties from "./pages/Properties";
 import AddProperties from "./pages/AddProperties";
 import Login from "./pages/Login";
+import SetPassword from "./pages/SetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "@/layouts/DashboardLayouts";
 import { Toaster, toast } from "react-hot-toast";
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         {/* Public route */}
         <Route path="/Login" element={<Login />} />
+        <Route path="/setpassword" element={<SetPassword />} />
 
         {/* Protected admin route */}
         <Route
