@@ -126,7 +126,8 @@ export default function SetPassword() {
         },
       });
       return;      
-    } else {
+    } 
+    
       setPassword("");
       setConfirmPassword("");
       setVisibility({
@@ -142,7 +143,7 @@ export default function SetPassword() {
       },
     });
     setTimeout(() => navigate('/'), 300);
-  }
+  
   };
 
   const handleVisibility = (inputId) => {
