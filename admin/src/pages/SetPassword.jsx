@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { EyeOff, Eye } from "lucide-react";
 
@@ -13,6 +13,50 @@ export default function SetPassword() {
   });
 
   const [status, setStatus] = useState("");
+  const location = useLocation();
+
+  useEffect(() => {
+    // 1) Preferred path: access_token / refresh_token are in the hash (after using {{ .ConfirmationURL }}&redirect_to=...)
+    const hashParams = new URLSearchParams(
+      window.location.hash.replace(/^#/, ""),
+    );
+    const accessToken = hashParams.get("access_token");
+    const refreshToken = hashParams.get("refresh_token");
+
+    if (accessToken && refreshToken) {
+      supabase.auth
+        .setSession({ access_token: accessToken, refresh_token: refreshToken })
+        .then(({ error }) => {
+          if (error) setStatus(error.message);
+          // Clean the URL hash after setting session
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname + window.location.search,
+          );
+        });
+      return;
+    }
+
+    // 2) Optional legacy path: ?type=invite&token=... (works only if email is present)
+    const searchParams = new URLSearchParams(location.search);
+    const type = searchParams.get("type");
+    const token = searchParams.get("token");
+    const email = searchParams.get("email");
+
+    if (!accessToken && !refreshToken && type === "invite" && token && email) {
+      supabase.auth
+        .verifyOtp({ email, token, type: "invite" })
+        .then(({ error }) => {
+          if (error) toast.error(error.message, {style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },});
+        });
+    }
+  }, [location.search]);
 
   useEffect(() => {
     // listen for the recovery/invite event
@@ -29,9 +73,56 @@ export default function SetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.updateUser({ password });
+
+    if (!password || !confirmPassword) {
+      toast.error("Please enter and confirm your new password.", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
+      return;
+    }
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData?.session) {
+      toast.error(
+        "No active session. Open this page from your invite email link.",
+        {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        },
+      );
+      return;
+    }
+
+    const { error } = await supabase.auth.updateUser({ password });
     if (error) setStatus(error.message);
-    else setStatus("Password updated! You can now log in.");
+    else toast.error("Password updated! You can now log in.", {
+      style: {
+        borderRadius: "10px",
+        background: "#121420",
+        color: "#fff",
+        border: "0.4px solid gray",
+      },
+    });
   };
 
   const handleVisibility = (inputId) => {
@@ -67,6 +158,7 @@ export default function SetPassword() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button
+            type="button"
             className="absolute inset-y-0 right-2 flex items-center text-white/60 hover:text-white"
             onClick={() => handleVisibility("password")}
           >
@@ -86,6 +178,7 @@ export default function SetPassword() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <button
+            type="button"
             className="absolute inset-y-0 right-2 flex items-center text-white/60 hover:text-white"
             onClick={() => handleVisibility("confirmPassword")}
           >
