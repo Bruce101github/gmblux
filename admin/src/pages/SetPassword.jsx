@@ -117,11 +117,38 @@ export default function SetPassword() {
       );
       return;
     }
-
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) {
-      console.error("updateUser error", error);
-      toast.error(error.message, {
+    try {
+      const { data, error } = await supabase.auth.updateUser({ password });
+      if (error) {
+        console.error("updateUser error", error);
+        toast.error(error.message, {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        return;
+      } else {
+        setPassword("");
+        setConfirmPassword("");
+        setVisibility({
+          password: false,
+          confirmPassword: false,
+        });
+        toast.success("Password updated! You can now log in.", {
+          style: {
+            borderRadius: "10px",
+            background: "#121420",
+            color: "#fff",
+            border: "0.4px solid gray",
+          },
+        });
+        setTimeout(() => navigate("/"), 300);
+      }
+    } catch (err) {
+      toast.error("Unexpected error occurred", {
         style: {
           borderRadius: "10px",
           background: "#121420",
@@ -129,26 +156,8 @@ export default function SetPassword() {
           border: "0.4px solid gray",
         },
       });
-      return;
-    } else {
-      console.log("password success");
+      console.error(err);
     }
-
-    setPassword("");
-    setConfirmPassword("");
-    setVisibility({
-      password: false,
-      confirmPassword: false,
-    });
-    toast.success("Password updated! You can now log in.", {
-      style: {
-        borderRadius: "10px",
-        background: "#121420",
-        color: "#fff",
-        border: "0.4px solid gray",
-      },
-    });
-    setTimeout(() => navigate("/"), 300);
   };
 
   const handleVisibility = (inputId) => {
