@@ -119,6 +119,7 @@ export default function SetPassword() {
     }
     try {
       const { data, error } = await supabase.auth.updateUser({ password });
+      console.log("Update response:", { data, error });
       if (error) {
         console.error("updateUser error", error);
         toast.error(error.message, {
