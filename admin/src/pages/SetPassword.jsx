@@ -67,6 +67,12 @@ export default function SetPassword() {
 
   async function updatePasswordWithAxios(newPassword) {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const { data: sessionData } = await supabase.auth.getSession();
+
+    if (!sessionData?.session) {
+      throw new Error("No active session found.");
+    }
+
     const accessToken = sessionData.session.access_token;
 
     try {
