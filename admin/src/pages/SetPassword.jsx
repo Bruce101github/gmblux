@@ -74,7 +74,7 @@ export default function SetPassword() {
         { password: newPassword },
         {
           headers: {
-            Authorization: `Bearer ${sessionData.session.access_token;}`,
+            Authorization: `Bearer ${sessionData.session.access_token}`,
             "Content-Type": "application/json",
           },
         },
