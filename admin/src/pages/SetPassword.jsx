@@ -147,24 +147,7 @@ export default function SetPassword() {
     try {
       console.log("about to set password");
       const { data, error } = await safeUpdateUser({ password });
-      if (!error) {
-        alert("Password updated! You can now log in.");
-        setPassword("");
-        setConfirmPassword("");
-        setVisibility({
-          password: false,
-          confirmPassword: false,
-        });
-        toast.success("Password updated! You can now log in.", {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
-        });
-        setTimeout(() => navigate("/login"), 1000);
-      } else {
+      if (error) {
         console.error("updateUser error", error);
         toast.error(error.message, {
           style: {
@@ -176,6 +159,22 @@ export default function SetPassword() {
         });
         return;
       }
+      alert("Password updated! You can now log in.");
+      setPassword("");
+      setConfirmPassword("");
+      setVisibility({
+        password: false,
+        confirmPassword: false,
+      });
+      toast.success("Password updated! You can now log in.", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
+      setTimeout(() => navigate("/login"), 1000);
     } catch (err) {
       toast.error("Unexpected error occurred", {
         style: {
