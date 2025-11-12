@@ -137,7 +137,7 @@ export default function SetPassword() {
     }
     try {
       console.log("about to set password");
-      const { data, error } = await safeUpdateUser({ password: newPassword });
+      const { data, error } = await safeUpdateUser({ password });
       if (!error) {
         alert("Password updated! You can now log in.");
         setPassword("");
