@@ -65,7 +65,7 @@ export default function SetPassword() {
     }
   }, [location.search]);
 
-  async function updatePasswordWithAxios(newPassword, accessToken) {
+  async function updatePasswordWithAxios(newPassword) {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
     try {
@@ -139,7 +139,7 @@ export default function SetPassword() {
       return;
     }
     try {
-      await updatePasswordWithAxios(password, accessToken);
+      await updatePasswordWithAxios(password);
       setPassword("");
       setConfirmPassword("");
       toast.success("Password updated! Redirecting...", {
