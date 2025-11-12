@@ -67,6 +67,7 @@ export default function SetPassword() {
 
   async function updatePasswordWithAxios(newPassword) {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
     const { data: sessionData } = await supabase.auth.getSession();
 
     if (!sessionData?.session) {
@@ -86,6 +87,7 @@ export default function SetPassword() {
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            apikey: supabaseAnonKey,
             "Content-Type": "application/json",
           },
         },
