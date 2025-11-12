@@ -119,8 +119,9 @@ export default function SetPassword() {
     }
     try {
       console.log("about to set password");
-      const { data, error } = await supabase.auth.updateUser({ password });
-      console.log("Update response:", { data, error });
+      const response  = await supabase.auth.updateUser({ password });
+      console.log("Update response:", response);
+      const { data, error} = response;
       if (!error) {
         alert("Password updated! You can now log in.");
         setPassword("");
@@ -137,7 +138,7 @@ export default function SetPassword() {
             border: "0.4px solid gray",
           },
         });
-        setTimeout(() => navigate("/"), 300);
+        setTimeout(() => navigate("/login"), 300);
       } else {
         console.error("updateUser error", error);
         toast.error(error.message, {
