@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { EyeOff, Eye } from "lucide-react";
+import axios from "axios";
 
 export default function SetPassword() {
   const navigate = useNavigate();
@@ -64,41 +65,29 @@ export default function SetPassword() {
     }
   }, [location.search]);
 
-  useEffect(() => {
-    // listen for the recovery/invite event
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "PASSWORD_RECOVERY" || event === "USER_UPDATED") {
-          console.log("User needs to set password");
-        }
-      },
-    );
-
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
-  async function safeUpdateUser(updateData, timeoutMs = 8000) {
-    let timeoutId;
-
-    const timeout = new Promise((resolve) => {
-      timeoutId = setTimeout(() => {
-        resolve({ timeout: true });
-      }, timeoutMs);
-    });
+  async function updatePasswordWithAxios(newPassword, accessToken) {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
     try {
-      const updatePromise = supabase.auth.updateUser(updateData);
-      const result = await Promise.race([updatePromise, timeout]);
-      if (result && result.timeout) {
-        console.warn("updateUser() timed out, but continuing...");
-        const finalResult = await updatePromise;
-        return finalResult;
-      }
-      return result;
+      const response = await axios.put(
+        `${supabaseUrl}/auth/v1/user`,
+        { password: newPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      return response.data;
     } catch (error) {
+      // Axios error handling
+      if (error.response && error.response.data) {
+        throw new Error(
+          error.response.data.message || "Failed to update password",
+        );
+      }
       throw error;
-    } finally {
-      clearTimeout(timeoutId);
     }
   }
 
@@ -150,37 +139,18 @@ export default function SetPassword() {
       return;
     }
     try {
-      console.log("about to set password");
-      safeUpdateUser({ password }).then(({ data, error }) => {
-        if (error) {
-          console.error("updateUser error", error);
-          toast.error(error.message, {
-            style: {
-              borderRadius: "10px",
-              background: "#121420",
-              color: "#fff",
-              border: "0.4px solid gray",
-            },
-          });
-          return;
-        }
-        alert("Password updated! You can now log in.");
-        setPassword("");
-        setConfirmPassword("");
-        setVisibility({
-          password: false,
-          confirmPassword: false,
-        });
-        toast.success("Password updated! You can now log in.", {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
-        });
-        setTimeout(() => navigate("/login"), 1000);
+      await updatePasswordWithAxios(password, sessionData.session.access_token);
+      setPassword("");
+      setConfirmPassword("");
+      toast.success("Password updated! Redirecting...", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
       });
+      setTimeout(() => navigate("/"), 1000);
     } catch (err) {
       toast.error("Unexpected error occurred", {
         style: {
@@ -193,7 +163,6 @@ export default function SetPassword() {
       console.error(err);
     }
   }
-
   const handleVisibility = (inputId) => {
     setVisibility((prev) => ({
       ...prev,
