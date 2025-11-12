@@ -146,7 +146,7 @@ export default function SetPassword() {
       return;
     }
     try {
-      await updatePasswordWithAxios(password, accessToken);
+      await updatePasswordWithAxios(password);
       setPassword("");
       setConfirmPassword("");
       toast.success("Password updated! Redirecting...", {
