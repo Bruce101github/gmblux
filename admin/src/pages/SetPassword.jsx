@@ -75,7 +75,7 @@ export default function SetPassword() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (!password || !confirmPassword) {
@@ -118,9 +118,11 @@ export default function SetPassword() {
       return;
     }
     try {
+      console.log("about to set password");
       const { data, error } = await supabase.auth.updateUser({ password });
       console.log("Update response:", { data, error });
       if (!error) {
+        alert("Password updated! You can now log in.");
         setPassword("");
         setConfirmPassword("");
         setVisibility({
@@ -159,7 +161,7 @@ export default function SetPassword() {
       });
       console.error(err);
     }
-  };
+  }
 
   const handleVisibility = (inputId) => {
     setVisibility((prev) => ({
