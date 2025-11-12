@@ -75,6 +75,8 @@ export default function SetPassword() {
 
     const accessToken = sessionData.session.access_token;
 
+    console.log("thi is the accessToken", accessToken);
+
     try {
       const response = await axios.put(
         `${supabaseUrl}/auth/v1/user`,
