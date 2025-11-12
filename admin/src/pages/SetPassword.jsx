@@ -80,7 +80,7 @@ export default function SetPassword() {
   async function safeUpdateUser(updateData, timeoutMs = 8000) {
     let timeoutId;
 
-    const timeout = new Promise((_, reject) => {
+    const timeout = new Promise((resolve) => {
       timeoutId = setTimeout(() => {
         resolve({ timeout: true });
       }, timeoutMs);
