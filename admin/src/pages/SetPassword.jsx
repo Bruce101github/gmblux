@@ -67,6 +67,7 @@ export default function SetPassword() {
 
   async function updatePasswordWithAxios(newPassword) {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const accessToken = sessionData.session.access_token;
 
     try {
       const response = await axios.put(
@@ -74,7 +75,7 @@ export default function SetPassword() {
         { password: newPassword },
         {
           headers: {
-            Authorization: `Bearer ${sessionData.session.access_token}`,
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
         },
@@ -139,7 +140,7 @@ export default function SetPassword() {
       return;
     }
     try {
-      await updatePasswordWithAxios(password);
+      await updatePasswordWithAxios(password, accessToken);
       setPassword("");
       setConfirmPassword("");
       toast.success("Password updated! Redirecting...", {
