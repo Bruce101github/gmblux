@@ -12,8 +12,7 @@ export default function SetPassword() {
     password: false,
     confirmPassword: false,
   });
-
-  const [status, setStatus] = useState("");
+  const [sessionReady, setSessionReady] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -28,15 +27,18 @@ export default function SetPassword() {
       supabase.auth
         .setSession({ access_token: accessToken, refresh_token: refreshToken })
         .then(({ error }) => {
-          if (error) setStatus(error.message);
+          if (error) console.error(error.message);
           // Clean the URL hash after setting session
           window.history.replaceState(
             null,
             "",
             window.location.pathname + window.location.search,
           );
+          setSessionReady(true);
         });
       return;
+    } else {
+      setSessionReady(true);
     }
 
     // 2) Optional legacy path: ?type=invite&token=... (works only if email is present)
@@ -88,6 +90,8 @@ export default function SetPassword() {
       const updatePromise = supabase.auth.updateUser(updateData);
       const result = await Promise.race([updatePromise, timeout]);
       return result;
+    } catch (error) {
+      throw error;
     } finally {
       clearTimeout(timeoutId);
     }
@@ -95,6 +99,11 @@ export default function SetPassword() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!sessionReady) {
+      toast.error("Session not initialized yet, please wait...");
+      return;
+    }
 
     if (!password || !confirmPassword) {
       toast.error("Please enter and confirm your new password.", {
@@ -154,7 +163,7 @@ export default function SetPassword() {
             border: "0.4px solid gray",
           },
         });
-        setTimeout(() => navigate("/login"), 300);
+        setTimeout(() => navigate("/login"), 1000);
       } else {
         console.error("updateUser error", error);
         toast.error(error.message, {
