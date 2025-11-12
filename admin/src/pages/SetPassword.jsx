@@ -75,6 +75,24 @@ export default function SetPassword() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  async function safeUpdateUser(updateData, timeoutMs = 8000) {
+    let timeoutId;
+
+    const timeout = new Promise((_, reject) => {
+      timeoutId = setTimeout(() => {
+        reject(new Error("updateUser() timed out"));
+      }, timeoutMs);
+    });
+
+    try {
+      const updatePromise = supabase.auth.updateUser(updateData);
+      const result = await Promise.race([updatePromise, timeout]);
+      return result;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -119,9 +137,7 @@ export default function SetPassword() {
     }
     try {
       console.log("about to set password");
-      const response  = await supabase.auth.updateUser({ password });
-      console.log("Update response:", response);
-      const { data, error} = response;
+      const { data, error } = await safeUpdateUser({ password: newPassword });
       if (!error) {
         alert("Password updated! You can now log in.");
         setPassword("");
