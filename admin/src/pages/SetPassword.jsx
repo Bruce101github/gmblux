@@ -75,6 +75,8 @@ export default function SetPassword() {
 
     const accessToken = sessionData.session.access_token;
 
+    console.log("this is the supabaseUrl", supabaseUrl);
+
     console.log("thi is the accessToken", accessToken);
 
     try {
