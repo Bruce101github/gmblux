@@ -30,13 +30,13 @@ export default function Calendar31() {
   const [date, setDate] = React.useState(new Date(2025, 5, 12));
 
   return (
-    <Card className="w-fit py-4">
+    <Card className="w-full lg:w-fit py-4">
       <CardContent className="px-0">
         <Calendar
           mode="single"
           selected={date}
           onSelect={setDate}
-          className="text-white rounded-lg [--cell-size:--spacing(11)] md:[--cell-size:--spacing(12)] "
+          className="text-white rounded-lg [--cell-size:--spacing(11)] md:[--cell-size:--spacing(12)]"
           required
         />
       </CardContent>

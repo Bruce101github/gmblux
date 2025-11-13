@@ -3,8 +3,6 @@ import { Table } from "@/components/ui/table";
 import { DataTable } from "@/components/ui/DataTable";
 import { ChartAreaInteractive } from "@/components/ui/ChartAreaInteractive";
 import { columns } from "@/pages/bookings/columns";
-import Calendar14 from "../components/calendar-14.jsx";
-import { sampleBookings } from "@/pages/bookings/sampleData"; // your booking data
 import { supabase } from "../lib/supabaseClient";
 import { useEffect, useState } from "react";
 import {
@@ -45,7 +43,6 @@ export default function Dashboard() {
         console.error("Error fetching bookings:", error);
       } else {
         setBookings(data);
-        console.log(data);
       }
     }
 
@@ -58,7 +55,6 @@ export default function Dashboard() {
         console.error("Error fetching properties:", error);
       } else {
         setProperties(properties);
-        console.log(properties);
       }
     }
     fetchBookings();
@@ -119,7 +115,7 @@ export default function Dashboard() {
               <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
             <span className="flex items-center gap-1.5">
-              <p>show more</p>
+              <p className="hidden lg:block">show more</p>
               <ArrowRight size={16} />
             </span>
           </div>
@@ -142,7 +138,7 @@ export default function Dashboard() {
               <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
             <span className="flex items-center gap-1.5">
-              <p>show more</p>
+              <p className="hidden lg:block">show more</p>
               <ArrowRight size={16} />
             </span>
           </div>
@@ -165,7 +161,7 @@ export default function Dashboard() {
               <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
             <span className="flex items-center gap-1.5">
-              <p>show more</p>
+              <p className="hidden lg:block">show more</p>
               <ArrowRight size={16} />
             </span>
           </div>
@@ -188,7 +184,7 @@ export default function Dashboard() {
               <p className="text-white/60 text-xs lg:text-sm">last year</p>
             </div>
             <span className="flex items-center gap-1.5">
-              <p>show more</p>
+              <p className="hidden lg:block">show more</p>
               <ArrowRight size={16} />
             </span>
           </div>
