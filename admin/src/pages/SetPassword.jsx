@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { EyeOff, Eye } from "lucide-react";
+import { EyeOff, Eye, Lock } from "lucide-react";
 import axios from "axios";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function SetPassword() {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -106,13 +108,16 @@ export default function SetPassword() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
 
     if (!sessionReady) {
+      setLoading(false);
       toast.error("Session not initialized yet, please wait...");
       return;
     }
 
     if (!password || !confirmPassword) {
+      setLoading(false);
       toast.error("Please enter and confirm your new password.", {
         style: {
           borderRadius: "10px",
@@ -124,6 +129,7 @@ export default function SetPassword() {
       return;
     }
     if (password !== confirmPassword) {
+      setLoading(false);
       toast.error("Passwords do not match.", {
         style: {
           borderRadius: "10px",
@@ -155,6 +161,7 @@ export default function SetPassword() {
       await updatePasswordWithAxios(password);
       setPassword("");
       setConfirmPassword("");
+      setLoading(false);
       toast.success("Password updated! Redirecting...", {
         style: {
           borderRadius: "10px",
@@ -165,6 +172,7 @@ export default function SetPassword() {
       });
       setTimeout(() => navigate("/"), 1000);
     } catch (err) {
+      setLoading(false);
       toast.error("Unexpected error occurred", {
         style: {
           borderRadius: "10px",
@@ -211,13 +219,13 @@ export default function SetPassword() {
             className="absolute inset-y-0 right-2 flex items-center text-white/60 hover:text-white"
             onClick={() => handleVisibility("password")}
           >
-            {visibility.password ? <Eye /> : <EyeOff />}
+            {visibility.password ? <Eye size={18} /> : <EyeOff size={18} />}
           </button>
         </div>
         <label htmlFor="confirmPassword" className="text-xs lg:text-sm">
           Confirm Password
         </label>
-        <div className="relative mb-3">
+        <div className="relative mb-6">
           <input
             id="confirmPassword"
             type={visibility.confirmPassword ? "text" : "password"}
@@ -231,14 +239,23 @@ export default function SetPassword() {
             className="absolute inset-y-0 right-2 flex items-center text-white/60 hover:text-white"
             onClick={() => handleVisibility("confirmPassword")}
           >
-            {visibility.confirmPassword ? <Eye /> : <EyeOff />}
+            {visibility.confirmPassword ? (
+              <Eye size={18} />
+            ) : (
+              <EyeOff size={18} />
+            )}
           </button>
         </div>
         <button
           type="submit"
-          className="w-full p-2 bg-yellow-400 text-white rounded-md font-bold"
+          className="flex gap-2 w-full p-2 bg-yellow-400 text-white rounded-md font-medium items-center justify-center"
         >
-          Set Password
+          {loading ? (
+            <Spinner className="w-[18px] h-[18px] " />
+          ) : (
+            <Lock size={18} />
+          )}{" "}
+          <span>Set password</span>
         </button>
       </form>
     </div>

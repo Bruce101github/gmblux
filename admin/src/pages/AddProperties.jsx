@@ -3,13 +3,14 @@ import { Card } from "@/components/ui/card";
 import DropArea, { DropButton } from "@/components/DropArea";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { X } from "lucide-react";
-import { Toaster, toast } from "react-hot-toast";
+import { X, Upload } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { Spinner } from "@/components/ui/spinner";
 
 function AddProperties() {
   const [files, setFiles] = useState([]);
   const [focus, setFocus] = useState(0);
-  const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState(false);
   const formPreset = {
     title: "",
     description: "",
@@ -36,6 +37,7 @@ function AddProperties() {
   }
 
   async function insertProperty() {
+    setLoading(true);
     try {
       // Show a loading toast while the property is being added
       toast.loading("addding property...", {
@@ -59,6 +61,7 @@ function AddProperties() {
           });
 
         if (error) {
+          setLoading(false);
           console.error("Upload error:", error.message);
         }
 
@@ -76,8 +79,12 @@ function AddProperties() {
         .from("properties")
         .insert({ ...formData, images: imageUrls });
 
-      if (error) throw error;
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
       setTimeout(() => {
+        setLoading(false);
         toast.dismiss(); // remove the loading one
         toast.success("Property added successfully!", {
           style: {
@@ -92,6 +99,7 @@ function AddProperties() {
         // show success
       }, 1000);
     } catch (err) {
+      setLoading(false);
       console.error("Error adding property:", err);
       toast.dismiss(); // remove the loading one
       toast.error("Failed to add property!", {
@@ -150,11 +158,16 @@ function AddProperties() {
             Discard
           </Link>
           <button
-            className="bg-yellow-400 px-4 py-2 rounded-sm text-white font-bold"
+            className="flex gap-2 bg-yellow-400 px-4 py-2 rounded-sm text-white font-bold"
             form="propertyForm"
             onClick={insertProperty}
           >
-            Publish
+            {loading ? (
+              <Spinner className="w-[18px] h-[18px] " />
+            ) : (
+              <Upload size={18} />
+            )}{" "}
+            <span>Publish</span>
           </button>
         </div>
       </div>
@@ -363,11 +376,16 @@ function AddProperties() {
             Discard
           </button>
           <button
-            className="bg-yellow-400 px-4 py-2 rounded-sm text-white font-bold"
+            className="flex gap-2 bg-yellow-400 px-4 py-2 rounded-sm text-white font-bold"
             form="propertyForm"
             onClick={insertProperty}
           >
-            Publish
+            {loading ? (
+              <Spinner className="w-[18px] h-[18px] " />
+            ) : (
+              <Upload size={18} />
+            )}{" "}
+            <span>Publish</span>
           </button>
         </div>
       </div>

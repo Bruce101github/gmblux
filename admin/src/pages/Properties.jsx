@@ -35,7 +35,6 @@ export default function Properties() {
         },
       });
     } else {
-      console.log("data was fetch");
       setTableInfo(data);
     }
   }

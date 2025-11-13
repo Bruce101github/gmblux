@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { Spinner } from "@/components/ui/spinner";
+import { KeySquare } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState(""); // prefill while testing
   const [password, setPassword] = useState("");
+  const [visibility, setVisibility] = useState(true);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -46,17 +49,22 @@ export default function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          type="password"
+          type={visibility ? "text" : "password"}
           className="w-full mb-3 p-2 border border-white/10 rounded-md text-white placeholder:text-white/40"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          className="w-full p-2 bg-yellow-400 text-white rounded-md font-bold"
+          className="flex justify-center items-center gap-2 w-full p-2 bg-yellow-400 text-white rounded-md font-bold"
           disabled={loading}
         >
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? (
+            <Spinner className="w-[18px] h-[18px] " />
+          ) : (
+            <KeySquare size={18} />
+          )}{" "}
+          <span>Sign in</span>
         </button>
       </form>
     </div>
