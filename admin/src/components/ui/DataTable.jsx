@@ -33,8 +33,6 @@ export function DataTable({ columns, data }) {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  console.log("table", data);
-
   return (
     <div className="overflow-hidden text-white">
       <Table className="relative">

@@ -5,7 +5,6 @@ const isoDate = "2025-11-03T09:34:03.278773+00:00";
 const date = parseISO(isoDate);
 
 const formatted = format(date, "EEE dd MMM, yyyy");
-console.log(formatted); // "Mon 03 Nov, 2025"
 
 export const columns = [
   {
@@ -13,7 +12,6 @@ export const columns = [
     header: "Name",
     cell: ({ row }) => {
       const fullName = `${row.getValue("first_name")} ${row.getValue("last_name")}`;
-      console.log(fullName);
       return <>{fullName}</>;
     },
   },
@@ -21,6 +19,7 @@ export const columns = [
   { accessorKey: "bedrooms", header: "", cell: () => {} },
   { accessorKey: "location", header: "", cell: () => {} },
   { accessorKey: "property_type", header: "", cell: () => {} },
+  { accessorKey: "id", header: "", cell: () => {} },
   {
     accessorKey: "request_type",
     header: "Request",

@@ -24,7 +24,6 @@ export function AuthProvider({ children }) {
         console.warn("No admin record found for user:", currentUser.id);
         setIsAdmin(false);
       } else {
-        console.log("Admin status:", data.is_admin);
         setIsAdmin(data.is_admin);
       }
     } catch (err) {

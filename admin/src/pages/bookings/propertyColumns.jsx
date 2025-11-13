@@ -6,7 +6,6 @@ const isoDate = "2025-11-03T09:34:03.278773+00:00";
 const date = parseISO(isoDate);
 
 const formatted = format(date, "EEE dd MMM, yyyy");
-console.log(formatted); // "Mon 03 Nov, 2025"
 
 export const propertyColumns = [
   {
@@ -124,6 +123,7 @@ export const propertyColumns = [
       return <>{formatted}</>;
     },
   },
+  { accessorKey: "id", header: "", cell: () => {} },
   {
     accessorKey: "Actions",
     header: "",
