@@ -376,7 +376,7 @@ function AddProperties() {
             Discard
           </button>
           <button
-            className="flex gap-2 bg-yellow-400 px-4 py-2 rounded-sm text-white font-bold"
+            className="flex justify-center items-center gap-2 bg-yellow-400 px-4 py-2 rounded-sm text-white font-bold"
             form="propertyForm"
             onClick={insertProperty}
           >

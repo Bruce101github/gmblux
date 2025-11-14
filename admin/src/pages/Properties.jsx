@@ -1,27 +1,37 @@
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { DataTable } from "@/components/ui/DataTable";
+import MobileTable from "@/components/ui/MobileTable";
 import { propertyColumns } from "@/pages/bookings/propertyColumns";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Funnel, ListFilter, Plus } from "lucide-react";
-
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Pagination1, MobilePagination1 } from "@/components/pagination-1";
 
 export default function Properties() {
   const [tableInfo, setTableInfo] = useState({});
+  const [propertyCount, setPropertyCount] = useState(0);
+  const [perPage, setPerPage] = useState(20);
+  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  async function fetchProperties() {
-    const { data, error } = await supabase.from("properties").select("*");
+  const countProperties = async () => {
+    const { count } = await supabase
+      .from("properties")
+      .select("*", { count: "exact", head: true });
+
+    setPropertyCount(count);
+  };
+
+  async function fetchProperties(page = 0, perPage = 20) {
+    const from = (page - 1) * perPage;
+    const to = from + perPage - 1;
+    const { data, error } = await supabase
+      .from("properties")
+      .select("*")
+      .order("created_at", { ascending: true })
+      .range(from, to);
 
     if (error) {
       console.error("Error fetcthing properties", error);
@@ -40,8 +50,13 @@ export default function Properties() {
   }
 
   useEffect(() => {
-    fetchProperties();
-  }, []);
+    countProperties();
+    fetchProperties(currentPage, perPage);
+  }, [currentPage, perPage]);
+
+  const totalPages = Math.ceil(propertyCount / perPage);
+
+  console.log(propertyCount, " properties found,");
 
   return (
     <>
@@ -50,7 +65,7 @@ export default function Properties() {
           {" "}
           Property{" "}
         </h2>
-        <div className="hidden lg:flex lg:gap-6 gap-2">
+        <div className="flex gap-2 lg:gap-6 gap-2">
           <button className="border border-gray-400 px-4 py-2 rounded-sm text-gray-500">
             {" "}
             Discard{" "}
@@ -65,8 +80,8 @@ export default function Properties() {
           </Link>
         </div>
       </div>
-      <Card className="bg-white/10 rounded-xl p-5 w-full">
-        <div className="flex justify-between text-white items-center">
+      <Card className="hidden lg:block md:block bg-white/10 rounded-xl p-5 w-full">
+        <div className="flex justify-between text-white items-center mb-5">
           <p className="text-base font-medium">{tableInfo.length} Properties</p>
           <div className="flex gap-2">
             <button className="px-3 py-2 bg-[#121420] rounded-sm text-xs flex items-center gap-1">
@@ -80,42 +95,46 @@ export default function Properties() {
           </div>
         </div>
         <DataTable columns={propertyColumns} data={tableInfo} />
-        <div className="flex justify-between items-center text-white">
+        <div className="flex justify-between items-center text-white mt-5">
           {" "}
           <div className="bg-[#121420] p-2 rounded-sm text-xs">
-            Page 2 of 10
+            {`Page ${page + 1} of ${totalPages}`}
           </div>
-          <div className="">
-            <Pagination className="my-4">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious href="#" className="bg-[#121420]" />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">2</PaginationLink>
-                </PaginationItem>
-
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">4</PaginationLink>
-                </PaginationItem>
-
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext href="#" className="bg-[#121420]" />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          {/*change this to 1*/}
+          {totalPages > 1 ? (
+            <Pagination1
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+            />
+          ) : null}
+          <select
+            className="bg-[#121420] text-white p-2 rounded-sm"
+            onChange={(e) => {
+              const value = e.target.value;
+              setPerPage(Number(value));
+            }}
+          >
+            <option value={20} selected>
+              20 / page
+            </option>
+            <option value={50}>50 / page</option>
+            <option value={100}>100 / page</option>
+          </select>
         </div>
       </Card>
+      <span className="lg:hidden md:hidden">
+        <MobileTable table={tableInfo} />
+        {totalPages > 1 ? (
+          <div className="mt-5">
+            <MobilePagination1
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+            />
+          </div>
+        ) : null}
+      </span>
     </>
   );
 }
