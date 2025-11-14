@@ -43,7 +43,6 @@ function BookingModal({ setBookingOpen }) {
   function handleState(e) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    console.log(name, value);
   }
 
   async function submitBooking(e) {
@@ -76,7 +75,6 @@ function BookingModal({ setBookingOpen }) {
         // show success
       }, 2000);
     } catch (err) {
-      console.error("Error inserting booking!");
       toast.dismiss(); // remove the loading one
       toast.error("Failed to submit!", {
         style: {

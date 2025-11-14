@@ -21,8 +21,7 @@ export default function Footer() {
     if (!email) return;
     const { error } = await supabase
       .from("email_list")
-      .insert({ email: { email } })
-      .eq("id", 1);
+      .insert({ email: email });
 
     if (error) {
       setTimeout(() => {
@@ -35,7 +34,7 @@ export default function Footer() {
             border: "0.4px solid gray",
           },
         });
-        setFormData({ ...formPreset });
+        setEmail("");
         // show success
       }, 2000);
     } else {
@@ -49,7 +48,7 @@ export default function Footer() {
             border: "0.4px solid gray",
           },
         });
-        setFormData({ ...formPreset });
+        setEmail("");
         // show success
       }, 2000);
     }
@@ -140,8 +139,7 @@ export function MobileFooter() {
     if (!email) return;
     const { error } = await supabase
       .from("email_list")
-      .insert({ email: { email } })
-      .eq("id", 1);
+      .insert({ email: email });
 
     if (error) {
       setTimeout(() => {
@@ -154,7 +152,7 @@ export function MobileFooter() {
             border: "0.4px solid gray",
           },
         });
-        setFormData({ ...formPreset });
+        setEmail("");
         // show success
       }, 2000);
     } else {
@@ -168,7 +166,7 @@ export function MobileFooter() {
             border: "0.4px solid gray",
           },
         });
-        setFormData({ ...formPreset });
+        setEmail("");
         // show success
       }, 2000);
     }
@@ -244,30 +242,38 @@ export function MobileFooter() {
             <a
               href="https://www.instagram.com/gmb_realestate_ghana/"
               target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on Instagram"
               className="text-white text-lg font-medium  group-hover:text-white/90 hover:text-yellow-400"
             >
-              <img src={instagram} className="h-5 w-5" />
+              <img src={instagram} alt="Instagram" className="h-5 w-5" />
             </a>
             <a
               href="https://www.tiktok.com/@gmb_realestateghana?_t=ZM-90x9p6ChCrT&_r=1"
               target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on TikTok"
               className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
             >
-              <img src={tiktok} className="h-5 w-5" />
+              <img src={tiktok} alt="TikTok" className="h-5 w-5" />
             </a>
             <a
               href="https://www.facebook.com/profile.php?id=100071139317552"
               target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on Facebook"
               className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
             >
-              <img src={facebook} className="h-5 w-5" />
+              <img src={facebook} alt="Facebook" className="h-5 w-5" />
             </a>
             <a
               href="https://wa.me/233553944428?"
               target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contact us on WhatsApp"
               className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
             >
-              <img src={whatsapp} className="h-5 w-5" />
+              <img src={whatsapp} alt="WhatsApp" className="h-5 w-5" />
             </a>
           </div>
 

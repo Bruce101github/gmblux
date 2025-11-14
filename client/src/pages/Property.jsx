@@ -20,6 +20,11 @@ import {
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sentenceCase } from "@/utils/changeCase";
+import SEOHead from "@/components/SEOHead";
+import StructuredData, {
+  generatePropertySchema,
+  generateBreadcrumbSchema,
+} from "@/components/StructuredData";
 
 function Property() {
   const { id } = useParams();
@@ -64,7 +69,28 @@ function Property() {
     fetchProperty();
   }, [id]);
 
-  const [bookingOpen, setBookingOpen] = useState(false);
+  // Generate SEO meta tags and structured data
+  const seoTitle = property
+    ? `${property.bedrooms} Bedroom ${property.property_type} for ${property.listing_type} in ${property.location}, Ghana | GMB Luxury Properties`
+    : "Property Details | GMB Luxury Properties";
+
+  const seoDescription = property
+    ? `${property.bedrooms} bedroom ${property.property_type} for ${property.listing_type} in ${property.location}, Ghana. ${property.currency === "ghs" ? "GH₵" : "USD$"}${Number(property.price).toLocaleString("en-GH")}${property.listing_type === "rent" ? "/month" : ""}. ${property.description?.substring(0, 100) || ""}`
+    : "Browse premium real estate listings in Ghana";
+
+  const propertyImage = property?.images?.[0] || "https://gmblux.vercel.app/gmblogo.JPG";
+  const propertyUrl = typeof window !== "undefined" ? window.location.href : `https://gmblux.vercel.app/listing/${id}`;
+
+  const structuredData = property
+    ? [
+        generatePropertySchema(property),
+        generateBreadcrumbSchema([
+          { name: "Home", url: "/" },
+          { name: "Listings", url: "/listings" },
+          { name: property.title || "Property Details", url: `/listing/${property.id}` },
+        ]),
+      ]
+    : null;
 
   if (loading)
     return (
@@ -83,16 +109,27 @@ function Property() {
     return <p className="text-gray-400 text-center">Property not found.</p>;
 
   return (
-    <div className="text-white px-0 lg:px-[10%] pb-10">
+    <>
+      <SEOHead
+        title={seoTitle}
+        description={seoDescription}
+        image={propertyImage}
+        url={propertyUrl}
+        keywords={`${property.property_type} ${property.listing_type} ${property.location} Ghana, real estate Ghana, property for sale Ghana, houses for rent Ghana`}
+      />
+      {structuredData && (
+        <StructuredData data={structuredData} />
+      )}
+      <div className="text-white px-0 lg:px-[10%] pb-10">
       <Carousel setApi={setApi}>
         <CarouselContent>
-          {property.images.map((p) => (
-            <CarouselItem>
-              {" "}
+          {property.images.map((p, index) => (
+            <CarouselItem key={index}>
               <img
                 src={p}
-                alt={property.title}
+                alt={`${property.title} - Image ${index + 1} - ${property.location}, Ghana`}
                 className=" mb-2 w-full h-[60vh] object-cover"
+                loading={index === 0 ? "eager" : "lazy"}
               />
             </CarouselItem>
           ))}
@@ -186,7 +223,8 @@ function Property() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -198,8 +236,16 @@ Here’s the link: https://gmblux.com/listing/${property.id}`;
   const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 
   return (
-    <a href={url} className="p-2 rounded-full bg-white/10">
-      <img src={Whatsapp} className="h-[25px] w-[25px]" />
+    <a
+      href={url}
+      className="p-2 rounded-full bg-white/10"
+      aria-label="Contact via WhatsApp"
+    >
+      <img
+        src={Whatsapp}
+        alt="WhatsApp"
+        className="h-[25px] w-[25px]"
+      />
     </a>
   );
 }

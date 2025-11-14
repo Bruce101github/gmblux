@@ -21,7 +21,6 @@ export default function Navbar() {
   function handleKeyDown(e) {
     if (e.key === "Enter") {
       e.preventDefault(); // prevents form reload
-      console.log("Submitted:", e.target.value);
       setSearchTerm(e.target.value);
       setSubmittedSearch(searchTerm);
       setTimeout(() => {
@@ -34,7 +33,7 @@ export default function Navbar() {
     <div className="flex w-auto justify-between px-[10%] pt-[20px] pb-[5%] text-white">
       <div className="flex gap-4">
         <div className="h-[50px] w-[50px] rounded-full bg-gray-300">
-          <img src={Logo} className="rounded-full" />
+          <img src={Logo} alt="GMB Luxury Properties Logo" className="rounded-full" />
         </div>
         <div className="relative min-w-[400px] bg-white rounded-4xl flex items-center px-1">
           <Search className="text-black/20 px-2" size={38} />
@@ -120,7 +119,6 @@ function MobileNavbar1({ menuOpen, setMenuOpen, setFilterOpen }) {
   function handleKeyDown(e) {
     if (e.key === "Enter") {
       e.preventDefault(); // prevents form reload
-      console.log("Submitted:", e.target.value);
       setSearchTerm(e.target.value);
       setSubmittedSearch(searchTerm);
       setTimeout(() => {
@@ -135,7 +133,7 @@ function MobileNavbar1({ menuOpen, setMenuOpen, setFilterOpen }) {
         <div className="flex justify-between ">
           <Link to="/">
             <div className="h-[50px] w-[50px] rounded-full bg-gray-300">
-              <img src={Logo} className="rounded-full" />
+              <img src={Logo} alt="GMB Luxury Properties Logo" className="rounded-full" />
             </div>
           </Link>
           <Link to="">
@@ -203,7 +201,7 @@ function MobileNavbar2() {
         alert("Link copied!");
       }
     } catch (err) {
-      console.error("Share failed:", err);
+      // Share failed silently - user can copy link manually
     }
   };
 
@@ -260,7 +258,7 @@ function MobileNavbar3() {
         alert("Link copied!");
       }
     } catch (err) {
-      console.error("Share failed:", err);
+      // Share failed silently - user can copy link manually
     }
   };
 
@@ -290,7 +288,6 @@ function MobileNavbar4({ setFilterOpen }) {
   function handleKeyDown(e) {
     if (e.key === "Enter") {
       e.preventDefault(); // prevents form reload
-      console.log("Submitted:", e.target.value);
       setSearchTerm(e.target.value);
       setSubmittedSearch(searchTerm);
     }

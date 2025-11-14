@@ -134,7 +134,7 @@ function Listings({
     // if no search, show all properties
 
     if (error) {
-      console.error("Error fetching search results:", error);
+      // Error fetching properties - return empty array
       return [];
     }
     if (page === 0) {
@@ -175,8 +175,9 @@ function Listings({
             >
               <img
                 src={p.images?.[0]}
-                alt={p.title}
+                alt={`${p.title || "Property"} - ${p.location || "Ghana"} - ${p.bedrooms || 0} bedroom ${p.property_type || "property"} for ${p.listing_type || "sale"}`}
                 className="w-full h-[200px] object-cover rounded-2xl"
+                loading="lazy"
               />
               <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
               <p className="text-white/60 text-sm">{p.location}</p>
@@ -239,8 +240,9 @@ function smallLisings() {
           >
             <img
               src={p.images?.[0]}
-              alt={p.title}
+              alt={`${p.title || "Property"} - ${p.location || "Ghana"} - ${p.bedrooms || 0} bedroom ${p.property_type || "property"} for ${p.listing_type || "sale"}`}
               className="w-full h-[200px] object-cover rounded-2xl"
+              loading="lazy"
             />
             <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
             <p className="text-white/60 text-sm">{p.location}</p>

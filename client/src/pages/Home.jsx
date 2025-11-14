@@ -23,6 +23,8 @@ import fb from "../assets/fb.svg";
 import whatsapp from "../assets/whatsapp.svg";
 
 import Filter from "@/components/Filter";
+import SEOHead from "@/components/SEOHead";
+import StructuredData, { generateOrganizationSchema } from "@/components/StructuredData";
 
 function Home({
   menuOpen,
@@ -83,7 +85,14 @@ function Home({
   }
 
   return (
-    <div className="px-[5%] w-full">
+    <>
+      <SEOHead
+        title="GMB Luxury Properties - Premium Real Estate in Ghana | Houses, Apartments & Land for Sale & Rent"
+        description="Find luxury homes, apartments, and properties for sale and rent in Ghana. Browse premium real estate listings in Accra, Kumasi, and across Ghana. Expert property management and consultation services."
+        keywords="real estate Ghana, property for sale Ghana, houses for rent Ghana, luxury apartments Accra, property Ghana, real estate Accra, property management Ghana, houses for sale Ghana"
+      />
+      <StructuredData data={generateOrganizationSchema()} />
+      <div className="px-[5%] w-full">
       {menuOpen ? (
         <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       ) : null}
@@ -186,7 +195,8 @@ function Home({
         />
         <button>All listings</button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -287,34 +297,42 @@ function SideMenu({ menuOpen, setMenuOpen }) {
       <div className="fixed bottom-10">
         <p className="text-yellow-400 font-medium mb-3">Socials</p>
         <div className=" text-white flex gap-4 group">
-          <a
-            href="https://www.instagram.com/gmb_realestate_ghana/"
-            target="_blank"
-            className="text-white text-lg font-medium  group-hover:text-white/90 hover:text-yellow-400"
-          >
-            <img src={instagram} className="h-5 w-5" />
-          </a>
-          <a
-            href="https://www.tiktok.com/@gmb_realestateghana?_t=ZM-90x9p6ChCrT&_r=1"
-            target="_blank"
-            className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
-          >
-            <img src={tiktok} className="h-5 w-5" />
-          </a>
-          <a
-            href="https://www.facebook.com/profile.php?id=100071139317552"
-            target="_blank"
-            className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
-          >
-            <img src={fb} className="h-5 w-5" />
-          </a>
-          <a
-            href="https://wa.me/233553944428?"
-            target="_blank"
-            className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
-          >
-            <img src={whatsapp} className="h-5 w-5" />
-          </a>
+            <a
+              href="https://www.instagram.com/gmb_realestate_ghana/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on Instagram"
+              className="text-white text-lg font-medium  group-hover:text-white/90 hover:text-yellow-400"
+            >
+              <img src={instagram} alt="Instagram" className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.tiktok.com/@gmb_realestateghana?_t=ZM-90x9p6ChCrT&_r=1"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on TikTok"
+              className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
+            >
+              <img src={tiktok} alt="TikTok" className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=100071139317552"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on Facebook"
+              className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
+            >
+              <img src={fb} alt="Facebook" className="h-5 w-5" />
+            </a>
+            <a
+              href="https://wa.me/233553944428?"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contact us on WhatsApp"
+              className="text-white text-lg font-medium hover:text-yellow-400  group-hover:text-white/90"
+            >
+              <img src={whatsapp} alt="WhatsApp" className="h-5 w-5" />
+            </a>
         </div>
       </div>
     </motion.div>

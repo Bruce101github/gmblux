@@ -173,7 +173,6 @@ function Pills({ filters, setFilters, type = "listing" }) {
           <button
             key={pill.name}
             onClick={() => {
-              console.log(filters);
               setSelected((prev) => ({ ...prev, [pill.type]: pill.name }));
               pill.filter(setFilters);
             }}

@@ -19,14 +19,12 @@ function Filter({ filterOpen, setFilterOpen, filters, setFilters }) {
 
   function handleFilters() {
     setFilters((prev) => ({ ...prev, ...localFilters }));
-    console.log("check herer", filters);
     document.body.style.overflow = "auto";
     setFilterOpen(false);
   }
 
   function resetFilters() {
     setLocalFilters((prev) => ({ ...prev, ...presets }));
-    console.log("check herer", filters);
   }
 
   return (
