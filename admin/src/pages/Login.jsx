@@ -4,9 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Spinner } from "@/components/ui/spinner";
 import { KeySquare } from "lucide-react";
+import { TOAST_STYLE } from "@/lib/utils";
+
+// Email validation helper
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 export default function Login() {
-  const [email, setEmail] = useState(""); // prefill while testing
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visibility, setVisibility] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -14,6 +20,22 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!email || !password) {
+      toast.error("Please enter both email and password.", {
+        style: TOAST_STYLE,
+      });
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      toast.error("Please enter a valid email address.", {
+        style: TOAST_STYLE,
+      });
+      return;
+    }
+
     setLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -22,12 +44,7 @@ export default function Login() {
     setLoading(false);
     if (error) {
       toast.error(error.message || "Failed to login. Try again!", {
-        style: {
-          borderRadius: "10px",
-          background: "#121420",
-          color: "#fff",
-          border: "0.4px solid gray",
-        },
+        style: TOAST_STYLE,
       });
       return;
     }
@@ -56,7 +73,7 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          className="flex justify-center items-center gap-2 w-full p-2 bg-yellow-400 text-white rounded-md font-bold"
+          className="flex justify-center items-center gap-2 w-full p-2 bg-yellow-400 text-white rounded-md font-bold disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={loading}
         >
           {loading ? (

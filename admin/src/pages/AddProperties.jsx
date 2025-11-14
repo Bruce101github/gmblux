@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { X, Upload } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { TOAST_STYLE } from "@/lib/utils";
 
 function AddProperties() {
   const [files, setFiles] = useState([]);
@@ -25,28 +26,17 @@ function AddProperties() {
 
   const [formData, setFormData] = useState({ ...formPreset });
 
-  useEffect(() => {
-    console.log("Updated files:", files);
-    console.log(files[0]);
-  }, [files]);
-
   function handleState(e) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    console.log(name, value);
   }
 
   async function insertProperty() {
     setLoading(true);
     try {
       // Show a loading toast while the property is being added
-      toast.loading("addding property...", {
-        style: {
-          borderRadius: "10px",
-          background: "#121420",
-          color: "#fff",
-          border: "0.4px solid gray",
-        },
+      toast.loading("Adding property...", {
+        style: TOAST_STYLE,
       });
       // Push Images to supabase storage bucket
       const imageUrls = [];
@@ -62,7 +52,8 @@ function AddProperties() {
 
         if (error) {
           setLoading(false);
-          console.error("Upload error:", error.message);
+          toast.dismiss();
+          throw new Error(`Failed to upload image: ${error.message}`);
         }
 
         // 2️⃣Get the public URL
@@ -74,7 +65,6 @@ function AddProperties() {
       }
 
       // Insert Property Data with Image Urls
-      console.log(formData);
       const { data, error } = await supabase
         .from("properties")
         .insert({ ...formData, images: imageUrls });
@@ -87,28 +77,18 @@ function AddProperties() {
         setLoading(false);
         toast.dismiss(); // remove the loading one
         toast.success("Property added successfully!", {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
+          style: TOAST_STYLE,
         });
         setFormData({ ...formPreset });
         setFiles([]);
-        // show success
       }, 1000);
     } catch (err) {
       setLoading(false);
-      console.error("Error adding property:", err);
       toast.dismiss(); // remove the loading one
-      toast.error("Failed to add property!", {
-        style: {
-          borderRadius: "10px",
-          background: "#121420",
-          color: "#fff",
-          border: "0.4px solid gray",
-        },
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to add property!";
+      toast.error(errorMessage, {
+        style: TOAST_STYLE,
       });
     }
   }

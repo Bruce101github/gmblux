@@ -5,6 +5,27 @@ import { toast } from "react-hot-toast";
 import { EyeOff, Eye, Lock } from "lucide-react";
 import axios from "axios";
 import { Spinner } from "@/components/ui/spinner";
+import { TOAST_STYLE } from "@/lib/utils";
+
+// Constants
+const REDIRECT_DELAY_MS = 1000; // Delay before redirecting after successful password update
+
+// Password validation function
+function validatePassword(password) {
+  if (password.length < 8) {
+    return "Password must be at least 8 characters long.";
+  }
+  if (!/[A-Z]/.test(password)) {
+    return "Password must contain at least one uppercase letter.";
+  }
+  if (!/[a-z]/.test(password)) {
+    return "Password must contain at least one lowercase letter.";
+  }
+  if (!/[0-9]/.test(password)) {
+    return "Password must contain at least one number.";
+  }
+  return null;
+}
 
 export default function SetPassword() {
   const [loading, setLoading] = useState(false);
@@ -26,11 +47,24 @@ export default function SetPassword() {
     const accessToken = hashParams.get("access_token");
     const refreshToken = hashParams.get("refresh_token");
 
+    // 2) Optional legacy path: ?type=invite&token=... (works only if email is present)
+    const searchParams = new URLSearchParams(location.search);
+    const type = searchParams.get("type");
+    const token = searchParams.get("token");
+    const email = searchParams.get("email");
+
     if (accessToken && refreshToken) {
+      // Handle hash-based auth
       supabase.auth
         .setSession({ access_token: accessToken, refresh_token: refreshToken })
         .then(({ error }) => {
-          if (error) console.error(error.message);
+          if (error) {
+            toast.error(error.message || "Failed to initialize session.", {
+              style: TOAST_STYLE,
+            });
+            setSessionReady(true); // Allow user to try again
+            return;
+          }
           // Clean the URL hash after setting session
           window.history.replaceState(
             null,
@@ -38,32 +72,44 @@ export default function SetPassword() {
             window.location.pathname + window.location.search,
           );
           setSessionReady(true);
+        })
+        .catch((err) => {
+          toast.error("Unexpected error initializing session.", {
+            style: TOAST_STYLE,
+          });
+          setSessionReady(true);
         });
-      return;
-    } else {
-      setSessionReady(true);
-    }
-
-    // 2) Optional legacy path: ?type=invite&token=... (works only if email is present)
-    const searchParams = new URLSearchParams(location.search);
-    const type = searchParams.get("type");
-    const token = searchParams.get("token");
-    const email = searchParams.get("email");
-
-    if (!accessToken && !refreshToken && type === "invite" && token && email) {
+    } else if (type === "invite" && token && email) {
+      // Handle invite token path
       supabase.auth
         .verifyOtp({ email, token, type: "invite" })
         .then(({ error }) => {
-          if (error)
+          if (error) {
             toast.error(error.message, {
-              style: {
-                borderRadius: "10px",
-                background: "#121420",
-                color: "#fff",
-                border: "0.4px solid gray",
-              },
+              style: TOAST_STYLE,
             });
+            setSessionReady(true); // Allow user to try again even on error
+          } else {
+            setSessionReady(true);
+          }
+        })
+        .catch((err) => {
+          toast.error("Failed to verify invitation token.", {
+            style: TOAST_STYLE,
+          });
+          setSessionReady(true); // Allow user to try again
         });
+    } else {
+      // No auth tokens found - check if user already has a session
+      supabase.auth.getSession().then(({ data }) => {
+        if (data?.session) {
+          setSessionReady(true);
+        } else {
+          // No session found, but set ready anyway so user sees the form
+          // They'll get an error when trying to submit without a session
+          setSessionReady(true);
+        }
+      });
     }
   }, [location.search]);
 
@@ -77,10 +123,6 @@ export default function SetPassword() {
     }
 
     const accessToken = sessionData.session.access_token;
-
-    console.log("this is the supabaseUrl", supabaseUrl);
-
-    console.log("thi is the accessToken", accessToken);
 
     try {
       const response = await axios.put(
@@ -112,76 +154,66 @@ export default function SetPassword() {
 
     if (!sessionReady) {
       setLoading(false);
-      toast.error("Session not initialized yet, please wait...");
+      toast.error("Session not initialized yet, please wait...", {
+        style: TOAST_STYLE,
+      });
       return;
     }
 
     if (!password || !confirmPassword) {
       setLoading(false);
       toast.error("Please enter and confirm your new password.", {
-        style: {
-          borderRadius: "10px",
-          background: "#121420",
-          color: "#fff",
-          border: "0.4px solid gray",
-        },
+        style: TOAST_STYLE,
       });
       return;
     }
+
+    // Password strength validation
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setLoading(false);
+      toast.error(passwordError, {
+        style: TOAST_STYLE,
+      });
+      return;
+    }
+
     if (password !== confirmPassword) {
       setLoading(false);
       toast.error("Passwords do not match.", {
-        style: {
-          borderRadius: "10px",
-          background: "#121420",
-          color: "#fff",
-          border: "0.4px solid gray",
-        },
+        style: TOAST_STYLE,
       });
       return;
     }
 
     const { data: sessionData } = await supabase.auth.getSession();
-    console.log("hasSession", sessionData?.session);
     if (!sessionData?.session) {
+      setLoading(false);
       toast.error(
         "No active session. Open this page from your invite email link.",
         {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
+          style: TOAST_STYLE,
         },
       );
       return;
     }
+
     try {
       await updatePasswordWithAxios(password);
       setPassword("");
       setConfirmPassword("");
       setLoading(false);
       toast.success("Password updated! Redirecting...", {
-        style: {
-          borderRadius: "10px",
-          background: "#121420",
-          color: "#fff",
-          border: "0.4px solid gray",
-        },
+        style: TOAST_STYLE,
       });
-      setTimeout(() => navigate("/"), 1000);
+      setTimeout(() => navigate("/"), REDIRECT_DELAY_MS);
     } catch (err) {
       setLoading(false);
-      toast.error("Unexpected error occurred", {
-        style: {
-          borderRadius: "10px",
-          background: "#121420",
-          color: "#fff",
-          border: "0.4px solid gray",
-        },
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to update password";
+      toast.error(errorMessage, {
+        style: TOAST_STYLE,
       });
-      console.error(err);
     }
   }
   const handleVisibility = (inputId) => {
@@ -248,7 +280,8 @@ export default function SetPassword() {
         </div>
         <button
           type="submit"
-          className="flex gap-2 w-full p-2 bg-yellow-400 text-white rounded-md font-medium items-center justify-center"
+          disabled={loading || !sessionReady}
+          className="flex gap-2 w-full p-2 bg-yellow-400 text-white rounded-md font-medium items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <Spinner className="w-[18px] h-[18px] " />

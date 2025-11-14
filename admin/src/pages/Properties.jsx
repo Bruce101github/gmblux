@@ -8,9 +8,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Funnel, ListFilter, Plus } from "lucide-react";
 import { Pagination1, MobilePagination1 } from "@/components/pagination-1";
+import { TOAST_STYLE } from "@/lib/utils";
 
 export default function Properties() {
-  const [tableInfo, setTableInfo] = useState({});
+  const [tableInfo, setTableInfo] = useState([]);
   const [propertyCount, setPropertyCount] = useState(0);
   const [perPage, setPerPage] = useState(20);
   const [page, setPage] = useState(0);
@@ -34,18 +35,13 @@ export default function Properties() {
       .range(from, to);
 
     if (error) {
-      console.error("Error fetcthing properties", error);
       toast.dismiss(); // remove the loading one
       toast.error("Failed to fetch properties!", {
-        style: {
-          borderRadius: "10px",
-          background: "#121420",
-          color: "#fff",
-          border: "0.4px solid gray",
-        },
+        style: TOAST_STYLE,
       });
+      setTableInfo([]); // Reset to empty array on error
     } else {
-      setTableInfo(data);
+      setTableInfo(data || []); // Ensure it's always an array
     }
   }
 
@@ -55,8 +51,6 @@ export default function Properties() {
   }, [currentPage, perPage]);
 
   const totalPages = Math.ceil(propertyCount / perPage);
-
-  console.log(propertyCount, " properties found,");
 
   return (
     <>
