@@ -36,6 +36,7 @@ function Home({
 }) {
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [localProperties, setLocalProperties] = useState([]);
+  const [bestProperties, setBestProperties] = useState([]);
 
   useEffect(() => {
     const img = new Image();
@@ -126,8 +127,8 @@ function Home({
             limit={3}
             tags={["best"]}
             filters={filters}
-            properties={localProperties}
-            setProperties={setLocalProperties}
+            properties={bestProperties}
+            setProperties={setBestProperties}
           />
         </div>
       </div>
