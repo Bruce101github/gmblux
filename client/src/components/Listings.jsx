@@ -61,14 +61,7 @@ function Listings({
     return () => observer.disconnect();
   }, [properties]);
 
-  useEffect(() => {
-    setHasMore(true);
-    setPage(0);
-  }, [search, filters]);
-
   // Use passed-in props if available, else fallback to local state
-  let query = supabase.from("properties").select("*");
-
   const lgGridClass =
     {
       1: "lg:grid-cols-1",
@@ -85,11 +78,33 @@ function Listings({
       3: "grid-cols-3 min-w-[1000px]",
     }[smCols] || "grid-cols-3";
 
+  // Reset page when search or filters change, then fetch
   useEffect(() => {
-    fetchProperties(search, filters, setFilters, page);
+    setHasMore(true);
+    setPage(0);
+    // Don't fetch here - let the next effect handle it
+  }, [search, filters]);
+
+  // Fetch properties when page, search, or filters change
+  useEffect(() => {
+    let isCancelled = false;
+    
+    async function fetch() {
+      setLoading(true);
+      await fetchProperties(search, filters, page, isCancelled);
+      // Loading state is managed inside fetchProperties
+    }
+    
+    fetch();
+    
+    return () => {
+      isCancelled = true;
+    };
   }, [search, filters, page]);
 
-  async function fetchProperties(search, filters, setFilters, page = 0) {
+  async function fetchProperties(search, filters, page = 0, isCancelled = false) {
+    if (isCancelled) return null;
+    
     const from = limit === undefined ? page * perPage : 0;
     const to = limit === undefined ? from + perPage - 1 : limit;
 
@@ -119,7 +134,7 @@ function Listings({
     if (search && search.trim() !== "") {
       query = query.textSearch("fts", search, {
         config: "english",
-        type: "websearch", // allows natural queries like “3 bedroom house”
+        type: "websearch", // allows natural queries like "3 bedroom house"
       });
     }
 
@@ -131,19 +146,36 @@ function Listings({
 
     let { data, error } = await query;
 
-    // if no search, show all properties
+    if (isCancelled) return null;
 
     if (error) {
-      // Error fetching properties - return empty array
-      return [];
+      if (!isCancelled) setLoading(false);
+      return null;
     }
+    
+    // Remove duplicates by ID before setting
     if (page === 0) {
-      setProperties(data);
+      // For page 0, just set the data (remove any duplicates)
+      const uniqueData = data.filter((item, index, self) => 
+        index === self.findIndex((t) => t.id === item.id)
+      );
+      setProperties(uniqueData);
     } else if (page > 0) {
-      setProperties((prev) => [...prev, ...data]);
+      // For pagination, append but remove duplicates
+      setProperties((prev) => {
+        const combined = [...prev, ...data];
+        // Remove duplicates by ID
+        const unique = combined.filter((item, index, self) => 
+          index === self.findIndex((t) => t.id === item.id)
+        );
+        return unique;
+      });
     }
-    setLoading(false);
-    return;
+    
+    if (!isCancelled) {
+      setLoading(false);
+    }
+    return true;
   }
 
   return (
