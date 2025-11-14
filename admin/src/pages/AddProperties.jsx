@@ -234,7 +234,9 @@ function AddProperties() {
               >
                 Description
               </label>
-              <input
+              <textarea
+                rows="5"
+                cos="40"
                 name="description"
                 className="border-white/10 border-1 rounded-sm p-2 text-white"
                 value={formData.description}
@@ -301,16 +303,15 @@ function AddProperties() {
                 >
                   <option value="house">House</option>
                   <option value="apartment">Apartment</option>
-                  <option value="mansion">Mansion</option>
                   <option value="townhouse">Townhouse</option>
-                  <option value="duples">Duples</option>
+                  <option value="duples">Duplex</option>
                   <option value="studio">Studio</option>
-                  <option value="land">Land/Plot</option>
+                  <option value="land">Lands</option>
                   <option value="commercialProperty">
                     Commercial property
                   </option>
                   <option value="officeSpace">Office space</option>
-                  <option value="shop">Shop/Store front</option>
+                  <option value="shop">Shop</option>
                 </select>
               </div>
               <div className="flex flex-col">
