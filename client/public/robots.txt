@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location (update when sitemap is generated)
-Sitemap: https://gmblux.vercel.app/sitemap.xml
+Sitemap: https://gmblux.com/sitemap.xml
 
 # Disallow admin panel
 Disallow: /admin/

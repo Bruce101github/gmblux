@@ -37,7 +37,7 @@ export default function StructuredData({ data }) {
 /**
  * Generate RealEstateListing schema for a property
  */
-export function generatePropertySchema(property, baseUrl = "https://gmblux.vercel.app") {
+export function generatePropertySchema(property, baseUrl = "https://gmblux.com") {
   if (!property) return null;
 
   const price = property.price || 0;
@@ -93,7 +93,7 @@ export function generatePropertySchema(property, baseUrl = "https://gmblux.verce
 /**
  * Generate Organization schema
  */
-export function generateOrganizationSchema(baseUrl = "https://gmblux.vercel.app") {
+export function generateOrganizationSchema(baseUrl = "https://gmblux.com") {
   return {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
@@ -123,7 +123,7 @@ export function generateOrganizationSchema(baseUrl = "https://gmblux.vercel.app"
 /**
  * Generate BreadcrumbList schema
  */
-export function generateBreadcrumbSchema(items, baseUrl = "https://gmblux.vercel.app") {
+export function generateBreadcrumbSchema(items, baseUrl = "https://gmblux.com") {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

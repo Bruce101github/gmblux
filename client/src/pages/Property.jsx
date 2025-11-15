@@ -78,19 +78,48 @@ function Property() {
     ? `${property.bedrooms} bedroom ${property.property_type} for ${property.listing_type} in ${property.location}, Ghana. ${property.currency === "ghs" ? "GH₵" : "USD$"}${Number(property.price).toLocaleString("en-GH")}${property.listing_type === "rent" ? "/month" : ""}. ${property.description?.substring(0, 100) || ""}`
     : "Browse premium real estate listings in Ghana";
 
-  const propertyImage = property?.images?.[0] || "https://gmblux.vercel.app/gmblogo.JPG";
-  const propertyUrl = typeof window !== "undefined" ? window.location.href : `https://gmblux.vercel.app/listing/${id}`;
+  // Get property image - Supabase storage URLs are already absolute
+  const getPropertyImage = () => {
+    if (!property?.images?.[0]) {
+      // Fallback to logo on our domain
+      const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://gmblux.com";
+      return `${baseUrl}/gmblogo.JPG`;
+    }
+    
+    const imageUrl = property.images[0];
+    
+    // Supabase storage URLs are already absolute (https://[project].supabase.co/...)
+    // They're stored as public URLs from getPublicUrl(), so use them directly
+    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+      return imageUrl; // Already absolute - Supabase CDN URL
+    }
+    
+    // If somehow relative (shouldn't happen), make it absolute
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://gmblux.com";
+    return `${baseUrl}${imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`}`;
+  };
+
+  // Get base URL for structured data
+  const getBaseUrl = () => {
+    return typeof window !== "undefined" ? window.location.origin : "https://gmblux.com";
+  };
 
   const structuredData = property
     ? [
-        generatePropertySchema(property),
+        generatePropertySchema(property, getBaseUrl()),
         generateBreadcrumbSchema([
           { name: "Home", url: "/" },
           { name: "Listings", url: "/listings" },
           { name: property.title || "Property Details", url: `/listing/${property.id}` },
-        ]),
+        ], getBaseUrl()),
       ]
     : null;
+
+  // Only render SEOHead when property is loaded to ensure correct image is used
+  // This prevents social media crawlers from caching the logo fallback during loading
+  const shouldRenderSEO = !loading && property;
+  const propertyImage = shouldRenderSEO ? getPropertyImage() : "";
+  const propertyUrl = typeof window !== "undefined" ? window.location.href : `https://gmblux.com/listing/${id}`;
 
   if (loading)
     return (
@@ -110,13 +139,15 @@ function Property() {
 
   return (
     <>
-      <SEOHead
-        title={seoTitle}
-        description={seoDescription}
-        image={propertyImage}
-        url={propertyUrl}
-        keywords={`${property.property_type} ${property.listing_type} ${property.location} Ghana, real estate Ghana, property for sale Ghana, houses for rent Ghana`}
-      />
+      {shouldRenderSEO && (
+        <SEOHead
+          title={seoTitle}
+          description={seoDescription}
+          image={propertyImage}
+          url={propertyUrl}
+          keywords={`${property.property_type} ${property.listing_type} ${property.location} Ghana, real estate Ghana, property for sale Ghana, houses for rent Ghana`}
+        />
+      )}
       {structuredData && (
         <StructuredData data={structuredData} />
       )}

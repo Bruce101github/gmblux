@@ -7,8 +7,8 @@ import { useEffect } from "react";
 export default function SEOHead({
   title = "GMB Luxury Properties - Premium Real Estate in Ghana",
   description = "Find luxury homes, apartments, and properties for sale and rent in Ghana. Browse premium real estate listings in Accra, Kumasi, and across Ghana.",
-  image = "https://gmblux.vercel.app/gmblogo.JPG",
-  url = typeof window !== "undefined" ? window.location.href : "https://gmblux.vercel.app",
+  image = typeof window !== "undefined" ? `${window.location.origin}/gmblogo.JPG` : "https://gmblux.com/gmblogo.JPG",
+  url = typeof window !== "undefined" ? window.location.href : "https://gmblux.com",
   type = "website",
   keywords = "real estate Ghana, property for sale Ghana, houses for rent Ghana, luxury apartments Accra, property Ghana",
 }) {
@@ -43,10 +43,24 @@ export default function SEOHead({
     // Update keywords
     updateNameMetaTag("keywords", keywords);
 
-    // Open Graph tags
+    // Ensure image URL is absolute and properly formatted for social media
+    let absoluteImage = image;
+    
+    if (!image.startsWith("http://") && !image.startsWith("https://")) {
+      // Relative URL - make it absolute using current domain
+      const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://gmblux.com";
+      absoluteImage = `${baseUrl}${image.startsWith("/") ? image : `/${image}`}`;
+    }
+    
+    // Supabase storage URLs are already absolute (https://[project].supabase.co/...)
+    // They don't need domain prepending - they're on Supabase's CDN
+    // Social media crawlers can access them directly if the bucket is public
+
+    // Open Graph tags (for Facebook, LinkedIn, WhatsApp, etc.)
     updateMetaTag("og:title", title);
     updateMetaTag("og:description", description);
-    updateMetaTag("og:image", image);
+    updateMetaTag("og:image", absoluteImage);
+    updateMetaTag("og:image:secure_url", absoluteImage); // HTTPS version for secure platforms
     updateMetaTag("og:url", url);
     updateMetaTag("og:type", type);
 
@@ -54,7 +68,8 @@ export default function SEOHead({
     updateNameMetaTag("twitter:card", "summary_large_image");
     updateNameMetaTag("twitter:title", title);
     updateNameMetaTag("twitter:description", description);
-    updateNameMetaTag("twitter:image", image);
+    updateNameMetaTag("twitter:image", absoluteImage);
+    updateNameMetaTag("twitter:image:alt", title);
 
     // Canonical URL
     let canonical = document.querySelector("link[rel='canonical']");

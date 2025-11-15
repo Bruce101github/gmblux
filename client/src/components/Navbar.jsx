@@ -8,10 +8,11 @@ import {
   EllipsisVertical,
 } from "lucide-react";
 import Logo from "../assets/gmblogo.JPG";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { bookingPresets } from "@/utils/bookingPreset";
 import { useSearch } from "../components/SearchContext";
+import { supabase } from "../supabaseClient";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -176,6 +177,34 @@ function MobileNavbar1({ menuOpen, setMenuOpen, setFilterOpen }) {
 function MobileNavbar2() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { id } = useParams();
+  const [property, setProperty] = useState(null);
+
+  // Fetch property data for dynamic share text
+  useEffect(() => {
+    async function fetchProperty() {
+      if (!id) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from("properties")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (!error && data) {
+          setProperty(data);
+        }
+      } catch (err) {
+        // Silently fail - will use fallback text
+      }
+    }
+
+    // Only fetch if we're on a property page
+    if (location.pathname.startsWith("/listing/") && id) {
+      fetchProperty();
+    }
+  }, [id, location.pathname]);
 
   const handleBack = () => {
     // If there's no history, fallback to home
@@ -187,10 +216,23 @@ function MobileNavbar2() {
   };
 
   const handleShare = async () => {
+    // Create dynamic share text based on property data
+    let shareText = "Checkout this property listed on gmblux";
+    
+    if (property) {
+      const bedrooms = property.bedrooms || "";
+      const propertyType = property.property_type?.toLowerCase() || "property";
+      const location = property.location || "";
+      
+      shareText = `Checkout this ${bedrooms} bedroom ${propertyType} @ ${location} listed on gmblux`;
+    }
+
     const shareData = {
-      title: "Check out this property!",
-      text: "Found a great place on GMBLux!",
-      url: window.location.origin + location.pathname, // e.g. https://gmblux.com/listings/123
+      title: property 
+        ? `${property.bedrooms} Bedroom ${property.property_type} for ${property.listing_type} in ${property.location}`
+        : "Check out this property!",
+      text: shareText,
+      url: window.location.origin + location.pathname, // e.g. https://gmblux.com/listing/123
     };
 
     try {
