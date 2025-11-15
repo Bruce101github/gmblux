@@ -31,10 +31,85 @@
     <meta name="twitter:description" content="Find luxury homes, apartments, and properties for sale and rent in Ghana." />
     <meta name="twitter:image" content="https://gmblux.com/gmblogo.JPG" />
     <link rel="canonical" href="https://gmblux.com/" />
+    <!-- Supabase anon key for pre-render script (public key, safe to expose) -->
+    <meta name="supabase-anon-key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3Z2hlbHZremFneXJ3aXl2bHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0OTY2MjIsImV4cCI6MjA3NTA3MjYyMn0.RAjfwOGR12wXgEQdzMON6KfAz2AIwqKcIWy5wb9696I" />
     <title>GMB Luxury Properties - Premium Real Estate in Ghana | Houses, Apartments & Land for Sale & Rent</title>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Pre-render script to update meta tags for property pages before React loads -->
+    <!-- This helps Open Graph validators and crawlers see the correct image -->
+    <script>
+      (function() {
+        // Only run on property pages
+        if (window.location.pathname.startsWith('/listing/')) {
+          const pathParts = window.location.pathname.split('/');
+          const propertyId = pathParts[pathParts.length - 1];
+          
+          if (!propertyId) return;
+          
+          // Get Supabase config from data attributes (set by build process or manually)
+          // For now, using known Supabase URL - replace with your actual anon key
+          const supabaseUrl = 'https://swghelvkzagyrwiyvlsd.supabase.co';
+          // NOTE: Replace this with your actual VITE_SUPABASE_ANON_KEY from .env
+          // This is safe to expose as it's the public anon key
+          const supabaseAnonKey = document.querySelector('meta[name="supabase-anon-key"]')?.content || '';
+          
+          if (!supabaseAnonKey) {
+            // If no key in meta tag, React will handle it
+            return;
+          }
+          
+          // Fetch property data and update meta tags immediately
+          // This ensures crawlers see the correct image even before React loads
+          fetch(supabaseUrl + '/rest/v1/properties?id=eq.' + propertyId + '&select=images', {
+            headers: {
+              'apikey': supabaseAnonKey,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data && data[0] && data[0].images && data[0].images[0]) {
+              const imageUrl = data[0].images[0];
+              // Update og:image immediately
+              let ogImage = document.querySelector('meta[property="og:image"]');
+              if (ogImage) {
+                ogImage.setAttribute('content', imageUrl);
+              } else {
+                ogImage = document.createElement('meta');
+                ogImage.setAttribute('property', 'og:image');
+                ogImage.setAttribute('content', imageUrl);
+                document.head.appendChild(ogImage);
+              }
+              // Update og:image:secure_url
+              let ogImageSecure = document.querySelector('meta[property="og:image:secure_url"]');
+              if (ogImageSecure) {
+                ogImageSecure.setAttribute('content', imageUrl);
+              } else {
+                ogImageSecure = document.createElement('meta');
+                ogImageSecure.setAttribute('property', 'og:image:secure_url');
+                ogImageSecure.setAttribute('content', imageUrl);
+                document.head.appendChild(ogImageSecure);
+              }
+              // Update twitter:image
+              let twitterImage = document.querySelector('meta[name="twitter:image"]');
+              if (twitterImage) {
+                twitterImage.setAttribute('content', imageUrl);
+              } else {
+                twitterImage = document.createElement('meta');
+                twitterImage.setAttribute('name', 'twitter:image');
+                twitterImage.setAttribute('content', imageUrl);
+                document.head.appendChild(twitterImage);
+              }
+            }
+          })
+          .catch(err => {
+            // Silently fail - React will handle it
+          });
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
