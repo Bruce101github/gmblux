@@ -17,6 +17,29 @@ import {
   VectorSquare,
   MapPin,
   Phone,
+  Car,
+  Shield,
+  Camera,
+  Wind,
+  Home,
+  Waves,
+  Wifi,
+  Droplet,
+  Sofa,
+  Zap,
+  Sun,
+  GraduationCap,
+  Hospital,
+  ShoppingCart,
+  Bus,
+  Route,
+  Calendar,
+  DollarSign,
+  Plug,
+  Receipt,
+  FileText,
+  FileCheck,
+  CreditCard,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sentenceCase } from "@/utils/changeCase";
@@ -226,6 +249,191 @@ function Property() {
           <p className="font-medium text-lg">Property description</p>
           <p className="text-base text-white/60">{property.description}</p>
         </div>
+        {property.features && property.features.length > 0 && (
+          <div className="border-b border-white/10 my-5 pb-5 flex flex-col gap-3">
+            <p className="font-medium text-lg">Property Features</p>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+              {property.features.map((feature) => {
+                const featureLabels = {
+                  parking: "Parking",
+                  garage: "Garage",
+                  gated_community: "Gated Community",
+                  security_cameras: "Security Cameras",
+                  air_conditioning: "Air Conditioning",
+                  balcony: "Balcony",
+                  swimming_pool: "Swimming Pool",
+                  wifi: "WiFi",
+                  water_heater: "Water Heater",
+                  furnished: "Furnished",
+                  generator: "Generator",
+                  solar_power: "Solar Power",
+                  water_reservoir: "Water Reservoir",
+                  kitchen_appliances: "Kitchen Appliances",
+                  ceiling_fans: "Ceiling Fans",
+                  intercom: "Intercom",
+                  cable_tv: "Cable TV",
+                  security_guard: "Security Guard",
+                  electric_fence: "Electric Fence",
+                  barbecue_area: "Barbecue Area",
+                  playground: "Playground",
+                  gym: "Gym",
+                  elevator: "Elevator",
+                  fireplace: "Fireplace",
+                };
+                
+                const featureIcons = {
+                  parking: Car,
+                  garage: Car,
+                  gated_community: Shield,
+                  security_cameras: Camera,
+                  air_conditioning: Wind,
+                  balcony: Home,
+                  swimming_pool: Waves,
+                  wifi: Wifi,
+                  water_heater: Droplet,
+                  furnished: Sofa,
+                  generator: Zap,
+                  solar_power: Sun,
+                  water_reservoir: Droplet,
+                  kitchen_appliances: Home,
+                };
+                
+                const IconComponent = featureIcons[feature] || Home;
+                
+                return (
+                  <div
+                    key={feature}
+                    className="flex items-center gap-2 border border-white/20 py-2 px-3 rounded-lg"
+                  >
+                    <IconComponent size={18} className="text-white" />
+                    <span className="text-white/80 text-sm">
+                      {featureLabels[feature] || sentenceCase(feature)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {(property.school_distance || property.hospital_distance || property.market_distance || property.public_transport || property.road_type) && (
+          <div className="border-b border-white/10 my-5 pb-5 flex flex-col gap-3">
+            <p className="font-medium text-lg">Location & Proximity</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {property.school_distance && (
+                <div className="flex items-center gap-3">
+                  <GraduationCap size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>School:</strong> {property.school_distance} km away
+                  </span>
+                </div>
+              )}
+              {property.hospital_distance && (
+                <div className="flex items-center gap-3">
+                  <Hospital size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Hospital:</strong> {property.hospital_distance} km away
+                  </span>
+                </div>
+              )}
+              {property.market_distance && (
+                <div className="flex items-center gap-3">
+                  <ShoppingCart size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Market:</strong> {property.market_distance} km away
+                  </span>
+                </div>
+              )}
+              {property.public_transport && (
+                <div className="flex items-center gap-3">
+                  <Bus size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Public Transport:</strong> {sentenceCase(property.public_transport)}
+                  </span>
+                </div>
+              )}
+              {property.road_type && (
+                <div className="flex items-center gap-3">
+                  <Route size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Road Type:</strong> {sentenceCase(property.road_type.replace(/_/g, ' '))}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {property.listing_type === "rent" && 
+         (property.min_rent_duration || property.deposit_amount || property.utilities_included || property.billing_type) && (
+          <div className="border-b border-white/10 my-5 pb-5 flex flex-col gap-3">
+            <p className="font-medium text-lg">Rental Details</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {property.min_rent_duration && (
+                <div className="flex items-center gap-3">
+                  <Calendar size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Min. Rent Duration:</strong> {sentenceCase(property.min_rent_duration.replace(/_/g, ' '))}
+                  </span>
+                </div>
+              )}
+              {property.deposit_amount && (
+                <div className="flex items-center gap-3">
+                  <DollarSign size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Deposit:</strong> {property.currency === "ghs" ? "GH₵" : "USD$"}{Number(property.deposit_amount).toLocaleString("en-GH")}
+                  </span>
+                </div>
+              )}
+              {property.utilities_included && (
+                <div className="flex items-center gap-3">
+                  <Plug size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Utilities:</strong> {sentenceCase(property.utilities_included.replace(/_/g, ' '))}
+                  </span>
+                </div>
+              )}
+              {property.billing_type && (
+                <div className="flex items-center gap-3">
+                  <Receipt size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Billing Type:</strong> {sentenceCase(property.billing_type.replace(/_/g, ' '))}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {property.listing_type === "sale" && 
+         (property.land_title_type || property.ownership_document || property.payment_plan_available) && (
+          <div className="border-b border-white/10 my-5 pb-5 flex flex-col gap-3">
+            <p className="font-medium text-lg">Sale Details</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {property.land_title_type && (
+                <div className="flex items-center gap-3">
+                  <FileText size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Title Type:</strong> {sentenceCase(property.land_title_type.replace(/_/g, ' '))}
+                  </span>
+                </div>
+              )}
+              {property.ownership_document && (
+                <div className="flex items-center gap-3">
+                  <FileCheck size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Ownership Document:</strong> {sentenceCase(property.ownership_document.replace(/_/g, ' '))}
+                  </span>
+                </div>
+              )}
+              {property.payment_plan_available && (
+                <div className="flex items-center gap-3">
+                  <CreditCard size={18} className="text-white" />
+                  <span className="text-white/80 text-sm">
+                    <strong>Payment Plan:</strong> {sentenceCase(property.payment_plan_available.replace(/_/g, ' '))}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         <div className="flex grid-cols-2 gap-2">
           {property.listing_type == "sale" ? (
             <Link
