@@ -88,7 +88,16 @@ export default function Properties() {
             </button>
           </div>
         </div>
-        <DataTable columns={propertyColumns} data={tableInfo} />
+        <DataTable 
+          columns={propertyColumns} 
+          data={tableInfo}
+          meta={{
+            refreshData: () => {
+              fetchProperties(currentPage, perPage);
+              countProperties();
+            }
+          }}
+        />
         <div className="flex justify-between items-center text-white mt-5">
           {" "}
           <div className="bg-[#121420] p-2 rounded-sm text-xs">

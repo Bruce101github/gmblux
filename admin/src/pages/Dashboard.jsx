@@ -5,6 +5,7 @@ import { ChartAreaInteractive } from "@/components/ui/ChartAreaInteractive";
 import { columns } from "@/pages/bookings/columns";
 import { supabase } from "../lib/supabaseClient";
 import { useEffect, useState } from "react";
+import MobileBookingTable from "@/components/ui/MobileBookingTable";
 import {
   CalendarPlus,
   CircleFadingPlus,
@@ -37,12 +38,16 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function fetchBookings() {
-      const { data, error } = await supabase.from("booking").select("*");
+      const { data, error } = await supabase
+        .from("booking")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) {
         console.error("Error fetching bookings:", error);
+        setBookings([]);
       } else {
-        setBookings(data);
+        setBookings(data || []);
       }
     }
 
@@ -53,8 +58,9 @@ export default function Dashboard() {
 
       if (error) {
         console.error("Error fetching properties:", error);
+        setProperties([]);
       } else {
-        setProperties(properties);
+        setProperties(properties || []);
       }
     }
     fetchBookings();
@@ -68,13 +74,17 @@ export default function Dashboard() {
       const match = properties.find(
         (property) => booking.property_id === property.id,
       );
+      // Include booking even if property doesn't match
       if (match) {
         merged.push({ ...booking, ...match });
+      } else {
+        // Still show booking even without property match
+        merged.push(booking);
       }
     });
 
     setTableInfo(merged);
-  }, [bookings]);
+  }, [bookings, properties]);
   const matches = bookings.filter((booking) => booking.status === "pending");
   const tours = bookings.filter(
     (booking) =>
@@ -195,9 +205,26 @@ export default function Dashboard() {
           <div className="w-full mb-4">
             <ChartAreaInteractive />
           </div>
-          <Card className="hidden lg:block p-4">
-            <p className="text-lg font-bold text-white">Booking</p>
-            <DataTable columns={columns} data={tableInfo} />
+          <Card className="p-4 bg-white/10">
+            <p className="text-lg font-bold text-white mb-4">
+              Booking {tableInfo.length > 0 && `(${tableInfo.length})`}
+            </p>
+            {tableInfo.length === 0 ? (
+              <div className="py-8 text-center">
+                <p className="text-white/60">No bookings found</p>
+              </div>
+            ) : (
+              <>
+                {/* Desktop Table */}
+                <div className="hidden lg:block">
+                  <DataTable columns={columns} data={tableInfo} />
+                </div>
+                {/* Mobile Table */}
+                <div className="lg:hidden">
+                  <MobileBookingTable table={tableInfo} />
+                </div>
+              </>
+            )}
           </Card>
         </div>
         <Calendar31 className="" />

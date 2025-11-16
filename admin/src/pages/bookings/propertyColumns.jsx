@@ -1,6 +1,17 @@
-import { EllipsisVertical, Bed } from "lucide-react";
+import { EllipsisVertical, Bed, Edit, Trash2, CheckCircle, User, Eye } from "lucide-react";
 import { parseISO, format } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { useState, useRef, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { toast } from "react-hot-toast";
+import { TOAST_STYLE } from "@/lib/utils";
 
 const isoDate = "2025-11-03T09:34:03.278773+00:00";
 const date = parseISO(isoDate);
@@ -127,14 +138,152 @@ export const propertyColumns = [
   {
     accessorKey: "Actions",
     header: "",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
+      const property = row.original;
       const id = row.getValue("id");
 
       return (
-        <button className="text-white/20">
-          <EllipsisVertical size={18} />
-        </button>
+        <PropertyActions property={property} table={table} />
       );
     },
   },
 ];
+
+// Property Actions Dropdown Component
+function PropertyActions({ property, table }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
+  const handleEdit = () => {
+    setOpen(false);
+    // Navigate to edit page - you may need to create this route
+    window.location.href = `/addproperties?edit=${property.id}`;
+  };
+
+  const handleDelete = async () => {
+    setOpen(false);
+    if (!confirm(`Are you sure you want to delete "${property.title}"?`)) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from("properties")
+      .delete()
+      .eq("id", property.id);
+
+    if (error) {
+      toast.error(`Failed to delete property: ${error.message}`, {
+        style: TOAST_STYLE,
+      });
+    } else {
+      toast.success("Property deleted successfully", {
+        style: TOAST_STYLE,
+      });
+      // Refresh the table
+      if (table.options.meta?.refreshData) {
+        table.options.meta.refreshData();
+      } else {
+        window.location.reload();
+      }
+    }
+  };
+
+  const handleMarkAsSold = async () => {
+    setOpen(false);
+    if (!confirm(`Mark "${property.title}" as sold?`)) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from("properties")
+      .update({ status: "sold", sold_at: new Date().toISOString() })
+      .eq("id", property.id);
+
+    if (error) {
+      toast.error(`Failed to mark as sold: ${error.message}`, {
+        style: TOAST_STYLE,
+      });
+    } else {
+      toast.success("Property marked as sold", {
+        style: TOAST_STYLE,
+      });
+      // Refresh the table
+      if (table.options.meta?.refreshData) {
+        table.options.meta.refreshData();
+      } else {
+        window.location.reload();
+      }
+    }
+  };
+
+  const handleViewOwner = () => {
+    setOpen(false);
+    // Show owner information - you may need to implement a modal or page
+    alert(`Owner information for "${property.title}"\n\nOwner details would be displayed here.`);
+  };
+
+  const handleViewProperty = () => {
+    setOpen(false);
+    // Navigate to property view page
+    window.open(`/listing/${property.id}`, "_blank");
+  };
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(!open);
+          }}
+          className="text-white/60 hover:text-white transition-colors"
+        >
+          <EllipsisVertical size={18} />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          open={open}
+          align="end"
+          className="min-w-[180px]"
+        >
+          <DropdownMenuItem onSelect={handleViewProperty} icon={Eye}>
+            View Property
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleEdit} icon={Edit}>
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={handleMarkAsSold} icon={CheckCircle}>
+            Mark as Sold
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleViewOwner} icon={User}>
+            View Owner
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={handleDelete}
+            icon={Trash2}
+            className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}

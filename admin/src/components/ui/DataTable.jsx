@@ -26,11 +26,12 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 
-export function DataTable({ columns, data }) {
+export function DataTable({ columns, data, meta }) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    meta,
   });
 
   return (

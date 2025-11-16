@@ -1,5 +1,16 @@
 import { Card } from "@/components/ui/card";
-import { EllipsisVertical, Bed, ShowerHead } from "lucide-react";
+import { EllipsisVertical, Bed, ShowerHead, Edit, Trash2, CheckCircle, User, Eye } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { useState, useRef, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { toast } from "react-hot-toast";
+import { TOAST_STYLE } from "@/lib/utils";
 
 export default function MobileTable({ table }) {
   return (
@@ -45,10 +56,8 @@ export default function MobileTable({ table }) {
         }
 
         return (
-          <Card className="relative mb-4 text-white p-4 gap-1">
-            <button className="absolute top-4 right-4">
-              <EllipsisVertical size={16} />
-            </button>
+          <Card key={row.id} className="relative mb-4 text-white p-4 gap-1">
+            <MobilePropertyActions property={row} />
             <p className="font-medium text-base">{row.title}</p>
             <p className="text-sm text-white/60">{row.location}</p>
             <div className="flex gap-4">
@@ -80,6 +89,132 @@ export default function MobileTable({ table }) {
           </Card>
         );
       })}
+    </div>
+  );
+}
+
+// Mobile Property Actions Dropdown Component
+function MobilePropertyActions({ property }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
+  const handleEdit = () => {
+    setOpen(false);
+    window.location.href = `/addproperties?edit=${property.id}`;
+  };
+
+  const handleDelete = async () => {
+    setOpen(false);
+    if (!confirm(`Are you sure you want to delete "${property.title}"?`)) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from("properties")
+      .delete()
+      .eq("id", property.id);
+
+    if (error) {
+      toast.error(`Failed to delete property: ${error.message}`, {
+        style: TOAST_STYLE,
+      });
+    } else {
+      toast.success("Property deleted successfully", {
+        style: TOAST_STYLE,
+      });
+      window.location.reload();
+    }
+  };
+
+  const handleMarkAsSold = async () => {
+    setOpen(false);
+    if (!confirm(`Mark "${property.title}" as sold?`)) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from("properties")
+      .update({ status: "sold", sold_at: new Date().toISOString() })
+      .eq("id", property.id);
+
+    if (error) {
+      toast.error(`Failed to mark as sold: ${error.message}`, {
+        style: TOAST_STYLE,
+      });
+    } else {
+      toast.success("Property marked as sold", {
+        style: TOAST_STYLE,
+      });
+      window.location.reload();
+    }
+  };
+
+  const handleViewOwner = () => {
+    setOpen(false);
+    alert(`Owner information for "${property.title}"\n\nOwner details would be displayed here.`);
+  };
+
+  const handleViewProperty = () => {
+    setOpen(false);
+    window.open(`/listing/${property.id}`, "_blank");
+  };
+
+  return (
+    <div className="absolute top-4 right-4" ref={menuRef}>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(!open);
+          }}
+          className="text-white/60 hover:text-white transition-colors"
+        >
+          <EllipsisVertical size={16} />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          open={open}
+          align="end"
+          className="min-w-[180px]"
+        >
+          <DropdownMenuItem onSelect={handleViewProperty} icon={Eye}>
+            View Property
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleEdit} icon={Edit}>
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={handleMarkAsSold} icon={CheckCircle}>
+            Mark as Sold
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleViewOwner} icon={User}>
+            View Owner
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={handleDelete}
+            icon={Trash2}
+            className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
