@@ -13,9 +13,13 @@ import { SearchProvider } from "./components/SearchContext";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { AnimatePresence } from "framer-motion";
+import { useVisitorTracking } from "./hooks/useVisitorTracking";
 
 function App() {
   const location = useLocation();
+  // Track visitors on public site only (NOT admin panel)
+  // This tracks: Home, Listings, Property pages, Search - all public pages
+  useVisitorTracking();
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
