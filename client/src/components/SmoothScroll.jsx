@@ -40,13 +40,8 @@ export default function SmoothScroll({ children }) {
   // Scroll to top on route change - use immediate for smoother transitions
   useEffect(() => {
     if (lenisRef.current) {
-      // Small delay to ensure page transition starts first
-      const timeout = setTimeout(() => {
-        if (lenisRef.current) {
-          lenisRef.current.scrollTo(0, { immediate: true });
-        }
-      }, 50);
-      return () => clearTimeout(timeout);
+      // Immediate scroll to prevent any visual glitches
+      lenisRef.current.scrollTo(0, { immediate: true });
     }
   }, [location.pathname]);
 

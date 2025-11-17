@@ -9,20 +9,22 @@ function Search({ filters, setFilters, filterOpen, setFilterOpen }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Optimize loading - reduce delay for smoother experience
     const handleLoad = () => {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setLoading(false);
-      }, 300);
+      }, 150);
+      return () => clearTimeout(timer);
     };
     if (document.readyState === "complete") {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setLoading(false);
-      }, 300);
+      }, 150);
+      return () => clearTimeout(timer);
     } else {
       window.addEventListener("load", handleLoad);
+      return () => window.removeEventListener("load", handleLoad);
     }
-
-    return () => window.removeEventListener("load", handleLoad);
   }, []);
 
   const [properties, setProperties] = useState([]);

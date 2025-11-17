@@ -19,22 +19,24 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Optimize loading - reduce delay for smoother experience
     const handleLoad = () => {
       if (imgLoaded) {
-        setTimeout(() => {
+        const timer = setTimeout(() => {
           setLoading(false);
-        }, 300);
+        }, 150);
+        return () => clearTimeout(timer);
       }
     };
     if (document.readyState === "complete" && imgLoaded) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setLoading(false);
-      }, 300);
+      }, 150);
+      return () => clearTimeout(timer);
     } else {
       window.addEventListener("load", handleLoad);
+      return () => window.removeEventListener("load", handleLoad);
     }
-
-    return () => window.removeEventListener("load", handleLoad);
   }, [imgLoaded]);
 
   const [properties, setProperties] = useState([]);

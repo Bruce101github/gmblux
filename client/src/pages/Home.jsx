@@ -12,7 +12,7 @@ import {
 import HeroImg from "../assets/hero.jpg";
 import "../index.css";
 import { useMediaQuery } from "react-responsive";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import LoadingOverlay from "@/components/LoadingOverlay";
@@ -52,22 +52,28 @@ function Home({
   }, [location.pathname]);
 
   useEffect(() => {
+    // Optimize loading - reduce delay and check if content is ready
     const handleLoad = () => {
       if (heroLoaded) {
-        setTimeout(() => {
+        // Small delay to ensure smooth transition
+        const timer = setTimeout(() => {
           setLoading(false);
-        }, 300);
+        }, 150);
+        return () => clearTimeout(timer);
       }
     };
+    
     if (document.readyState === "complete") {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setLoading(false);
-      }, 300);
+      }, 150);
+      return () => clearTimeout(timer);
     } else {
       window.addEventListener("load", handleLoad);
+      return () => {
+        window.removeEventListener("load", handleLoad);
+      };
     }
-
-    return () => window.removeEventListener("load", handleLoad);
   }, [heroLoaded]);
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -83,9 +89,7 @@ function Home({
       />
       <StructuredData data={generateOrganizationSchema()} />
       <div className="px-[5%] w-full">
-      {menuOpen ? (
-        <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      ) : null}
+      <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       {filterOpen ? (
         <Filter
           filterOpen={filterOpen}
@@ -253,17 +257,32 @@ function MobileHero() {
 }
 
 function SideMenu({ menuOpen, setMenuOpen }) {
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   return (
-    <motion.div
-      initial={{ x: "100%" }}
-      animate={{ x: menuOpen ? 0 : "100%" }}
-      transition={
-        menuOpen
-          ? { duration: 0.6, ease: "easeOut" }
-          : { duration: 0.4, ease: "easeIn" }
-      }
-      className="absolute top-0 w-full h-full bg-[#121420] mx-[-5%] px-[5%] fixed py-[20px] z-1000 overflow-hidden"
-    >
+    <AnimatePresence>
+      {menuOpen && (
+        <motion.div
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "100%" }}
+          transition={{
+            duration: 0.4,
+            ease: [0.25, 0.1, 0.25, 1],
+          }}
+          className="fixed inset-0 w-screen h-screen bg-[#121420] px-[5%] py-[20px] z-[9999] overflow-y-auto"
+          style={{ willChange: "transform" }}
+        >
       <div className="flex justify-end ">
         <button
           className="text-white/90 bg-white/5 p-1.5 rounded-full w-10 h-10 flex justify-center items-center"
@@ -346,7 +365,9 @@ function SideMenu({ menuOpen, setMenuOpen }) {
             </a>
         </div>
       </div>
-    </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
