@@ -11,8 +11,11 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { SearchProvider } from "./components/SearchContext";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import { useVisitorTracking } from "./hooks/useVisitorTracking";
 
 function App() {
+  // Track visitors on public site only (NOT admin panel)
+  useVisitorTracking();
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
