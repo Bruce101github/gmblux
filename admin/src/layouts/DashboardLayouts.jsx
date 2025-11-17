@@ -53,27 +53,27 @@ const items = [
   },
   {
     title: "Booking",
-    url: "#",
+    url: "/bookings",
     icon: ListPlus,
   },
   {
     title: "Customers",
-    url: "#",
+    url: "/customers",
     icon: Users,
   },
   {
     title: "Marketing",
-    url: "#",
+    url: "/marketing",
     icon: Megaphone,
   },
   {
     title: "Reports",
-    url: "#",
+    url: "/reports",
     icon: Search,
   },
   {
     title: "Tools",
-    url: "#",
+    url: "/tools",
     icon: DraftingCompass,
   },
 ];
@@ -81,12 +81,12 @@ const items = [
 const lowerItems = [
   {
     title: "Settings",
-    url: "#",
+    url: "/settings",
     icon: Settings,
   },
   {
     title: "Help",
-    url: "#",
+    url: "/help",
     icon: BadgeQuestionMark,
   },
 ];

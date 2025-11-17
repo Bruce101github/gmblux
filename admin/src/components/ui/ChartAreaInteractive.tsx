@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { supabase } from "@/lib/supabaseClient";
+import { useEffect, useState } from "react";
 
 import {
   Card,
@@ -28,7 +30,8 @@ import {
 
 export const description = "An interactive area chart";
 
-const chartData = [
+// Mock data as fallback
+const mockChartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
   { date: "2024-04-02", desktop: 97, mobile: 180 },
   { date: "2024-04-03", desktop: 167, mobile: 120 },
@@ -138,17 +141,88 @@ const chartConfig = {
 
 export function ChartAreaInteractive() {
   const [timeRange, setTimeRange] = React.useState("90d");
+  const [chartData, setChartData] = useState(mockChartData);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchVisitorData() {
+      try {
+        const now = new Date();
+        let daysToSubtract = 90;
+        if (timeRange === "30d") {
+          daysToSubtract = 30;
+        } else if (timeRange === "7d") {
+          daysToSubtract = 7;
+        }
+        const startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - daysToSubtract);
+
+        // Fetch visitor data grouped by date and device type
+        const { data, error } = await supabase
+          .from("visitor_tracking")
+          .select("date, device_type, visit_count")
+          .gte("date", startDate.toISOString().split("T")[0])
+          .order("date", { ascending: true });
+
+        if (error) throw error;
+
+        // Group data by date and sum visit counts
+        const groupedByDate = {};
+        data?.forEach((record) => {
+          const date = record.date;
+          if (!groupedByDate[date]) {
+            groupedByDate[date] = { date, desktop: 0, mobile: 0, tablet: 0 };
+          }
+          const count = record.visit_count || 1;
+          if (record.device_type === "desktop") {
+            groupedByDate[date].desktop += count;
+          } else if (record.device_type === "mobile") {
+            groupedByDate[date].mobile += count;
+          } else if (record.device_type === "tablet") {
+            groupedByDate[date].mobile += count; // Combine tablet with mobile for chart
+          }
+        });
+
+        // Convert to array and fill missing dates with 0
+        const dateArray = [];
+        const currentDate = new Date(startDate);
+        const endDate = new Date(now);
+
+        while (currentDate <= endDate) {
+          const dateStr = currentDate.toISOString().split("T")[0];
+          dateArray.push(
+            groupedByDate[dateStr] || {
+              date: dateStr,
+              desktop: 0,
+              mobile: 0,
+            }
+          );
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        setChartData(dateArray);
+      } catch (error) {
+        // Fallback to mock data on error
+        console.error("Error fetching visitor data:", error);
+        setChartData(mockChartData);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchVisitorData();
+  }, [timeRange]);
 
   const filteredData = chartData.filter((item) => {
     const date = new Date(item.date);
-    const referenceDate = new Date("2024-06-30");
+    const now = new Date();
     let daysToSubtract = 90;
     if (timeRange === "30d") {
       daysToSubtract = 30;
     } else if (timeRange === "7d") {
       daysToSubtract = 7;
     }
-    const startDate = new Date(referenceDate);
+    const startDate = new Date(now);
     startDate.setDate(startDate.getDate() - daysToSubtract);
     return date >= startDate;
   });
@@ -183,11 +257,16 @@ export function ChartAreaInteractive() {
         </Select>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <AreaChart data={filteredData}>
+        {loading ? (
+          <div className="flex items-center justify-center h-[250px]">
+            <p className="text-white/60">Loading visitor data...</p>
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[250px] w-full"
+          >
+            <AreaChart data={filteredData}>
             <defs>
               <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -260,6 +339,7 @@ export function ChartAreaInteractive() {
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>
         </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );

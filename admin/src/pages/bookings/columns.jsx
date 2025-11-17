@@ -1,12 +1,86 @@
 import { EllipsisVertical } from "lucide-react";
 import { parseISO, format } from "date-fns";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { supabase } from "@/lib/supabaseClient";
+import { toast } from "react-hot-toast";
+import { TOAST_STYLE } from "@/lib/utils";
+import { useState } from "react";
 
 const isoDate = "2025-11-03T09:34:03.278773+00:00";
 const date = parseISO(isoDate);
 
 const formatted = format(date, "EEE dd MMM, yyyy");
 
-export const columns = [
+// Actions cell component
+function BookingActions({ booking, refreshData }) {
+  const [open, setOpen] = useState(false);
+
+  const handleStatusUpdate = async (newStatus) => {
+    try {
+      const { error } = await supabase
+        .from("booking")
+        .update({ status: newStatus })
+        .eq("id", booking.id);
+
+      if (error) throw error;
+
+      toast.success(`Booking status updated to ${newStatus}`, {
+        style: TOAST_STYLE,
+      });
+      setOpen(false);
+      if (refreshData) refreshData();
+    } catch (error) {
+      toast.error(`Failed to update status: ${error.message}`, {
+        style: TOAST_STYLE,
+      });
+    }
+  };
+
+  const statusOptions = [
+    { value: "pending", label: "Pending" },
+    { value: "contacted", label: "Contacted" },
+    { value: "scheduled", label: "Scheduled" },
+    { value: "in progress", label: "In Progress" },
+    { value: "completed", label: "Completed" },
+    { value: "canceled", label: "Canceled" },
+  ];
+
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger className="text-white/20 hover:text-white/40 transition-colors">
+        <EllipsisVertical size={18} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-[180px]">
+        <div className="p-2">
+          <p className="text-white/60 text-xs mb-2 font-medium">Update Status</p>
+          <div className="space-y-1">
+            {statusOptions.map((option) => (
+              <DropdownMenuItem
+                key={option.value}
+                onClick={() => handleStatusUpdate(option.value)}
+                className={`cursor-pointer ${
+                  booking.status === option.value ? "bg-yellow-400/20" : ""
+                }`}
+              >
+                {option.label}
+                {booking.status === option.value && (
+                  <span className="ml-auto text-xs text-yellow-400">✓</span>
+                )}
+              </DropdownMenuItem>
+            ))}
+          </div>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+export const columns = (refreshData) => [
   {
     accessorKey: "first_name",
     header: "Name",
@@ -90,14 +164,8 @@ export const columns = [
   {
     accessorKey: "Actions",
     header: "",
-    cell: ({ row }) => {
-      const id = row.getValue("id");
-
-      return (
-        <button className="text-white/20">
-          <EllipsisVertical size={18} />
-        </button>
-      );
-    },
+    cell: ({ row }) => (
+      <BookingActions booking={row.original} refreshData={refreshData} />
+    ),
   },
 ];

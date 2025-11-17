@@ -35,6 +35,12 @@ export default function Dashboard() {
   const [totalRequest, setTotalRequest] = useState("");
   const [upcomingTour, setUpcomingTour] = useState("");
   const [canceled, setCanceled] = useState("");
+  const [trends, setTrends] = useState({
+    newRequest: 0,
+    totalRequest: 0,
+    upcomingTour: 0,
+    canceled: 0,
+  });
 
   useEffect(() => {
     async function fetchBookings() {
@@ -85,6 +91,7 @@ export default function Dashboard() {
 
     setTableInfo(merged);
   }, [bookings, properties]);
+
   const matches = bookings.filter((booking) => booking.status === "pending");
   const tours = bookings.filter(
     (booking) =>
@@ -100,6 +107,95 @@ export default function Dashboard() {
     setUpcomingTour(tours.length);
     setCanceled(canceledBookings.length);
   }, [bookings]);
+
+  // Calculate trends
+  useEffect(() => {
+    async function calculateTrends() {
+      const now = new Date();
+      const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+      const lastYear = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+
+      // New requests trend (last month)
+      const { count: newRequestsLastMonth } = await supabase
+        .from("booking")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending")
+        .gte("created_at", lastMonth.toISOString())
+        .lt("created_at", new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 1).toISOString());
+
+      const { count: newRequestsThisMonth } = await supabase
+        .from("booking")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending")
+        .gte("created_at", new Date(now.getFullYear(), now.getMonth(), 1).toISOString());
+
+      const newRequestTrend = newRequestsLastMonth > 0
+        ? (((newRequestsThisMonth || 0) - newRequestsLastMonth) / newRequestsLastMonth * 100).toFixed(0)
+        : 0;
+
+      // Total requests trend (last month)
+      const { count: totalLastMonth } = await supabase
+        .from("booking")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", lastMonth.toISOString())
+        .lt("created_at", new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 1).toISOString());
+
+      const { count: totalThisMonth } = await supabase
+        .from("booking")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", new Date(now.getFullYear(), now.getMonth(), 1).toISOString());
+
+      const totalRequestTrend = totalLastMonth > 0
+        ? (((totalThisMonth || 0) - totalLastMonth) / totalLastMonth * 100).toFixed(0)
+        : 0;
+
+      // Upcoming tours trend (last month)
+      const { count: toursLastMonth } = await supabase
+        .from("booking")
+        .select("*", { count: "exact", head: true })
+        .eq("request_type", "Tour")
+        .eq("status", "scheduled")
+        .gte("created_at", lastMonth.toISOString())
+        .lt("created_at", new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 1).toISOString());
+
+      const { count: toursThisMonth } = await supabase
+        .from("booking")
+        .select("*", { count: "exact", head: true })
+        .eq("request_type", "Tour")
+        .eq("status", "scheduled")
+        .gte("created_at", new Date(now.getFullYear(), now.getMonth(), 1).toISOString());
+
+      const upcomingTourTrend = toursLastMonth > 0
+        ? (((toursThisMonth || 0) - toursLastMonth) / toursLastMonth * 100).toFixed(0)
+        : 0;
+
+      // Canceled trend (last year)
+      const { count: canceledLastYear } = await supabase
+        .from("booking")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "canceled")
+        .gte("created_at", lastYear.toISOString())
+        .lt("created_at", new Date(lastYear.getFullYear() + 1, lastYear.getMonth(), 1).toISOString());
+
+      const { count: canceledThisYear } = await supabase
+        .from("booking")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "canceled")
+        .gte("created_at", new Date(now.getFullYear(), 0, 1).toISOString());
+
+      const canceledTrend = canceledLastYear > 0
+        ? (((canceledThisYear || 0) - canceledLastYear) / canceledLastYear * 100).toFixed(0)
+        : 0;
+
+      setTrends({
+        newRequest: parseFloat(newRequestTrend),
+        totalRequest: parseFloat(totalRequestTrend),
+        upcomingTour: parseFloat(upcomingTourTrend),
+        canceled: parseFloat(canceledTrend),
+      });
+    }
+    calculateTrends();
+  }, [bookings.length]);
 
   return (
     <>
@@ -118,10 +214,17 @@ export default function Dashboard() {
           <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center text-white/60 text-xs lg:text-sm justify-between">
             <div className="flex gap-1.5">
               {" "}
-              <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
-                <TrendingUp color="#93FF96" size={18} />{" "}
-                <p className="text-[#93FF96]  text-xs lg:text-sm">17%</p>
-              </div>
+              {trends.newRequest >= 0 ? (
+                <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
+                  <TrendingUp color="#93FF96" size={18} />{" "}
+                  <p className="text-[#93FF96]  text-xs lg:text-sm">{Math.abs(trends.newRequest)}%</p>
+                </div>
+              ) : (
+                <div className="flex gap-1 bg-red-400/10 px-1.5 rounded-3xl ">
+                  <TrendingDown color="red" size={18} />{" "}
+                  <p className="text-red-500  text-xs lg:text-sm">{Math.abs(trends.newRequest)}%</p>
+                </div>
+              )}
               <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
             <span className="flex items-center gap-1.5">
@@ -141,10 +244,17 @@ export default function Dashboard() {
           <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center text-white/60 text-xs lg:text-sm justify-between">
             <div className="flex gap-1.5">
               {" "}
-              <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
-                <TrendingUp color="#93FF96" size={18} />{" "}
-                <p className="text-[#93FF96]  text-xs lg:text-sm">9%</p>
-              </div>
+              {trends.totalRequest >= 0 ? (
+                <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
+                  <TrendingUp color="#93FF96" size={18} />{" "}
+                  <p className="text-[#93FF96]  text-xs lg:text-sm">{Math.abs(trends.totalRequest)}%</p>
+                </div>
+              ) : (
+                <div className="flex gap-1 bg-red-400/10 px-1.5 rounded-3xl ">
+                  <TrendingDown color="red" size={18} />{" "}
+                  <p className="text-red-500  text-xs lg:text-sm">{Math.abs(trends.totalRequest)}%</p>
+                </div>
+              )}
               <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
             <span className="flex items-center gap-1.5">
@@ -164,10 +274,17 @@ export default function Dashboard() {
           <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center text-white/60 text-xs lg:text-sm justify-between">
             <div className="flex gap-1.5">
               {" "}
-              <div className="flex gap-1 bg-red-400/10 px-1.5 rounded-3xl ">
-                <TrendingDown color="red" size={18} />{" "}
-                <p className="text-red-500  text-xs lg:text-sm">10%</p>
-              </div>
+              {trends.upcomingTour >= 0 ? (
+                <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
+                  <TrendingUp color="#93FF96" size={18} />{" "}
+                  <p className="text-[#93FF96]  text-xs lg:text-sm">{Math.abs(trends.upcomingTour)}%</p>
+                </div>
+              ) : (
+                <div className="flex gap-1 bg-red-400/10 px-1.5 rounded-3xl ">
+                  <TrendingDown color="red" size={18} />{" "}
+                  <p className="text-red-500  text-xs lg:text-sm">{Math.abs(trends.upcomingTour)}%</p>
+                </div>
+              )}
               <p className="text-white/60 text-xs lg:text-sm">last month</p>
             </div>
             <span className="flex items-center gap-1.5">
@@ -187,10 +304,17 @@ export default function Dashboard() {
           <div className="h-[30px] flex px-2 lg:px-5 gap-2 items-center text-white/60 text-xs lg:text-sm justify-between">
             <div className="flex gap-1.5">
               {" "}
-              <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
-                <TrendingUp color="#93FF96" size={18} />{" "}
-                <p className="text-[#93FF96]  text-xs lg:text-sm">10%</p>
-              </div>
+              {trends.canceled >= 0 ? (
+                <div className="flex gap-1 bg-[#93FF96]/10 px-1.5 rounded-3xl ">
+                  <TrendingUp color="#93FF96" size={18} />{" "}
+                  <p className="text-[#93FF96]  text-xs lg:text-sm">{Math.abs(trends.canceled)}%</p>
+                </div>
+              ) : (
+                <div className="flex gap-1 bg-red-400/10 px-1.5 rounded-3xl ">
+                  <TrendingDown color="red" size={18} />{" "}
+                  <p className="text-red-500  text-xs lg:text-sm">{Math.abs(trends.canceled)}%</p>
+                </div>
+              )}
               <p className="text-white/60 text-xs lg:text-sm">last year</p>
             </div>
             <span className="flex items-center gap-1.5">
@@ -217,7 +341,13 @@ export default function Dashboard() {
               <>
                 {/* Desktop Table */}
                 <div className="hidden lg:block">
-                  <DataTable columns={columns} data={tableInfo} />
+                  <DataTable
+                    columns={columns(() => {
+                      fetchBookings();
+                      fetchProperties();
+                    })}
+                    data={tableInfo}
+                  />
                 </div>
                 {/* Mobile Table */}
                 <div className="lg:hidden">
