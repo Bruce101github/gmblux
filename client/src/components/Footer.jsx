@@ -85,7 +85,10 @@ export default function Footer() {
               type="email"
               required
             />
-            <button className="h-[40px] w-[47px] bg-white/5 flex justify-center items-center rounded-full absolute top-0 right-0">
+            <button 
+              onClick={handleSubmit}
+              className="h-[40px] w-[47px] bg-white/5 flex justify-center items-center rounded-full absolute top-0 right-0"
+            >
               <ChevronRight />
             </button>
           </div>

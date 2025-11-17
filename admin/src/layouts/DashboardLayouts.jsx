@@ -109,7 +109,9 @@ export default function DashboardLayout({ children }) {
         .eq("user_id", user.id)
         .single();
 
-      if (error) console.error(error);
+      if (error) {
+        // Error fetching profile - profile will remain null
+      }
       setProfile(data);
     };
     if (user?.id) fetchProfile();

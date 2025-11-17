@@ -18,16 +18,16 @@ export function AuthProvider({ children }) {
         .maybeSingle(); // ✅ avoid error if no row
 
       if (error) {
-        console.error("Error fetching admin status:", error);
+        // Error fetching admin status - user is not admin
         setIsAdmin(false);
       } else if (!data) {
-        console.warn("No admin record found for user:", currentUser.id);
+        // No admin record found - user is not admin
         setIsAdmin(false);
       } else {
         setIsAdmin(data.is_admin);
       }
     } catch (err) {
-      console.error("Unexpected error checking admin:", err);
+      // Unexpected error - user is not admin
       setIsAdmin(false);
     }
   };
@@ -50,7 +50,7 @@ export function AuthProvider({ children }) {
 
         setLoading(false);
       } catch (err) {
-        console.error("Error initializing auth:", err);
+        // Error initializing auth - set loading to false
         setLoading(false);
       }
 

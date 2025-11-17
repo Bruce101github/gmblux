@@ -15,7 +15,7 @@ import { useMediaQuery } from "react-responsive";
 import { motion } from "framer-motion";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import LoadingOverlay from "@/components/LoadingOverlay";
 import { Label } from "@/components/ui/label";
 import instagram from "../assets/instagram.svg";
 import tiktok from "../assets/tiktok.svg";
@@ -73,20 +73,9 @@ function Home({
   const isMobile = useMediaQuery({ maxWidth: 767 });
   useEffect(() => {}, [filters]);
 
-  if (loading) {
-    return (
-      <div
-        className={`fixed inset-0 z-50 flex items-center justify-center bg-[#121420] transition-opacity duration-400 ${
-          loading ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
-      </div>
-    );
-  }
-
   return (
     <>
+      <LoadingOverlay loading={loading} />
       <SEOHead
         title="GMB Luxury Properties - Premium Real Estate in Ghana | Houses, Apartments & Land for Sale & Rent"
         description="Find luxury homes, apartments, and properties for sale and rent in Ghana. Browse premium real estate listings in Accra, Kumasi, and across Ghana. Expert property management and consultation services."
@@ -134,7 +123,14 @@ function Home({
       </div>
       <div className="overflow-x-auto md:overflow-x-visible no-scrollbar">
         <div className="flex md:grid md:grid-cols-3 gap-4 w-max md:w-full text-white">
-          <div className="bg-white rounded-xl p-4  flex gap-x-2 items-center min-w-[250px]">
+          <motion.div 
+            className="bg-white rounded-xl p-4  flex gap-x-2 items-center min-w-[250px] hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.3, delay: 0.05 }}
+            style={{ willChange: "opacity, transform" }}
+          >
             <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
               <Building2 className="w-full h-full object-cover" />
             </div>
@@ -146,8 +142,15 @@ function Home({
                 Hassle-free management for your investments.
               </p>
             </div>
-          </div>
-          <div className="bg-white rounded-lg p-4 flex gap-4 items-center min-w-[250px]">
+          </motion.div>
+          <motion.div 
+            className="bg-white rounded-lg p-4 flex gap-4 items-center min-w-[250px] hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            style={{ willChange: "opacity, transform" }}
+          >
             <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
               <CalendarCheck2 className="w-full h-full object-cover" />
             </div>
@@ -159,8 +162,15 @@ function Home({
                 Schedule your consultation quickly and conveniently.
               </p>
             </div>
-          </div>
-          <div className="bg-white rounded-xl p-4 flex gap-x-2 items-center min-w-[250px]">
+          </motion.div>
+          <motion.div 
+            className="bg-white rounded-xl p-4 flex gap-x-2 items-center min-w-[250px] hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.3, delay: 0.15 }}
+            style={{ willChange: "opacity, transform" }}
+          >
             <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
               <MapPin className="w-full h-full object-cover" />
             </div>
@@ -172,7 +182,7 @@ function Home({
                 Browse handpicked properties for every need.
               </p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
       <div className="my-[100px]">

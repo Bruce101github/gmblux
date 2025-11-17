@@ -14,7 +14,6 @@ export default function Properties() {
   const [tableInfo, setTableInfo] = useState([]);
   const [propertyCount, setPropertyCount] = useState(0);
   const [perPage, setPerPage] = useState(20);
-  const [page, setPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
   const countProperties = async () => {
@@ -60,10 +59,6 @@ export default function Properties() {
           Property{" "}
         </h2>
         <div className="flex gap-2 lg:gap-6 gap-2">
-          <button className="border border-gray-400 px-4 py-2 rounded-sm text-gray-500">
-            {" "}
-            Discard{" "}
-          </button>
           <Link
             to="/addproperties/"
             className="bg-yellow-400 px-4 py-2 rounded-sm text-white font-bold flex gap-1"
@@ -101,7 +96,7 @@ export default function Properties() {
         <div className="flex justify-between items-center text-white mt-5">
           {" "}
           <div className="bg-[#121420] p-2 rounded-sm text-xs">
-            {`Page ${page + 1} of ${totalPages}`}
+            {`Page ${currentPage} of ${totalPages}`}
           </div>
           {/*change this to 1*/}
           {totalPages > 1 ? (

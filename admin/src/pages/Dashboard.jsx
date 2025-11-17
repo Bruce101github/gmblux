@@ -44,7 +44,7 @@ export default function Dashboard() {
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.error("Error fetching bookings:", error);
+        // Silently handle error - bookings will remain empty
         setBookings([]);
       } else {
         setBookings(data || []);
@@ -57,7 +57,7 @@ export default function Dashboard() {
         .select("*");
 
       if (error) {
-        console.error("Error fetching properties:", error);
+        // Silently handle error - properties will remain empty
         setProperties([]);
       } else {
         setProperties(properties || []);

@@ -60,53 +60,77 @@
             return;
           }
           
+          // Function to update meta tags
+          function updateMetaTags(imageUrl) {
+            if (!imageUrl) return;
+            
+            // Update og:image
+            let ogImage = document.querySelector('meta[property="og:image"]');
+            if (ogImage) {
+              ogImage.setAttribute('content', imageUrl);
+            } else {
+              ogImage = document.createElement('meta');
+              ogImage.setAttribute('property', 'og:image');
+              ogImage.setAttribute('content', imageUrl);
+              document.head.appendChild(ogImage);
+            }
+            
+            // Update og:image:secure_url
+            let ogImageSecure = document.querySelector('meta[property="og:image:secure_url"]');
+            if (ogImageSecure) {
+              ogImageSecure.setAttribute('content', imageUrl);
+            } else {
+              ogImageSecure = document.createElement('meta');
+              ogImageSecure.setAttribute('property', 'og:image:secure_url');
+              ogImageSecure.setAttribute('content', imageUrl);
+              document.head.appendChild(ogImageSecure);
+            }
+            
+            // Update twitter:image
+            let twitterImage = document.querySelector('meta[name="twitter:image"]');
+            if (twitterImage) {
+              twitterImage.setAttribute('content', imageUrl);
+            } else {
+              twitterImage = document.createElement('meta');
+              twitterImage.setAttribute('name', 'twitter:image');
+              twitterImage.setAttribute('content', imageUrl);
+              document.head.appendChild(twitterImage);
+            }
+          }
+          
           // Fetch property data and update meta tags immediately
           // This ensures crawlers see the correct image even before React loads
-          fetch(supabaseUrl + '/rest/v1/properties?id=eq.' + propertyId + '&select=images', {
+          fetch(supabaseUrl + '/rest/v1/properties?id=eq.' + encodeURIComponent(propertyId) + '&select=images', {
             headers: {
               'apikey': supabaseAnonKey,
-              'Content-Type': 'application/json'
+              'Authorization': 'Bearer ' + supabaseAnonKey,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
             }
           })
-          .then(response => response.json())
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok: ' + response.status);
+            }
+            return response.json();
+          })
           .then(data => {
-            if (data && data[0] && data[0].images && data[0].images[0]) {
+            if (data && Array.isArray(data) && data.length > 0 && data[0].images && Array.isArray(data[0].images) && data[0].images.length > 0) {
               const imageUrl = data[0].images[0];
-              // Update og:image immediately
-              let ogImage = document.querySelector('meta[property="og:image"]');
-              if (ogImage) {
-                ogImage.setAttribute('content', imageUrl);
-              } else {
-                ogImage = document.createElement('meta');
-                ogImage.setAttribute('property', 'og:image');
-                ogImage.setAttribute('content', imageUrl);
-                document.head.appendChild(ogImage);
-              }
-              // Update og:image:secure_url
-              let ogImageSecure = document.querySelector('meta[property="og:image:secure_url"]');
-              if (ogImageSecure) {
-                ogImageSecure.setAttribute('content', imageUrl);
-              } else {
-                ogImageSecure = document.createElement('meta');
-                ogImageSecure.setAttribute('property', 'og:image:secure_url');
-                ogImageSecure.setAttribute('content', imageUrl);
-                document.head.appendChild(ogImageSecure);
-              }
-              // Update twitter:image
-              let twitterImage = document.querySelector('meta[name="twitter:image"]');
-              if (twitterImage) {
-                twitterImage.setAttribute('content', imageUrl);
-              } else {
-                twitterImage = document.createElement('meta');
-                twitterImage.setAttribute('name', 'twitter:image');
-                twitterImage.setAttribute('content', imageUrl);
-                document.head.appendChild(twitterImage);
+              if (imageUrl && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+                updateMetaTags(imageUrl);
               }
             }
           })
           .catch(err => {
             // Silently fail - React will handle it
+            // For debugging, you can uncomment:
+            // console.error('Pre-render fetch failed:', err);
           });
+          
+          // Also try to update immediately if property ID is in URL hash or query
+          // This is a fallback for validators that might not wait for async fetch
+          // Note: This won't work without the property data, but React will handle it
         }
       })();
     </script>

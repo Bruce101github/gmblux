@@ -16,7 +16,6 @@ export default function DropArea({ setFiles }) {
               preview: URL.createObjectURL(resizedFile),
             });
           } catch (error) {
-            console.error("Error resizing image:", error);
             // Fallback to original file if resize fails
             return Object.assign(file, {
               preview: URL.createObjectURL(file),
@@ -68,7 +67,6 @@ export function DropButton({ setFiles }) {
               preview: URL.createObjectURL(resizedFile),
             });
           } catch (error) {
-            console.error("Error resizing image:", error);
             // Fallback to original file if resize fails
             return Object.assign(file, {
               preview: URL.createObjectURL(file),

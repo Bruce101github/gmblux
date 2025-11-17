@@ -3,7 +3,7 @@ import HouseImg from "../assets/Modern-House-PNG-Clipart.png";
 import { Link, useLocation } from "react-router-dom";
 import Pills from "@/components/Pills";
 import { useState, useEffect } from "react";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import LoadingOverlay from "@/components/LoadingOverlay";
 import Filter from "@/components/Filter";
 import { useSearch } from "@/components/SearchContext";
 
@@ -51,20 +51,9 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
     }));
   }, []);
 
-  if (loading) {
-    return (
-      <div
-        className={`fixed inset-0 z-50 flex items-center justify-center bg-[#121420] transition-opacity duration-400 ${
-          loading ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
-      </div>
-    );
-  }
-
   return (
     <div className="px-[5%] lg:px-[10%] my-2">
+      <LoadingOverlay loading={loading} />
       {filterOpen ? (
         <Filter
           filterOpen={filterOpen}

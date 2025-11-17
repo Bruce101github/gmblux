@@ -439,7 +439,7 @@ function Property() {
             <Link
               to="/booking"
               state={{ preset: "buy", propertyId: property.id }}
-              className="w-full py-2 border border-white/40 rounded-3xl"
+              className="w-full py-2 border border-white/40 rounded-3xl transition-all duration-200 hover:bg-white/10 hover:scale-[1.02] transform"
             >
               <p className="text-center">Buy</p>
             </Link>
@@ -447,7 +447,7 @@ function Property() {
             <Link
               to="/booking"
               state={{ preset: "rent", propertyId: property.id }}
-              className="w-full py-2 border border-white/40 rounded-3xl"
+              className="w-full py-2 border border-white/40 rounded-3xl transition-all duration-200 hover:bg-white/10 hover:scale-[1.02] transform"
             >
               <p className="text-center">Rent</p>
             </Link>
@@ -456,7 +456,7 @@ function Property() {
           <Link
             to="/booking"
             state={{ preset: "tour", propertyId: property.id }}
-            className="w-full py-2 bg-yellow-400 rounded-3xl font-medium"
+            className="w-full py-2 bg-yellow-400 rounded-3xl font-medium transition-all duration-200 hover:bg-yellow-500 hover:scale-[1.02] transform shadow-lg hover:shadow-xl"
           >
             <p className="text-center font-bold">Request a tour</p>
           </Link>

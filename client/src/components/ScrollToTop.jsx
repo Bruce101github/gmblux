@@ -5,7 +5,11 @@ export default function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Lenis will handle smooth scrolling, but we ensure scroll position resets
+    // The SmoothScroll component handles the actual scrolling
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
   }, [pathname]);
 
   return null;
