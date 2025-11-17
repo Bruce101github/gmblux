@@ -12,10 +12,10 @@ import {
 import HeroImg from "../assets/hero.jpg";
 import "../index.css";
 import { useMediaQuery } from "react-responsive";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import LoadingOverlay from "@/components/LoadingOverlay";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { Label } from "@/components/ui/label";
 import instagram from "../assets/instagram.svg";
 import tiktok from "../assets/tiktok.svg";
@@ -52,36 +52,41 @@ function Home({
   }, [location.pathname]);
 
   useEffect(() => {
-    // Optimize loading - reduce delay and check if content is ready
     const handleLoad = () => {
       if (heroLoaded) {
-        // Small delay to ensure smooth transition
-        const timer = setTimeout(() => {
+        setTimeout(() => {
           setLoading(false);
-        }, 150);
-        return () => clearTimeout(timer);
+        }, 300);
       }
     };
-    
     if (document.readyState === "complete") {
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         setLoading(false);
-      }, 150);
-      return () => clearTimeout(timer);
+      }, 300);
     } else {
       window.addEventListener("load", handleLoad);
-      return () => {
-        window.removeEventListener("load", handleLoad);
-      };
     }
+
+    return () => window.removeEventListener("load", handleLoad);
   }, [heroLoaded]);
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
   useEffect(() => {}, [filters]);
 
+  if (loading) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-[#121420] transition-opacity duration-400 ${
+          loading ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
+      </div>
+    );
+  }
+
   return (
     <>
-      <LoadingOverlay loading={loading} />
       <SEOHead
         title="GMB Luxury Properties - Premium Real Estate in Ghana | Houses, Apartments & Land for Sale & Rent"
         description="Find luxury homes, apartments, and properties for sale and rent in Ghana. Browse premium real estate listings in Accra, Kumasi, and across Ghana. Expert property management and consultation services."
@@ -89,7 +94,9 @@ function Home({
       />
       <StructuredData data={generateOrganizationSchema()} />
       <div className="px-[5%] w-full">
-      <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      {menuOpen ? (
+        <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      ) : null}
       {filterOpen ? (
         <Filter
           filterOpen={filterOpen}
@@ -127,14 +134,7 @@ function Home({
       </div>
       <div className="overflow-x-auto md:overflow-x-visible no-scrollbar">
         <div className="flex md:grid md:grid-cols-3 gap-4 w-max md:w-full text-white">
-          <motion.div 
-            className="bg-white rounded-xl p-4  flex gap-x-2 items-center min-w-[250px] hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.3, delay: 0.05 }}
-            style={{ willChange: "opacity, transform" }}
-          >
+          <div className="bg-white rounded-xl p-4  flex gap-x-2 items-center min-w-[250px]">
             <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
               <Building2 className="w-full h-full object-cover" />
             </div>
@@ -146,15 +146,8 @@ function Home({
                 Hassle-free management for your investments.
               </p>
             </div>
-          </motion.div>
-          <motion.div 
-            className="bg-white rounded-lg p-4 flex gap-4 items-center min-w-[250px] hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            style={{ willChange: "opacity, transform" }}
-          >
+          </div>
+          <div className="bg-white rounded-lg p-4 flex gap-4 items-center min-w-[250px]">
             <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
               <CalendarCheck2 className="w-full h-full object-cover" />
             </div>
@@ -166,15 +159,8 @@ function Home({
                 Schedule your consultation quickly and conveniently.
               </p>
             </div>
-          </motion.div>
-          <motion.div 
-            className="bg-white rounded-xl p-4 flex gap-x-2 items-center min-w-[250px] hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-            style={{ willChange: "opacity, transform" }}
-          >
+          </div>
+          <div className="bg-white rounded-xl p-4 flex gap-x-2 items-center min-w-[250px]">
             <div className="h-[60px] w-[60px] rounded-full bg-blue-300 p-4">
               <MapPin className="w-full h-full object-cover" />
             </div>
@@ -186,7 +172,7 @@ function Home({
                 Browse handpicked properties for every need.
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
       <div className="my-[100px]">
@@ -257,32 +243,17 @@ function MobileHero() {
 }
 
 function SideMenu({ menuOpen, setMenuOpen }) {
-  // Lock body scroll when menu is open
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
-
   return (
-    <AnimatePresence>
-      {menuOpen && (
-        <motion.div
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "100%" }}
-          transition={{
-            duration: 0.4,
-            ease: [0.25, 0.1, 0.25, 1],
-          }}
-          className="fixed inset-0 w-screen h-screen bg-[#121420] px-[5%] py-[20px] z-[9999] overflow-y-auto"
-          style={{ willChange: "transform" }}
-        >
+    <motion.div
+      initial={{ x: "100%" }}
+      animate={{ x: menuOpen ? 0 : "100%" }}
+      transition={
+        menuOpen
+          ? { duration: 0.6, ease: "easeOut" }
+          : { duration: 0.4, ease: "easeIn" }
+      }
+      className="absolute top-0 w-full h-full bg-[#121420] mx-[-5%] px-[5%] fixed py-[20px] z-1000 overflow-hidden"
+    >
       <div className="flex justify-end ">
         <button
           className="text-white/90 bg-white/5 p-1.5 rounded-full w-10 h-10 flex justify-center items-center"
@@ -365,9 +336,7 @@ function SideMenu({ menuOpen, setMenuOpen }) {
             </a>
         </div>
       </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    </motion.div>
   );
 }
 

@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/supabaseClient";
 import { useState, useEffect, useRef } from "react";
 import { bookingPresets } from "../utils/bookingPreset";
-import LoadingOverlay from "@/components/LoadingOverlay";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { Toaster, toast } from "react-hot-toast";
 
 function BookingModal({ setBookingOpen }) {
@@ -89,9 +89,19 @@ function BookingModal({ setBookingOpen }) {
     // Example async action
   }
 
+  if (loading) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-[#121420] transition-opacity duration-400 ${
+          loading ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
+      </div>
+    );
+  }
+
   return (
-    <>
-      <LoadingOverlay loading={loading} />
     <form
       onSubmit={submitBooking}
       className="w-full h-full px-[5%] flex flex-col text-white mt-5 gap-3 "
@@ -165,7 +175,6 @@ function BookingModal({ setBookingOpen }) {
         </p>
       </div>
     </form>
-    </>
   );
 }
 

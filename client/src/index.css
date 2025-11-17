@@ -76,43 +76,6 @@
   scrollbar-width: none;
 }
 
-/* Smooth animations */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Smooth transitions for interactive elements */
-a, button, [role="button"] {
-  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
-  will-change: transform, opacity;
-}
-
-/* Image loading animation */
-img {
-  transition: opacity 0.2s ease-in-out;
-  will-change: opacity;
-}
-
-img[loading="lazy"] {
-  opacity: 0;
-  animation: fadeIn 0.3s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-/* Optimize animations performance */
-* {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-perspective: 1000;
-  perspective: 1000;
-}
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

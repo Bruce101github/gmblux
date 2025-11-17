@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import PropertyLising from "./pages/PropertyListing";
 import Property from "./pages/Property";
@@ -7,19 +7,12 @@ import Navbar, { MobileNavbar } from "./components/Navbar";
 import Footer, { MobileFooter } from "./components/Footer";
 import BookingModal from "./components/BookingModal";
 import { useMediaQuery } from "react-responsive";
-import SmoothScroll from "@/components/SmoothScroll";
-import PageTransition from "@/components/PageTransition";
+import ScrollToTop from "@/components/ScrollToTop";
 import { SearchProvider } from "./components/SearchContext";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { AnimatePresence } from "framer-motion";
-import { useVisitorTracking } from "./hooks/useVisitorTracking";
 
 function App() {
-  const location = useLocation();
-  // Track visitors on public site only (NOT admin panel)
-  // This tracks: Home, Listings, Property pages, Search - all public pages
-  useVisitorTracking();
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -33,83 +26,60 @@ function App() {
 
   return (
     <SearchProvider>
-      <SmoothScroll>
-        <main className="w-[100vw] bg-[#121420] h-auto overflow-x-hidden">
-          {isMobile ? (
-            <MobileNavbar
-              menuOpen={menuOpen}
-              setMenuOpen={setMenuOpen}
-              filterOpen={filterOpen}
-              setFilterOpen={setFilterOpen}
-            />
-          ) : (
-            <Navbar />
-          )}
-          <AnimatePresence mode="wait" initial={false}>
-            <Routes location={location} key={location.pathname}>
-              <Route
-                path="/"
-                element={
-                  <PageTransition>
-                    <Home
-                      menuOpen={menuOpen}
-                      setMenuOpen={setMenuOpen}
-                      filterOpen={filterOpen}
-                      setFilterOpen={setFilterOpen}
-                      filters={filters}
-                      setFilters={setFilters}
-                    />
-                  </PageTransition>
-                }
+      <main className="w-[100vw] bg-[#121420] h-auto overflow-x-hidden">
+        {isMobile ? (
+          <MobileNavbar
+            menuOpen={menuOpen}
+            setMenuOpen={setMenuOpen}
+            filterOpen={filterOpen}
+            setFilterOpen={setFilterOpen}
+          />
+        ) : (
+          <Navbar />
+        )}
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
+                menuOpen={menuOpen}
+                setMenuOpen={setMenuOpen}
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                filters={filters}
+                setFilters={setFilters}
               />
-              <Route
-                path="/listings"
-                element={
-                  <PageTransition>
-                    <PropertyLising
-                      filterOpen={filterOpen}
-                      setFilterOpen={setFilterOpen}
-                      setFilters={setFilters}
-                      filters={filters}
-                    />
-                  </PageTransition>
-                }
+            }
+          />
+          <Route
+            path="/listings"
+            element={
+              <PropertyLising
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                setFilters={setFilters}
+                filters={filters}
               />
-              <Route 
-                path="/listing/:id" 
-                element={
-                  <PageTransition>
-                    <Property />
-                  </PageTransition>
-                } 
+            }
+          />
+          <Route path="/listing/:id" element={<Property />} />
+          <Route path="/booking" element={<BookingModal />} />
+          <Route
+            path="/search"
+            element={
+              <Search
+                setFilters={setFilters}
+                filters={filters}
+                setFilterOpen={setFilterOpen}
+                filterOpen={filterOpen}
               />
-              <Route 
-                path="/booking" 
-                element={
-                  <PageTransition>
-                    <BookingModal />
-                  </PageTransition>
-                } 
-              />
-              <Route
-                path="/search"
-                element={
-                  <PageTransition>
-                    <Search
-                      setFilters={setFilters}
-                      filters={filters}
-                      setFilterOpen={setFilterOpen}
-                      filterOpen={filterOpen}
-                    />
-                  </PageTransition>
-                }
-              />
-            </Routes>
-          </AnimatePresence>
-          {isMobile ? <MobileFooter /> : <Footer />}
-          <Toaster position="top-right" />
-        </main>
-      </SmoothScroll>
+            }
+          />
+        </Routes>
+        {isMobile ? <MobileFooter /> : <Footer />}
+        <Toaster position="top-right" />
+      </main>
     </SearchProvider>
   );
 }

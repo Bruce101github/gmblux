@@ -3,7 +3,7 @@ import HouseImg from "../assets/Modern-House-PNG-Clipart.png";
 import { Link, useLocation } from "react-router-dom";
 import Pills from "@/components/Pills";
 import { useState, useEffect } from "react";
-import LoadingOverlay from "@/components/LoadingOverlay";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import Filter from "@/components/Filter";
 import { useSearch } from "@/components/SearchContext";
 
@@ -19,24 +19,22 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Optimize loading - reduce delay for smoother experience
     const handleLoad = () => {
       if (imgLoaded) {
-        const timer = setTimeout(() => {
+        setTimeout(() => {
           setLoading(false);
-        }, 150);
-        return () => clearTimeout(timer);
+        }, 300);
       }
     };
     if (document.readyState === "complete" && imgLoaded) {
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         setLoading(false);
-      }, 150);
-      return () => clearTimeout(timer);
+      }, 300);
     } else {
       window.addEventListener("load", handleLoad);
-      return () => window.removeEventListener("load", handleLoad);
     }
+
+    return () => window.removeEventListener("load", handleLoad);
   }, [imgLoaded]);
 
   const [properties, setProperties] = useState([]);
@@ -53,9 +51,20 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
     }));
   }, []);
 
+  if (loading) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-[#121420] transition-opacity duration-400 ${
+          loading ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <Spinner size={64} variant={"ring"} className="text-yellow-500" />
+      </div>
+    );
+  }
+
   return (
     <div className="px-[5%] lg:px-[10%] my-2">
-      <LoadingOverlay loading={loading} />
       {filterOpen ? (
         <Filter
           filterOpen={filterOpen}

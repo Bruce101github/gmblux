@@ -3,7 +3,6 @@ import { supabase } from "../supabaseClient";
 import { Bed, ShowerHead, LandPlot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import { motion } from "framer-motion";
 
 function Listings({
   lgCols = 3,
@@ -201,20 +200,11 @@ function Listings({
         ))
       ) : properties.length > 0 ? (
         properties.slice(0, limit).map((p, index) => (
-          <motion.div
-            key={p.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.3,
-              delay: index * 0.05,
-              ease: [0.25, 0.1, 0.25, 1],
-            }}
-            style={{ willChange: "opacity, transform" }}
-            ref={index === properties.length - 1 ? iRef : null}
-          >
-            <Link to={`/listing/${p.id}`}>
-              <div className="bg-white/15 rounded-3xl shadow p-4 text-white hover:bg-white/20 transition-all duration-200 transform hover:scale-[1.02] cursor-pointer">
+          <Link to={`/listing/${p.id}`} key={p.id}>
+            <div
+              className="bg-white/15 rounded-3xl shadow p-4 text-white"
+              ref={index === properties.length - 1 ? iRef : null}
+            >
               <img
                 src={p.images?.[0]}
                 alt={`${p.title || "Property"} - ${p.location || "Ghana"} - ${p.bedrooms || 0} bedroom ${p.property_type || "property"} for ${p.listing_type || "sale"}`}
@@ -251,9 +241,8 @@ function Listings({
                     : `USD$${Number(p.price).toLocaleString("en-GH")}`}
                 </p>
               </div>
-              </div>
-            </Link>
-          </motion.div>
+            </div>
+          </Link>
         ))
       ) : (
         <div className="h-[50vh] flex flex-col justify-center">
@@ -266,6 +255,60 @@ function Listings({
           </p>
         </div>
       )}
+    </div>
+  );
+}
+
+function smallLisings() {
+  return (
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass}  ${smGridClass}  gap-4 m-0 `}
+    >
+      {properties.slice(0, limit).map((p, index) => (
+        <Link to={`/listing/${p.id}`}>
+          <div
+            key={p.id}
+            className="bg-white/15 rounded-3xl shadow p-4 text-white"
+          >
+            <img
+              src={p.images?.[0]}
+              alt={`${p.title || "Property"} - ${p.location || "Ghana"} - ${p.bedrooms || 0} bedroom ${p.property_type || "property"} for ${p.listing_type || "sale"}`}
+              className="w-full h-[200px] object-cover rounded-2xl"
+              loading="lazy"
+            />
+            <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
+            <p className="text-white/60 text-sm">{p.location}</p>
+            <div className="flex justify-between items-center">
+              <div className="flex gap-3 text-xs items-center">
+                <div className="flex text-white gap-1.5 items-center">
+                  <div className="text-blue-500">
+                    <Bed size={16} />
+                  </div>{" "}
+                  {p.bedrooms}
+                </div>{" "}
+                <div className="flex">
+                  {" "}
+                  <div className="text-blue-500">
+                    <ShowerHead size={16} />
+                  </div>
+                  {p.bathrooms}
+                </div>{" "}
+                <div className="flex">
+                  <div className="text-blue-500">
+                    <LandPlot size={16} />
+                  </div>{" "}
+                  {p.size}
+                </div>
+              </div>
+              <p className="mt-2 font-bold text-blue-500">
+                {p.listing_type === "rent"
+                  ? `GH₵${Number(p.price).toLocaleString("en-GH")}/month`
+                  : `USD$${Number(p.price).toLocaleString("en-GH")}`}
+              </p>
+            </div>
+          </div>
+        </Link>
+      ))}
     </div>
   );
 }
