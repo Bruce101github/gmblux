@@ -239,7 +239,16 @@ function MobileHero() {
     <>
       <h1 className="text-5xl mt-5 text-white">Homes That fit You Perfectly</h1>
       <div className="w-full h-[48vh] mt-5">
-        <img src={HeroImg} className="w-full h-full object-cover rounded-2xl" />
+        <img 
+          src={HeroImg} 
+          alt="GMB Luxury Properties - Premium Real Estate in Ghana"
+          className="w-full h-full object-cover rounded-2xl" 
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          width={1009}
+          height={1080}
+        />
       </div>
       <div className="h-[80px] w-[80px] bg-yellow-400 rounded-full p-[5px] transform -translate-y-1/2 mx-auto text-white">
         <div className="h-[70px] w-[70px] border border-white rounded-full p-3">
