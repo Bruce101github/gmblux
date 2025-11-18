@@ -180,7 +180,7 @@ export function MobileFooter() {
     setEmail("");
   }
   return (
-    <div className="bg-[#232323] text-white">
+    <div className="bg-[#232323] text-white min-h-[400px]">
       <div className="bg-[#1D1D1D] flex px-[10%] py-[18px] justify-center items-center gap-2">
         <div className="h-[42px] min-w-[42px] rounded-full bg-white/5 p-3">
           <PhoneCall className="h-full w-full object-cover" />
