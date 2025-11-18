@@ -1,14 +1,8 @@
 User-agent: *
 Allow: /
 
-# Sitemap location (update when sitemap is generated)
-Sitemap: https://gmblux.com/sitemap.xml
-
 # Disallow admin panel
-Disallow: /admin/
+Disallow: /admin
 
-# Allow all property listings
-Allow: /listing/
-Allow: /listings
-Allow: /search
-
+# Sitemap location
+Sitemap: https://gmblux.com/sitemap.xml
