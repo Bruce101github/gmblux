@@ -122,6 +122,8 @@ function Property() {
 
         if (error) throw error;
         setProperty(data);
+        // Reset loaded images when property changes, pre-mark first image as loaded
+        setLoadedImages(new Set([0]));
       } catch (err) {
         setError(err.message);
       } finally {
