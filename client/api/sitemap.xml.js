@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   try {
     // Fetch all properties from Supabase (no filters to get all)
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/properties?select=id,updated_at&order=updated_at.desc`,
+      `${SUPABASE_URL}/rest/v1/properties?select=id,created_at&order=created_at.desc`,
       {
         headers: {
           'apikey': SUPABASE_ANON_KEY,
@@ -43,8 +43,8 @@ export default async function handler(req, res) {
     const propertyUrls = properties.length > 0
       ? properties
           .map((property) => {
-            const propertyLastMod = property.updated_at
-              ? new Date(property.updated_at).toISOString().split('T')[0]
+            const propertyLastMod = property.created_at
+              ? new Date(property.created_at).toISOString().split('T')[0]
               : currentDate;
             
             return `  <url>
