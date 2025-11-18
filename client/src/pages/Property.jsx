@@ -58,6 +58,7 @@ function Property() {
   const [api, setApi] = React.useState(null);
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
+  const [loadedImages, setLoadedImages] = React.useState(new Set());
 
   React.useEffect(() => {
     if (!api) return;
@@ -72,30 +73,43 @@ function Property() {
     });
   }, [api]);
 
-  // Preload next 2 images when current image changes
+  // Preload and track loaded images
   React.useEffect(() => {
     if (!property?.images || !Array.isArray(property.images)) return;
 
     const currentIndex = current - 1; // Convert to 0-based index
     const imagesToPreload = [];
 
-    // Preload next 2 images (current + 1 and current + 2)
-    for (let i = 1; i <= 2; i++) {
-      const nextIndex = currentIndex + i;
-      if (nextIndex < property.images.length && property.images[nextIndex]) {
-        imagesToPreload.push(property.images[nextIndex]);
+    // Preload current image and next 2 images
+    for (let i = 0; i <= 2; i++) {
+      const targetIndex = currentIndex + i;
+      if (targetIndex < property.images.length && property.images[targetIndex]) {
+        imagesToPreload.push({
+          index: targetIndex,
+          url: property.images[targetIndex],
+        });
       }
     }
 
-    // Preload images in the background
-    imagesToPreload.forEach((imageUrl) => {
-      if (imageUrl) {
+    // Preload images and track when they're loaded
+    imagesToPreload.forEach(({ index, url }) => {
+      if (url && !loadedImages.has(index)) {
         const img = new Image();
-        // Use optimized URL for preloading
-        img.src = getMainImageUrl(imageUrl) || imageUrl;
+        const optimizedUrl = getMainImageUrl(url) || url;
+        
+        img.onload = () => {
+          setLoadedImages((prev) => new Set([...prev, index]));
+        };
+        
+        img.onerror = () => {
+          // Still mark as "loaded" to prevent infinite retries
+          setLoadedImages((prev) => new Set([...prev, index]));
+        };
+        
+        img.src = optimizedUrl;
       }
     });
-  }, [current, property?.images]);
+  }, [current, property?.images, loadedImages]);
 
   useEffect(() => {
     async function fetchProperty() {
@@ -212,29 +226,38 @@ function Property() {
           {property.images && Array.isArray(property.images) && property.images.length > 0 ? (
             property.images.map((p, index) => {
               const isFirstImage = index === 0;
+              const isImageLoaded = loadedImages.has(index) || isFirstImage;
+              const optimizedUrl = getMainImageUrl(p) || p;
+              
               return (
                 <CarouselItem key={index}>
-                  <img
-                    src={getMainImageUrl(p) || p}
-                    srcSet={p ? generateSrcset(p, {
-                      small: 800,
-                      medium: 1200,
-                      large: 1600,
-                    }, 75) : undefined}
-                    sizes={generateSizes({
-                      '(max-width: 640px)': '100vw',
-                      '(max-width: 1024px)': '100vw',
-                      '(min-width: 1025px)': '100vw',
-                    })}
-                    alt={`${property.title} - Image ${index + 1} - ${property.location}, Ghana`}
-                    className="mb-2 w-full h-[60vh] object-cover"
-                    loading={isFirstImage ? "eager" : "lazy"}
-                    fetchPriority={isFirstImage ? "high" : "auto"}
-                    decoding="async"
-                    width={1200}
-                    height={675}
-                    style={{ aspectRatio: "16/9" }}
-                  />
+                  {isImageLoaded ? (
+                    <img
+                      src={optimizedUrl}
+                      srcSet={p ? generateSrcset(p, {
+                        small: 800,
+                        medium: 1200,
+                        large: 1600,
+                      }, 75) : undefined}
+                      sizes={generateSizes({
+                        '(max-width: 640px)': '100vw',
+                        '(max-width: 1024px)': '100vw',
+                        '(min-width: 1025px)': '100vw',
+                      })}
+                      alt={`${property.title} - Image ${index + 1} - ${property.location}, Ghana`}
+                      className="mb-2 w-full h-[60vh] object-cover"
+                      loading={isFirstImage ? "eager" : "lazy"}
+                      fetchPriority={isFirstImage ? "high" : "auto"}
+                      decoding="async"
+                      width={1200}
+                      height={675}
+                      style={{ aspectRatio: "16/9" }}
+                    />
+                  ) : (
+                    <div className="mb-2 w-full h-[60vh] bg-gray-800/50 flex items-center justify-center" style={{ aspectRatio: "16/9" }}>
+                      <div className="text-white/50 text-sm">Loading image...</div>
+                    </div>
+                  )}
                 </CarouselItem>
               );
             })
