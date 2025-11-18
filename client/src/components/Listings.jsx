@@ -38,6 +38,52 @@ function Listings({
       return;
     }
 
+    // Check if the container is scrollable and if all items are already visible
+    const checkIfScrollable = () => {
+      if (!iRef.current) return false;
+      
+      // Find the listings container
+      const listingsContainer = iRef.current.closest('[data-listings-container]');
+      if (!listingsContainer) {
+        // Fallback: check if window is scrollable
+        const isWindowScrollable = document.documentElement.scrollHeight > window.innerHeight;
+        
+        // Also check if the last item is already fully visible
+        const lastItemRect = iRef.current.getBoundingClientRect();
+        const isLastItemVisible = lastItemRect.bottom <= window.innerHeight;
+        
+        // Only allow observer if window is scrollable AND last item is not fully visible
+        return isWindowScrollable && !isLastItemVisible;
+      }
+      
+      // Check if the container itself is scrollable (vertical scroll)
+      const isContainerScrollable = listingsContainer.scrollHeight > listingsContainer.clientHeight;
+      
+      // Check if the last item is already fully visible in the container
+      const lastItemRect = iRef.current.getBoundingClientRect();
+      const containerRect = listingsContainer.getBoundingClientRect();
+      const isLastItemVisible = lastItemRect.bottom <= containerRect.bottom;
+      
+      // Also check if parent has horizontal scroll (for horizontal listings)
+      const parent = listingsContainer.parentElement;
+      const hasHorizontalScroll = parent && (
+        parent.scrollWidth > parent.clientWidth ||
+        parent.classList.contains('overflow-x-auto') ||
+        getComputedStyle(parent).overflowX === 'auto'
+      );
+      
+      // For vertical infinite scroll, we need:
+      // 1. Container to be scrollable
+      // 2. Last item not fully visible yet
+      // 3. No horizontal scroll (horizontal listings handled by limit check)
+      return isContainerScrollable && !isLastItemVisible && !hasHorizontalScroll;
+    };
+
+    // Only set up observer if container is scrollable
+    if (!checkIfScrollable()) {
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
@@ -47,12 +93,26 @@ function Listings({
         // 3. There's more data to load
         // 4. We have at least 1 property
         // 5. No limit is set (infinite scroll only works without limit)
-        if (entry.isIntersecting && !isLoadingMore && hasMore && !loading && properties.length > 0 && limit === undefined) {
+        // 6. Container is still scrollable (to prevent triggering when all items fit on screen)
+        if (
+          entry.isIntersecting && 
+          !isLoadingMore && 
+          hasMore && 
+          !loading && 
+          properties.length > 0 && 
+          limit === undefined &&
+          checkIfScrollable()
+        ) {
           setIsLoadingMore(true);
           setPage((prev) => prev + 1);
         }
       },
-      { threshold: 0.1, rootMargin: "100px" }, // Trigger 100px before reaching the element
+      { 
+        threshold: 0.1, 
+        rootMargin: "100px",
+        // Use root instead of viewport to check against scrollable container
+        root: null 
+      },
     );
     
     observer.observe(iRef.current);
