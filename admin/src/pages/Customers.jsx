@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/DataTable";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Funnel, ListFilter, Search, Mail, Phone } from "lucide-react";
 import { TOAST_STYLE } from "@/lib/utils";
@@ -34,6 +35,7 @@ const customerColumns = [
 ];
 
 export default function Customers() {
+  const location = useLocation();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -59,7 +61,7 @@ export default function Customers() {
 
   useEffect(() => {
     fetchCustomers();
-  }, [searchTerm]);
+  }, [searchTerm, location.pathname]);
 
   return (
     <motion.div

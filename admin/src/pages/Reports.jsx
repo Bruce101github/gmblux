@@ -9,6 +9,7 @@ import { ChartAreaInteractive } from "@/components/ui/ChartAreaInteractive";
 import { ChartBarMultiple } from "@/components/ui/ChartBarMultiple";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   TrendingUp,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react";
 
 export default function Reports() {
+  const location = useLocation();
   const [stats, setStats] = useState({
     totalBookings: 0,
     totalProperties: 0,
@@ -45,7 +47,7 @@ export default function Reports() {
       });
     }
     fetchStats();
-  }, []);
+  }, [location.pathname]);
 
   const statCards = [
     {

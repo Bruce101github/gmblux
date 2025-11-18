@@ -42,7 +42,6 @@ function PropertyLising({ setFilters, filters, setFilterOpen, filterOpen }) {
   const location = useLocation();
   const presetFilter = location.state?.preset;
 
-  useEffect(() => {}, [filters, properties]);
 
   useEffect(() => {
     setFilters((prev) => ({

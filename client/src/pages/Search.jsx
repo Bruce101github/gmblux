@@ -28,7 +28,6 @@ function Search({ filters, setFilters, filterOpen, setFilterOpen }) {
   const [properties, setProperties] = useState([]);
   const { searchTerm, submittedSearch } = useSearch();
 
-  useEffect(() => {}, [submittedSearch]);
 
   if (loading) {
     return (

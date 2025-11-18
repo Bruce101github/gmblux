@@ -71,7 +71,6 @@ function Home({
   }, [heroLoaded]);
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  useEffect(() => {}, [filters]);
 
   if (loading) {
     return (

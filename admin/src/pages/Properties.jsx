@@ -5,6 +5,7 @@ import MobileTable from "@/components/ui/MobileTable";
 import { propertyColumns } from "@/pages/bookings/propertyColumns";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Funnel, ListFilter, Plus, Search, X } from "lucide-react";
 import { Pagination1, MobilePagination1 } from "@/components/pagination-1";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Properties() {
+  const location = useLocation();
   const [tableInfo, setTableInfo] = useState([]);
   const [propertyCount, setPropertyCount] = useState(0);
   const [perPage, setPerPage] = useState(20);
@@ -91,7 +93,7 @@ export default function Properties() {
   useEffect(() => {
     countProperties();
     fetchProperties(currentPage, perPage);
-  }, [currentPage, perPage, searchTerm, filterPropertyType, filterListingType, sortBy, sortOrder]);
+  }, [currentPage, perPage, searchTerm, filterPropertyType, filterListingType, sortBy, sortOrder, location.pathname]);
 
   const clearFilters = () => {
     setSearchTerm("");

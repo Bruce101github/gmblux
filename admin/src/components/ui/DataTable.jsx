@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -27,12 +28,24 @@ import {
 } from "@/components/ui/table";
 
 export function DataTable({ columns, data, meta }) {
-  const table = useReactTable({
+  // Memoize the table options to ensure proper updates
+  const tableOptions = useMemo(() => ({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     meta,
-  });
+    // Use the row's id field as the unique identifier
+    getRowId: (row) => row.id?.toString() || Math.random().toString(),
+    // Force re-render when data changes
+    enableRowSelection: false,
+  }), [data, columns, meta]);
+
+  const table = useReactTable(tableOptions);
+
+  // Force re-render when data changes
+  useEffect(() => {
+    table.resetRowSelection();
+  }, [data, table]);
 
   return (
     <div className="overflow-hidden text-white">

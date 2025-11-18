@@ -5,6 +5,7 @@ import { ChartAreaInteractive } from "@/components/ui/ChartAreaInteractive";
 import { columns } from "@/pages/bookings/columns";
 import { supabase } from "../lib/supabaseClient";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import MobileBookingTable from "@/components/ui/MobileBookingTable";
 import {
   CalendarPlus,
@@ -28,6 +29,7 @@ import {
 import Calendar31 from "@/components/calendar-31.jsx";
 
 export default function Dashboard() {
+  const location = useLocation();
   const [bookings, setBookings] = useState([]);
   const [properties, setProperties] = useState([]);
   const [tableInfo, setTableInfo] = useState([]);
@@ -71,7 +73,7 @@ export default function Dashboard() {
     }
     fetchBookings();
     fetchProperties();
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     const merged = [];

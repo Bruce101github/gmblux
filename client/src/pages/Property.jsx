@@ -109,7 +109,13 @@ function Property() {
       return `${baseUrl}/gmblogo.JPG`;
     }
     
-    const imageUrl = property.images[0];
+    const imageUrl = property.images?.[0];
+    
+    if (!imageUrl) {
+      // Fallback to logo if no image URL
+      const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://gmblux.com";
+      return `${baseUrl}/gmblogo.JPG`;
+    }
     
     // Supabase storage URLs are already absolute (https://[project].supabase.co/...)
     // They're stored as public URLs from getPublicUrl(), so use them directly
@@ -177,16 +183,27 @@ function Property() {
       <div className="text-white px-0 lg:px-[10%] pb-10">
       <Carousel setApi={setApi}>
         <CarouselContent>
-          {property.images.map((p, index) => (
-            <CarouselItem key={index}>
+          {property.images && Array.isArray(property.images) && property.images.length > 0 ? (
+            property.images.map((p, index) => (
+              <CarouselItem key={index}>
+                <img
+                  src={p}
+                  alt={`${property.title} - Image ${index + 1} - ${property.location}, Ghana`}
+                  className=" mb-2 w-full h-[60vh] object-cover"
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
+              </CarouselItem>
+            ))
+          ) : (
+            <CarouselItem>
               <img
-                src={p}
-                alt={`${property.title} - Image ${index + 1} - ${property.location}, Ghana`}
+                src={getPropertyImage()}
+                alt={`${property.title} - ${property.location}, Ghana`}
                 className=" mb-2 w-full h-[60vh] object-cover"
-                loading={index === 0 ? "eager" : "lazy"}
+                loading="eager"
               />
             </CarouselItem>
-          ))}
+          )}
         </CarouselContent>
         {/* pagination dots!!! Work on this later */}
         <div className="absolute bottom-5 right-5 bg-black/15 backdrop-blur-sm px-2 py-1 rounded-3xl text-xs">
@@ -249,7 +266,7 @@ function Property() {
           <p className="font-medium text-lg">Property description</p>
           <p className="text-base text-white/60">{property.description}</p>
         </div>
-        {property.features && property.features.length > 0 && (
+        {property.features && Array.isArray(property.features) && property.features.length > 0 && (
           <div className="border-b border-white/10 my-5 pb-5 flex flex-col gap-3">
             <p className="font-medium text-lg">Property Features</p>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">

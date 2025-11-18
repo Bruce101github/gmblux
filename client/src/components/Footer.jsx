@@ -19,38 +19,41 @@ export default function Footer() {
 
   async function handleSubmit() {
     if (!email) return;
+    
+    // Show loading toast
+    toast.loading("Subscribing...", {
+      style: {
+        borderRadius: "10px",
+        background: "#121420",
+        color: "#fff",
+        border: "0.4px solid gray",
+      },
+    });
+    
     const { error } = await supabase
       .from("email_list")
       .insert({ email: email });
 
+    toast.dismiss(); // remove the loading one
+    
     if (error) {
-      setTimeout(() => {
-        toast.dismiss(); // remove the loading one
-        toast.error(`Looks like something went wrong. Mind trying again`, {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
-        });
-        setEmail("");
-        // show success
-      }, 2000);
+      toast.error(`Looks like something went wrong. Mind trying again`, {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
     } else {
-      setTimeout(() => {
-        toast.dismiss(); // remove the loading one
-        toast.success("subscribed!", {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
-        });
-        setEmail("");
-        // show success
-      }, 2000);
+      toast.success("subscribed!", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
     }
 
     setEmail("");
@@ -137,38 +140,41 @@ export function MobileFooter() {
 
   async function handleSubmit() {
     if (!email) return;
+    
+    // Show loading toast
+    toast.loading("Subscribing...", {
+      style: {
+        borderRadius: "10px",
+        background: "#121420",
+        color: "#fff",
+        border: "0.4px solid gray",
+      },
+    });
+    
     const { error } = await supabase
       .from("email_list")
       .insert({ email: email });
 
+    toast.dismiss(); // remove the loading one
+    
     if (error) {
-      setTimeout(() => {
-        toast.dismiss(); // remove the loading one
-        toast.error(`Looks like something went wrong. Mind trying again`, {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
-        });
-        setEmail("");
-        // show success
-      }, 2000);
+      toast.error(`Looks like something went wrong. Mind trying again`, {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
     } else {
-      setTimeout(() => {
-        toast.dismiss(); // remove the loading one
-        toast.success("subscribed!", {
-          style: {
-            borderRadius: "10px",
-            background: "#121420",
-            color: "#fff",
-            border: "0.4px solid gray",
-          },
-        });
-        setEmail("");
-        // show success
-      }, 2000);
+      toast.success("subscribed!", {
+        style: {
+          borderRadius: "10px",
+          background: "#121420",
+          color: "#fff",
+          border: "0.4px solid gray",
+        },
+      });
     }
 
     setEmail("");

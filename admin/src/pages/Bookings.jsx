@@ -3,7 +3,8 @@ import { DataTable } from "@/components/ui/DataTable";
 import MobileBookingTable from "@/components/ui/MobileBookingTable";
 import { columns } from "@/pages/bookings/columns";
 import { supabase } from "@/lib/supabaseClient";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Funnel, ListFilter, Calendar, Download, Search, X } from "lucide-react";
 import { Pagination1, MobilePagination1 } from "@/components/pagination-1";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Bookings() {
+  const location = useLocation();
   const [tableInfo, setTableInfo] = useState([]);
   const [bookingCount, setBookingCount] = useState(0);
   const [perPage, setPerPage] = useState(20);
@@ -103,7 +105,7 @@ export default function Bookings() {
   useEffect(() => {
     countBookings();
     fetchBookings(currentPage, perPage);
-  }, [currentPage, perPage, searchTerm, filterStatus, filterRequestType, sortBy, sortOrder]);
+  }, [currentPage, perPage, searchTerm, filterStatus, filterRequestType, sortBy, sortOrder, location.pathname]);
 
   const clearFilters = () => {
     setSearchTerm("");
@@ -114,6 +116,23 @@ export default function Bookings() {
   };
 
   const hasActiveFilters = searchTerm || filterStatus !== "all" || filterRequestType !== "all";
+
+  // Optimistically update a booking in the table
+  const updateBookingInTable = useCallback((bookingId, updates) => {
+    setTableInfo((prev) => {
+      // Create a completely new array with new object references
+      const updated = prev.map((booking) => {
+        if (booking.id === bookingId) {
+          // Create a completely new object for the updated booking
+          return { ...booking, ...updates };
+        }
+        // Create a new object reference for unchanged bookings too
+        return { ...booking };
+      });
+      // Return a new array reference
+      return updated;
+    });
+  }, []);
 
   const handleExport = async () => {
     try {
@@ -323,10 +342,11 @@ export default function Bookings() {
           transition={{ delay: 0.2 }}
         >
           <DataTable
-            columns={columns(() => {
+            key={`table-${tableInfo.map(b => `${b.id}:${b.status}`).join('|')}`}
+            columns={useMemo(() => columns(() => {
               fetchBookings(currentPage, perPage);
               countBookings();
-            })}
+            }, updateBookingInTable), [updateBookingInTable, currentPage, perPage])}
             data={tableInfo}
             meta={{
               refreshData: () => {
@@ -363,7 +383,14 @@ export default function Bookings() {
         </div>
       </Card>
       <span className="lg:hidden md:hidden">
-        <MobileBookingTable table={tableInfo} />
+        <MobileBookingTable 
+          table={tableInfo} 
+          refreshData={() => {
+            fetchBookings(currentPage, perPage);
+            countBookings();
+          }}
+          updateBookingInTable={updateBookingInTable}
+        />
         {totalPages > 1 ? (
           <div className="mt-5">
             <MobilePagination1

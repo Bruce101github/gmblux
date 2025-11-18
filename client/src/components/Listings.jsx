@@ -21,45 +21,44 @@ function Listings({
   const setProperties = propsSetProperties ?? setLocalProperties;
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const perPage = 15;
 
   const iRef = useRef();
 
   useEffect(() => {
-    const checkCount = async () => {
-      const { count } = await supabase
-        .from("properties")
-        .select("*", { count: "exact", head: true });
-
-      if (properties.length >= count) {
-        setHasMore(false);
-      } else {
-        setHasMore(true);
-      }
-    };
-    checkCount();
-  }, [properties]);
-
-  useEffect(() => {
-    if (!iRef.current || !hasMore) return;
+    // Don't observe if:
+    // 1. No ref element
+    // 2. No more data to load
+    // 3. Already loading more
+    // 4. Initial loading
+    // 5. No properties (empty state)
+    // 6. Limit is set (for fixed number of items like homepage featured properties)
+    if (!iRef.current || !hasMore || isLoadingMore || loading || properties.length === 0 || limit !== undefined) {
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        if (entry.isIntersecting) {
+        // Only trigger if:
+        // 1. Element is intersecting
+        // 2. We're not already loading
+        // 3. There's more data to load
+        // 4. We have at least 1 property
+        // 5. No limit is set (infinite scroll only works without limit)
+        if (entry.isIntersecting && !isLoadingMore && hasMore && !loading && properties.length > 0 && limit === undefined) {
+          setIsLoadingMore(true);
           setPage((prev) => prev + 1);
         }
       },
-      { threshold: 0.2 },
+      { threshold: 0.1, rootMargin: "100px" }, // Trigger 100px before reaching the element
     );
-    if (hasMore) {
-      observer.observe(iRef.current);
-    } else {
-      observer.disconnect(); // stop observing if there's no more
-    }
+    
+    observer.observe(iRef.current);
 
     return () => observer.disconnect();
-  }, [properties]);
+  }, [hasMore, isLoadingMore, loading, properties.length, limit]);
 
   // Use passed-in props if available, else fallback to local state
   const lgGridClass =
@@ -82,6 +81,7 @@ function Listings({
   useEffect(() => {
     setHasMore(true);
     setPage(0);
+    setIsLoadingMore(false);
     // Don't fetch here - let the next effect handle it
   }, [search, filters]);
 
@@ -108,7 +108,7 @@ function Listings({
     const from = limit === undefined ? page * perPage : 0;
     const to = limit === undefined ? from + perPage - 1 : limit;
 
-    let query = supabase.from("properties").select("*");
+    let query = supabase.from("properties").select("*", { count: "exact" });
 
     if (filters?.listingType != "all") {
       query = query.eq("listing_type", filters.listingType);
@@ -144,14 +144,35 @@ function Listings({
 
     query = query.order("created_at", { ascending: true }).range(from, to);
 
-    let { data, error } = await query;
+    let { data, error, count } = await query;
 
     if (isCancelled) return null;
 
     if (error) {
-      if (!isCancelled) setLoading(false);
+      if (!isCancelled) {
+        setLoading(false);
+        setIsLoadingMore(false);
+      }
       return null;
     }
+    
+    // Check if data exists and is an array
+    if (!data || !Array.isArray(data)) {
+      if (!isCancelled) {
+        setLoading(false);
+        setIsLoadingMore(false);
+        setHasMore(false);
+      }
+      return null;
+    }
+    
+    // Determine if there's more data based on:
+    // 1. If we got less than perPage items, there's definitely no more
+    // 2. If we got exactly perPage items, check if total count suggests there's more
+    // 3. Use count if available, otherwise assume there's more if we got a full page
+    const hasMoreData = data.length < perPage 
+      ? false 
+      : (count === null ? true : (page + 1) * perPage < count);
     
     // Remove duplicates by ID before setting
     if (page === 0) {
@@ -160,6 +181,8 @@ function Listings({
         index === self.findIndex((t) => t.id === item.id)
       );
       setProperties(uniqueData);
+      // Set hasMore based on whether we got a full page
+      setHasMore(hasMoreData);
     } else if (page > 0) {
       // For pagination, append but remove duplicates
       setProperties((prev) => {
@@ -170,10 +193,13 @@ function Listings({
         );
         return unique;
       });
+      // Set hasMore based on whether we got a full page
+      setHasMore(hasMoreData);
     }
     
     if (!isCancelled) {
       setLoading(false);
+      setIsLoadingMore(false);
     }
     return true;
   }
@@ -199,11 +225,20 @@ function Listings({
           </div>
         ))
       ) : properties.length > 0 ? (
-        properties.slice(0, limit).map((p, index) => (
+        properties.slice(0, limit).map((p, index) => {
+          const isLastItem = index === properties.length - 1;
+          // Only attach ref to last item if:
+          // 1. It's actually the last item
+          // 2. We have more data to load
+          // 3. We're not currently loading
+          // 4. No limit is set (infinite scroll only works without limit)
+          const shouldAttachRef = isLastItem && hasMore && !isLoadingMore && !loading && limit === undefined;
+          
+          return (
           <Link to={`/listing/${p.id}`} key={p.id}>
             <div
               className="bg-white/15 rounded-3xl shadow p-4 text-white"
-              ref={index === properties.length - 1 ? iRef : null}
+              ref={shouldAttachRef ? iRef : null}
             >
               <img
                 src={p.images?.[0]}
@@ -243,7 +278,8 @@ function Listings({
               </div>
             </div>
           </Link>
-        ))
+          );
+        })
       ) : (
         <div className="h-[50vh] flex flex-col justify-center">
           <p className="text-white text-center text-2xl font-medium">

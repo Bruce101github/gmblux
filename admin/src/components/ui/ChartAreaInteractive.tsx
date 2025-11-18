@@ -202,8 +202,7 @@ export function ChartAreaInteractive() {
 
         setChartData(dateArray);
       } catch (error) {
-        // Fallback to mock data on error
-        console.error("Error fetching visitor data:", error);
+        // Error fetching visitor data - fallback to mock data
         setChartData(mockChartData);
       } finally {
         setLoading(false);
