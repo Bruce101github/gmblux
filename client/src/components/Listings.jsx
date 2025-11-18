@@ -3,6 +3,7 @@ import { supabase } from "../supabaseClient";
 import { Bed, ShowerHead, LandPlot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getPreviewImageUrl, generateSrcset, generateSizes } from "../utils/imageOptimizer";
 
 function Listings({
   lgCols = 3,
@@ -301,10 +302,23 @@ function Listings({
               ref={shouldAttachRef ? iRef : null}
             >
               <img
-                src={p.images?.[0]}
+                src={getPreviewImageUrl(p.images?.[0]) || p.images?.[0]}
+                srcSet={p.images?.[0] ? generateSrcset(p.images[0], {
+                  small: 400,
+                  medium: 600,
+                  large: 800,
+                }, 60) : undefined}
+                sizes={generateSizes({
+                  '(max-width: 640px)': '100vw',
+                  '(max-width: 1024px)': '50vw',
+                  '(min-width: 1025px)': '33vw',
+                })}
                 alt={`${p.title || "Property"} - ${p.location || "Ghana"} - ${p.bedrooms || 0} bedroom ${p.property_type || "property"} for ${p.listing_type || "sale"}`}
                 className="w-full h-[200px] object-cover rounded-2xl"
                 loading="lazy"
+                width={600}
+                height={400}
+                decoding="async"
               />
               <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
               <p className="text-white/60 text-sm">{p.location}</p>

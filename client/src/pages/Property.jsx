@@ -4,6 +4,7 @@ import * as React from "react";
 import { supabase } from "../supabaseClient";
 import "../index.css";
 import Whatsapp from "@/assets/whatsapp.png";
+import { getMainImageUrl, generateSrcset, generateSizes } from "../utils/imageOptimizer";
 import {
   Carousel,
   CarouselContent,
@@ -184,16 +185,34 @@ function Property() {
       <Carousel setApi={setApi}>
         <CarouselContent>
           {property.images && Array.isArray(property.images) && property.images.length > 0 ? (
-            property.images.map((p, index) => (
-              <CarouselItem key={index}>
-                <img
-                  src={p}
-                  alt={`${property.title} - Image ${index + 1} - ${property.location}, Ghana`}
-                  className=" mb-2 w-full h-[60vh] object-cover"
-                  loading={index === 0 ? "eager" : "lazy"}
-                />
-              </CarouselItem>
-            ))
+            property.images.map((p, index) => {
+              const isFirstImage = index === 0;
+              return (
+                <CarouselItem key={index}>
+                  <img
+                    src={getMainImageUrl(p) || p}
+                    srcSet={p ? generateSrcset(p, {
+                      small: 800,
+                      medium: 1200,
+                      large: 1600,
+                    }, 75) : undefined}
+                    sizes={generateSizes({
+                      '(max-width: 640px)': '100vw',
+                      '(max-width: 1024px)': '100vw',
+                      '(min-width: 1025px)': '100vw',
+                    })}
+                    alt={`${property.title} - Image ${index + 1} - ${property.location}, Ghana`}
+                    className="mb-2 w-full h-[60vh] object-cover"
+                    loading={isFirstImage ? "eager" : "lazy"}
+                    fetchPriority={isFirstImage ? "high" : "auto"}
+                    decoding="async"
+                    width={1200}
+                    height={675}
+                    style={{ aspectRatio: "16/9" }}
+                  />
+                </CarouselItem>
+              );
+            })
           ) : (
             <CarouselItem>
               <img

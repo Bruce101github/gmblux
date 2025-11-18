@@ -34,7 +34,15 @@ export default function Navbar() {
     <div className="flex w-auto justify-between px-[10%] pt-[20px] pb-[5%] text-white">
       <div className="flex gap-4">
         <div className="h-[50px] w-[50px] rounded-full bg-gray-300">
-          <img src={Logo} alt="GMB Luxury Properties Logo" className="rounded-full" />
+          <img 
+            src={Logo} 
+            alt="GMB Luxury Properties Logo" 
+            className="rounded-full" 
+            width={50}
+            height={50}
+            loading="eager"
+            decoding="async"
+          />
         </div>
         <div className="relative min-w-[400px] bg-white rounded-4xl flex items-center px-1">
           <Search className="text-black/20 px-2" size={38} />
@@ -134,7 +142,15 @@ function MobileNavbar1({ menuOpen, setMenuOpen, setFilterOpen }) {
         <div className="flex justify-between ">
           <Link to="/">
             <div className="h-[50px] w-[50px] rounded-full bg-gray-300">
-              <img src={Logo} alt="GMB Luxury Properties Logo" className="rounded-full" />
+              <img 
+                src={Logo} 
+                alt="GMB Luxury Properties Logo" 
+                className="rounded-full" 
+                width={50}
+                height={50}
+                loading="eager"
+                decoding="async"
+              />
             </div>
           </Link>
           <Link to="">

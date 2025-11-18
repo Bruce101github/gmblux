@@ -14,4 +14,18 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          // Use predictable filename for CSS files to enable non-blocking loading
+          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+            return 'assets/main.css';
+          }
+          // Keep default naming for other assets
+          return 'assets/[name]-[hash][extname]';
+        },
+      },
+    },
+  },
 });

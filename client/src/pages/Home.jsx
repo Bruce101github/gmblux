@@ -214,7 +214,16 @@ function DesktopHero() {
       </svg>
 
       <div className="w-full h-[60vh] mt-[-18vh] path">
-        <img src={HeroImg} className="w-full h-full object-cover" />
+        <img 
+          src={HeroImg} 
+          alt="GMB Luxury Properties - Premium Real Estate in Ghana"
+          className="w-full h-full object-cover" 
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          width={1009}
+          height={1080}
+        />
       </div>
       <div className="h-[120px] w-[120px] bg-yellow-400 rounded-full p-[5px] transform -translate-y-1/2 mx-auto text-white">
         <div className="h-[110px] w-[110px] border border-white rounded-full p-5">

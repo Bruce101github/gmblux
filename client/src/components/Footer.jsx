@@ -60,7 +60,7 @@ export default function Footer() {
   }
 
   return (
-    <div className="bg-[#232323] text-white">
+    <div className="bg-[#232323] text-white min-h-[400px]">
       <div className="flex items-center gap-4 justify-center py-10 bg-[#1D1D1D] px-[10%]">
         <div className="h-[70px] w-[70px] rounded-full bg-white/5 p-5">
           <PhoneCall className="h-full w-full object-cover" />
