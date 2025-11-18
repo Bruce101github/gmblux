@@ -72,6 +72,31 @@ function Property() {
     });
   }, [api]);
 
+  // Preload next 2 images when current image changes
+  React.useEffect(() => {
+    if (!property?.images || !Array.isArray(property.images)) return;
+
+    const currentIndex = current - 1; // Convert to 0-based index
+    const imagesToPreload = [];
+
+    // Preload next 2 images (current + 1 and current + 2)
+    for (let i = 1; i <= 2; i++) {
+      const nextIndex = currentIndex + i;
+      if (nextIndex < property.images.length && property.images[nextIndex]) {
+        imagesToPreload.push(property.images[nextIndex]);
+      }
+    }
+
+    // Preload images in the background
+    imagesToPreload.forEach((imageUrl) => {
+      if (imageUrl) {
+        const img = new Image();
+        // Use optimized URL for preloading
+        img.src = getMainImageUrl(imageUrl) || imageUrl;
+      }
+    });
+  }, [current, property?.images]);
+
   useEffect(() => {
     async function fetchProperty() {
       try {
