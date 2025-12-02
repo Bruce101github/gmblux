@@ -126,7 +126,7 @@ export default function Footer() {
           <div>
             <p className="text-sm">
               Website created by{" "}
-              <a className="text-green-500 font-bold">Mckot Digital</a>
+              <a href="https://instagram.com/brucethiombiano" target="_blank" className="text-yellow-400 font-bold">Bruce T</a>
             </p>
           </div>
         </div>
@@ -285,7 +285,7 @@ export function MobileFooter() {
 
           <p className="text-xs text-center">
             Website created by{" "}
-            <a className="text-green-500 font-bold">Mckot Digital</a>
+            <a href="https://instagram.com/brucethiombiano" target="_blank" className="text-yellow-400 font-bold">Bruce T</a>
           </p>
         </div>
       </div>

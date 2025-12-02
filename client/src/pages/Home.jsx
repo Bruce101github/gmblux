@@ -193,7 +193,7 @@ function Home({
           filters={filters}
           setFilters={setFilters}
         />
-        <button>All listings</button>
+        <Link to="/listings"><p className="my-10 mx-auto bg-yellow-400 rounded-3xl py-2 px-10 text-white font-medium w-full lg:w-fit text-center">All listings</p></Link>
       </div>
       </div>
     </>
