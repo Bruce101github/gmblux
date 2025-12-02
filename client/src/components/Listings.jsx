@@ -13,7 +13,6 @@ function Listings({
   properties: propsProperties,
   setProperties: propsSetProperties,
   filters,
-  setFilters,
   tags = [],
 }) {
   const [loading, setLoading] = useState(true);
@@ -345,9 +344,7 @@ function Listings({
                   </div>
                 </div>
                 <p className="mt-2 font-bold text-blue-500">
-                  {p.listing_type === "rent"
-                    ? `GH₵${Number(p.price).toLocaleString("en-GH")}/month`
-                    : `USD$${Number(p.price).toLocaleString("en-GH")}`}
+                  {p.currency === "ghs" ? "GH₵" : "US$"}{Number(p.price).toLocaleString("en-GH")}{p.listing_type === "rent" ? "/month" : ""}
                 </p>
               </div>
             </div>
@@ -369,58 +366,5 @@ function Listings({
   );
 }
 
-function smallLisings() {
-  return (
-    <div
-      className={`grid grid-cols-1 md:grid-cols-2 ${lgGridClass}  ${smGridClass}  gap-4 m-0 `}
-    >
-      {properties.slice(0, limit).map((p, index) => (
-        <Link to={`/listing/${p.id}`}>
-          <div
-            key={p.id}
-            className="bg-white/15 rounded-3xl shadow p-4 text-white"
-          >
-            <img
-              src={p.images?.[0]}
-              alt={`${p.title || "Property"} - ${p.location || "Ghana"} - ${p.bedrooms || 0} bedroom ${p.property_type || "property"} for ${p.listing_type || "sale"}`}
-              className="w-full h-[200px] object-cover rounded-2xl"
-              loading="lazy"
-            />
-            <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
-            <p className="text-white/60 text-sm">{p.location}</p>
-            <div className="flex justify-between items-center">
-              <div className="flex gap-3 text-xs items-center">
-                <div className="flex text-white gap-1.5 items-center">
-                  <div className="text-blue-500">
-                    <Bed size={16} />
-                  </div>{" "}
-                  {p.bedrooms}
-                </div>{" "}
-                <div className="flex">
-                  {" "}
-                  <div className="text-blue-500">
-                    <ShowerHead size={16} />
-                  </div>
-                  {p.bathrooms}
-                </div>{" "}
-                <div className="flex">
-                  <div className="text-blue-500">
-                    <LandPlot size={16} />
-                  </div>{" "}
-                  {p.size}
-                </div>
-              </div>
-              <p className="mt-2 font-bold text-blue-500">
-                {p.listing_type === "rent"
-                  ? `GH₵${Number(p.price).toLocaleString("en-GH")}/month`
-                  : `USD$${Number(p.price).toLocaleString("en-GH")}`}
-              </p>
-            </div>
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-}
 
 export default Listings;
