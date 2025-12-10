@@ -93,7 +93,38 @@ export const propertyColumns = [
   },
   {
     accessorKey: "listing_type",
-    header: "Rent/Sale",
+    header: "Rent/Sale/Sold",
+    cell: ({ row }) => {
+      const listingType = row.getValue("listing_type");
+      let colorClasses = "";
+      let displayText = listingType;
+
+      switch (listingType) {
+        case "rent":
+          colorClasses = "bg-blue-300/10 text-blue-400";
+          displayText = "Rent";
+          break;
+        case "sale":
+          colorClasses = "bg-green-300/10 text-green-400";
+          displayText = "Sale";
+          break;
+        case "sold":
+          colorClasses = "bg-red-300/10 text-red-400";
+          displayText = "Sold";
+          break;
+        default:
+          colorClasses = "bg-white/10 text-white";
+          break;
+      }
+
+      return (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${colorClasses}`}
+        >
+          {displayText}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "bedrooms",

@@ -3,9 +3,19 @@ import Home from "./pages/Home";
 import PropertyLising from "./pages/PropertyListing";
 import Property from "./pages/Property";
 import Search from "./pages/Search";
+import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import CancellationPolicy from "./pages/CancellationPolicy";
+import ViewingPolicy from "./pages/ViewingPolicy";
+import BookingGuide from "./pages/BookingGuide";
+import FAQ from "./pages/FAQ";
+import Contact from "./pages/Contact";
+import Blog from "./pages/Blog";
 import Navbar, { MobileNavbar } from "./components/Navbar";
 import Footer, { MobileFooter } from "./components/Footer";
 import BookingModal from "./components/BookingModal";
+import SideMenu from "./components/SideMenu";
 import { useMediaQuery } from "react-responsive";
 import ScrollToTop from "@/components/ScrollToTop";
 import { SearchProvider } from "./components/SearchContext";
@@ -41,6 +51,7 @@ function App() {
           <Navbar />
         )}
         <ScrollToTop />
+        {isMobile && <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />}
         <Routes>
           <Route
             path="/"
@@ -79,6 +90,15 @@ function App() {
               />
             }
           />
+          <Route path="/about" element={<About />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+          <Route path="/viewing-policy" element={<ViewingPolicy />} />
+          <Route path="/booking-guide" element={<BookingGuide />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/blog" element={<Blog />} />
         </Routes>
         {isMobile ? <MobileFooter /> : <Footer />}
         <Toaster position="top-right" />

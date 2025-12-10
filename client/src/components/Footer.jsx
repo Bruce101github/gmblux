@@ -95,26 +95,26 @@ export default function Footer() {
         </div>
         <div className="flex flex-col gap-3">
           <p className="text-md font-bold">GMB Lux</p>
-          <Link className="text-sm text-white/50">Terms and Conditions</Link>
-          <Link className="text-sm text-white/50">Privacy Policy</Link>
-          <Link className="text-sm text-white/50">Cancellation Policy</Link>
-          <Link className="text-sm text-white/50">Viewing Policy</Link>
-          <Link className="text-sm text-white/50">Booking Guide</Link>
+          <Link to="/terms-and-conditions" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Terms and Conditions</Link>
+          <Link to="/privacy-policy" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Privacy Policy</Link>
+          <Link to="/cancellation-policy" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Cancellation Policy</Link>
+          <Link to="/viewing-policy" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Viewing Policy</Link>
+          <Link to="/booking-guide" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Booking Guide</Link>
         </div>
         <div className="flex flex-col gap-3">
           <p className="text-md font-bold">About</p>
-          <Link className="text-sm text-white/50">Our Story</Link>
-          <Link className="text-sm text-white/50">Contact</Link>
-          <Link className="text-sm text-white/50">Blog</Link>
-          <Link className="text-sm text-white/50">F.A.Q</Link>
+          <Link to="/about" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Our Story</Link>
+          <Link to="/contact" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Contact</Link>
+          <Link to="/blog" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Blog</Link>
+          <Link to="/faq" className="text-sm text-white/50 hover:text-yellow-400 transition-colors">F.A.Q</Link>
         </div>
         <div className="flex flex-col justify-between">
           <div className="flex justify-between">
             <div className="flex flex-col gap-3">
               <p className="text-md font-bold">Properties</p>
-              <Link className="text-sm text-white/50">Houses</Link>
-              <Link className="text-sm text-white/50">Apartments</Link>
-              <Link className="text-sm text-white/50">Land</Link>
+              <Link to="/listings" state={{ propertyType: "house" }} className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Houses</Link>
+              <Link to="/listings" state={{ propertyType: "apartment" }} className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Apartments</Link>
+              <Link to="/listings" state={{ propertyType: "land" }} className="text-sm text-white/50 hover:text-yellow-400 transition-colors">Land</Link>
             </div>
             <button
               onClick={scrollToTop}
@@ -195,26 +195,26 @@ export function MobileFooter() {
 
       <div className="px-[5%] py-[10%] flex flex-col gap-2">
         <div className="flex justify-between">
-          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
             <p className="text-sm font-bold">GMB Lux</p>
-            <Link className="text-xs text-white/50">Terms and Conditions</Link>
-            <Link className="text-xs text-white/50">Privacy Policy</Link>
-            <Link className="text-xs text-white/50">Cancellation Policy</Link>
-            <Link className="text-xs text-white/50">Viewing Policy</Link>
-            <Link className="text-xs text-white/50">Booking Guide</Link>
+            <Link to="/terms-and-conditions" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Terms and Conditions</Link>
+            <Link to="/privacy-policy" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Privacy Policy</Link>
+            <Link to="/cancellation-policy" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Cancellation Policy</Link>
+            <Link to="/viewing-policy" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Viewing Policy</Link>
+            <Link to="/booking-guide" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Booking Guide</Link>
           </div>
           <div className="flex flex-col gap-3">
             <p className="text-sm font-bold">About</p>
-            <Link className="text-xs text-white/50">Our Story</Link>
-            <Link className="text-xs text-white/50">Contact</Link>
-            <Link className="text-xs text-white/50">Blog</Link>
-            <Link className="text-xs text-white/50">F.A.Q</Link>
+            <Link to="/about" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Our Story</Link>
+            <Link to="/contact" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Contact</Link>
+            <Link to="/blog" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Blog</Link>
+            <Link to="/faq" className="text-xs text-white/50 hover:text-yellow-400 transition-colors">F.A.Q</Link>
           </div>
           <div className="flex gap-3 flex-col">
             <p className="text-sm font-bold">Properties</p>
-            <Link className="text-xs text-white/50">Houses</Link>
-            <Link className="text-xs text-white/50">Apartments</Link>
-            <Link className="text-xs text-white/50">Lands</Link>
+            <Link to="/listings" state={{ propertyType: "house" }} className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Houses</Link>
+            <Link to="/listings" state={{ propertyType: "apartment" }} className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Apartments</Link>
+            <Link to="/listings" state={{ propertyType: "land" }} className="text-xs text-white/50 hover:text-yellow-400 transition-colors">Lands</Link>
           </div>
         </div>
         <div className="flex py-10 justify-center">

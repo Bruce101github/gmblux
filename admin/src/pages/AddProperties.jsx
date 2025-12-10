@@ -213,6 +213,9 @@ function AddProperties() {
       }
     }
 
+    // Sold properties don't require rent or sale specific fields
+    // No additional validation needed for sold properties
+
     return errors;
   }
 
@@ -333,6 +336,17 @@ function AddProperties() {
           deposit_amount: null,
           utilities_included: null,
           billing_type: null,
+        }),
+        
+        // Sold properties - clear both rent and sale specific fields
+        ...(formData.listing_type === "sold" && {
+          min_rent_duration: null,
+          deposit_amount: null,
+          utilities_included: null,
+          billing_type: null,
+          land_title_type: null,
+          ownership_document: null,
+          payment_plan_available: null,
         }),
 
         // Owner information fields
@@ -660,6 +674,7 @@ function AddProperties() {
                 >
                   <option value="rent">Rent</option>
                   <option value="sale">Sale</option>
+                  <option value="sold">Sold</option>
                 </select>
               </div>
             </div>
@@ -848,9 +863,15 @@ function AddProperties() {
         </Card>
         <Card className="px-4 lg:p-8 bg-white/10 mb-5">
           <h3 className="text-white text-lg font-medium mb-4">
-            {formData.listing_type === "rent" ? "Rental Details" : "Sale Details"}
+            {formData.listing_type === "rent" ? "Rental Details" : formData.listing_type === "sale" ? "Sale Details" : "Property Details"}
           </h3>
-          {formData.listing_type === "rent" ? (
+          {formData.listing_type === "sold" ? (
+            <div className="flex flex-col gap-5">
+              <p className="text-white/60 text-sm">
+                This property has been sold. No additional rental or sale details are required.
+              </p>
+            </div>
+          ) : formData.listing_type === "rent" ? (
             <div className="flex flex-col gap-5">
               <div className="flex flex-col">
                 <label htmlFor="min_rent_duration" className="text-white/60 mb-1 text-sm">

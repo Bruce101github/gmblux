@@ -242,7 +242,7 @@ export default function Properties() {
                   <div className="p-2">
                     <p className="text-white/60 text-xs mb-2 font-medium">Listing Type</p>
                     <div className="space-y-1">
-                      {["all", "rent", "sale"].map((type) => (
+                      {["all", "rent", "sale", "sold"].map((type) => (
                         <DropdownMenuItem
                           key={type}
                           onClick={() => {

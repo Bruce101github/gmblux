@@ -5,6 +5,7 @@ import { supabase } from "../supabaseClient";
 import "../index.css";
 import Whatsapp from "@/assets/whatsapp.png";
 import { getMainImageUrl, generateSrcset, generateSizes } from "../utils/imageOptimizer";
+import ContactInfoModal from "@/components/ContactInfoModal";
 import {
   Carousel,
   CarouselContent,
@@ -59,6 +60,8 @@ function Property() {
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
   const [loadedImages, setLoadedImages] = React.useState(new Set());
+  const [contactModalOpen, setContactModalOpen] = React.useState(false);
+  const [contactActionType, setContactActionType] = React.useState(null);
 
   React.useEffect(() => {
     if (!api) return;
@@ -294,14 +297,23 @@ function Property() {
             ) : null}
           </h1>
           <div className="flex gap-2">
-            <a
-              className="p-2 rounded-full bg-white/10"
-              href="tel:+233553944428"
+            <button
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              onClick={() => {
+                setContactActionType("call");
+                setContactModalOpen(true);
+              }}
+              aria-label="Call"
             >
-              {" "}
               <Phone />
-            </a>
-            <WhatsAppButton property={property} />
+            </button>
+            <WhatsAppButton 
+              property={property} 
+              onOpenModal={() => {
+                setContactActionType("whatsapp");
+                setContactModalOpen(true);
+              }}
+            />
           </div>
         </div>
         <div className="flex text-white/60 items-center gap-1">
@@ -548,22 +560,63 @@ function Property() {
           </Link>
         </div>
       </div>
+      <ContactInfoModal
+        isOpen={contactModalOpen}
+        onClose={() => {
+          setContactModalOpen(false);
+          setContactActionType(null);
+        }}
+        onContinue={async (contactInfo) => {
+          // Save contact info to Supabase
+          try {
+            // Ensure property_id is properly formatted (convert to string if it's a number)
+            const propertyId = property?.id ? String(property.id) : null;
+            
+            const { error } = await supabase
+              .from("contact_inquiries")
+              .insert({
+                name: contactInfo.name?.trim() || null,
+                phone: contactInfo.phone?.trim() || null,
+                email: contactInfo.email?.trim() || null,
+                property_id: propertyId,
+                contact_method: contactActionType,
+              });
+
+            if (error) {
+              console.error("Error saving contact info:", error);
+              // Continue with the action even if save fails
+            }
+          } catch (err) {
+            console.error("Error saving contact info:", err);
+            // Continue with the action even if save fails
+          }
+
+          // Handle the contact action after user provides info
+          if (contactActionType === "call") {
+            // Proceed with phone call
+            window.location.href = "tel:+233553944428";
+          } else if (contactActionType === "whatsapp") {
+            // Proceed with WhatsApp
+            const number = "233553944428";
+            const message = `Hi, I am interested in this property and would like to talk some more.
+  
+Here's the link: https://gmblux.com/listing/${property.id}`;
+            const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+            window.open(url, "_blank");
+          }
+        }}
+        actionType={contactActionType}
+      />
       </div>
     </>
   );
 }
 
-function WhatsAppButton({ property }) {
-  const number = "233553944428";
-  const message = `Hi, I am interested in this property and would like to talk some more.
-  
-Here’s the link: https://gmblux.com/listing/${property.id}`;
-  const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
-
+function WhatsAppButton({ property, onOpenModal }) {
   return (
-    <a
-      href={url}
-      className="p-2 rounded-full bg-white/10"
+    <button
+      onClick={onOpenModal}
+      className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
       aria-label="Contact via WhatsApp"
     >
       <img
@@ -571,7 +624,7 @@ Here’s the link: https://gmblux.com/listing/${property.id}`;
         alt="WhatsApp"
         className="h-[25px] w-[25px]"
       />
-    </a>
+    </button>
   );
 }
 

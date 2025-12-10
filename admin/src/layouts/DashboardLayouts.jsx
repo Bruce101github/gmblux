@@ -39,6 +39,7 @@ import Logo from "../assets/gmblogo.JPG";
 import TotalBooking from "../components/TotalBooking";
 import { useEffect, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import NotificationBell from "../components/NotificationBell";
 
 const items = [
   {
@@ -210,10 +211,17 @@ export default function DashboardLayout({ children }) {
         </Sidebar>
         {/* Main content */}
         <main className="w-full min-h-[150vh] lg:p-6 bg-[#121420]">
-          <div className="lg:hidden flex justify-between px-[5%]">
+          <div className="lg:hidden flex justify-between items-center px-[5%]">
             <div></div>
-            <SidebarTrigger mobile={true} className="!text-white/80 my-5" />
-          </div>{" "}
+            <div className="flex items-center gap-3 my-5">
+              <NotificationBell />
+              <SidebarTrigger mobile={true} className="!text-white/80" />
+            </div>
+          </div>
+          {/* Desktop notification bell */}
+          <div className="hidden lg:flex justify-end mb-4">
+            <NotificationBell />
+          </div>
           <Outlet />
           <Toaster position="top-right" />
         </main>

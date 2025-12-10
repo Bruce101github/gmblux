@@ -12,16 +12,29 @@ function BookingModal({ setBookingOpen }) {
   const preset = bookingPresets.find((p) => p.name === presetName);
   const property_id = location.state?.propertyId;
   const [loading, setLoading] = useState(true);
-  const formPreset = {
+  
+  const getFormPreset = () => ({
     first_name: "",
     last_name: "",
     email: "",
     number: "",
-    message: preset.preText,
-    request_type: preset.type,
+    message: preset?.preText || "",
+    request_type: preset?.type || "",
     property_id: property_id,
-  };
-  const [formData, setFormData] = useState({ ...formPreset });
+  });
+  
+  const [formData, setFormData] = useState(getFormPreset());
+  
+  // Update form data when preset changes
+  useEffect(() => {
+    if (preset) {
+      setFormData(prev => ({
+        ...prev,
+        message: preset.preText,
+        request_type: preset.type,
+      }));
+    }
+  }, [preset]);
 
   useEffect(() => {
     const handleLoad = () => {
@@ -56,11 +69,36 @@ function BookingModal({ setBookingOpen }) {
       },
     }); // show loading toast
     try {
+      // Clean and prepare data for submission
+      const submissionData = {
+        first_name: formData.first_name?.trim() || null,
+        last_name: formData.last_name?.trim() || null,
+        email: formData.email?.trim() || null,
+        number: formData.number?.trim() || null,
+        message: formData.message?.trim() || null,
+        request_type: formData.request_type || null,
+        property_id: formData.property_id || null,
+      };
+
+      // Remove null/empty values that might cause issues
+      Object.keys(submissionData).forEach(key => {
+        if (submissionData[key] === '' || submissionData[key] === undefined) {
+          submissionData[key] = null;
+        }
+      });
+
+      console.log("Submitting booking data:", submissionData);
+
       const { data, error } = await supabase
         .from("booking")
-        .insert({ ...formData });
+        .insert([submissionData])
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Booking submission error:", error);
+        throw error;
+      }
+
       setTimeout(() => {
         toast.dismiss(); // remove the loading one
         toast.success("Form submitted successfully!", {
@@ -71,18 +109,21 @@ function BookingModal({ setBookingOpen }) {
             border: "0.4px solid gray",
           },
         });
-        setFormData({ ...formPreset });
+        setFormData(getFormPreset());
         // show success
       }, 2000);
     } catch (err) {
       toast.dismiss(); // remove the loading one
-      toast.error("Failed to submit!", {
+      const errorMessage = err?.message || err?.details || "Failed to submit!";
+      console.error("Booking error details:", err);
+      toast.error(`Failed to submit: ${errorMessage}`, {
         style: {
           borderRadius: "10px",
           background: "#121420",
           color: "#fff",
           border: "0.4px solid gray",
         },
+        duration: 5000,
       });
     }
 
@@ -146,12 +187,11 @@ function BookingModal({ setBookingOpen }) {
       <label htmlFor="message">Message</label>
       <textarea
         rows="5"
-        cos="40"
+        cols="40"
         className="border-b border-white/20  p-2 outline-none text-white/70 bg-white/2"
         name="message"
         onChange={handleState}
         value={formData.message}
-        defaultValue={preset.preText}
       />
       <button
         type="submit"

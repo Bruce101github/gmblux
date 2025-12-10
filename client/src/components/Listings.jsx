@@ -270,7 +270,7 @@ function Listings({
     >
       {loading ? (
         Array.from({ length: !limit ? 5 : limit }).map((_, index) => (
-          <div className="bg-white/15 rounded-3xl shadow p-4 text-white">
+          <div key={`skeleton-${index}`} className="bg-white/15 rounded-3xl shadow p-4 text-white">
             <Skeleton className="w-full h-[200px] rounded-2xl" />
             <Skeleton className="h-7 w-[70%] mt-2" />
             <Skeleton className="h-4 w-[35%] mt-2" />
@@ -300,25 +300,32 @@ function Listings({
               className="bg-white/15 rounded-3xl shadow p-4 text-white"
               ref={shouldAttachRef ? iRef : null}
             >
-              <img
-                src={getPreviewImageUrl(p.images?.[0]) || p.images?.[0]}
-                srcSet={p.images?.[0] ? generateSrcset(p.images[0], {
-                  small: 400,
-                  medium: 600,
-                  large: 800,
-                }, 60) : undefined}
-                sizes={generateSizes({
-                  '(max-width: 640px)': '100vw',
-                  '(max-width: 1024px)': '50vw',
-                  '(min-width: 1025px)': '33vw',
-                })}
-                alt={`${p.title || "Property"} - ${p.location || "Ghana"} - ${p.bedrooms || 0} bedroom ${p.property_type || "property"} for ${p.listing_type || "sale"}`}
-                className="w-full h-[200px] object-cover rounded-2xl"
-                loading="lazy"
-                width={600}
-                height={400}
-                decoding="async"
-              />
+              <div className="relative">
+                <img
+                  src={getPreviewImageUrl(p.images?.[0]) || p.images?.[0]}
+                  srcSet={p.images?.[0] ? generateSrcset(p.images[0], {
+                    small: 400,
+                    medium: 600,
+                    large: 800,
+                  }, 60) : undefined}
+                  sizes={generateSizes({
+                    '(max-width: 640px)': '100vw',
+                    '(max-width: 1024px)': '50vw',
+                    '(min-width: 1025px)': '33vw',
+                  })}
+                  alt={`${p.title || "Property"} - ${p.location || "Ghana"} - ${p.bedrooms || 0} bedroom ${p.property_type || "property"} for ${p.listing_type || "sale"}`}
+                  className="w-full h-[200px] object-cover rounded-2xl"
+                  loading="lazy"
+                  width={600}
+                  height={400}
+                  decoding="async"
+                />
+                {p.listing_type === "sold" && (
+                  <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
+                    SOLD
+                  </div>
+                )}
+              </div>
               <h2 className="text-md font-medium mt-2 text-white">{p.title}</h2>
               <p className="text-white/60 text-sm">{p.location}</p>
               <div className="flex justify-between items-center">
@@ -343,9 +350,15 @@ function Listings({
                     {p.size}
                   </div>
                 </div>
-                <p className="mt-2 font-bold text-blue-500">
-                  {p.currency === "ghs" ? "GH₵" : "US$"}{Number(p.price).toLocaleString("en-GH")}{p.listing_type === "rent" ? "/month" : ""}
-                </p>
+                {p.listing_type === "sold" ? (
+                  <p className="mt-2 font-bold text-red-500">
+                    SOLD
+                  </p>
+                ) : (
+                  <p className="mt-2 font-bold text-blue-500">
+                    {p.currency === "ghs" ? "GH₵" : "US$"}{Number(p.price).toLocaleString("en-GH")}{p.listing_type === "rent" ? "/month" : ""}
+                  </p>
+                )}
               </div>
             </div>
           </Link>

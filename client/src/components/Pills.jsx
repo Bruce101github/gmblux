@@ -21,6 +21,12 @@ function Pills({ filters, setFilters, type = "listing" }) {
         setFilters((prev) => ({ ...prev, listingType: "sale" })),
       type: "listingType",
     },
+    {
+      name: "sold",
+      filter: (setFilters) =>
+        setFilters((prev) => ({ ...prev, listingType: "sold" })),
+      type: "listingType",
+    },
   ];
 
   const propertyType = [

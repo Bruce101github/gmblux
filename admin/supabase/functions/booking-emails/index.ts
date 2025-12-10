@@ -5,7 +5,21 @@ import { adminNotificationEmail } from "./emails/adminNotificationEmail.ts";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-const NOTIFICATION_EMAILS = Deno.env.get("NOTIFICATION_EMAILS");
+const NOTIFICATION_EMAILS_STRING = Deno.env.get("NOTIFICATION_EMAILS");
+
+// Parse notification emails from comma-separated string
+// Supports formats like: "email1@example.com,email2@example.com" or "email1@example.com, email2@example.com"
+const parseNotificationEmails = (emailsString: string | undefined): string[] => {
+  if (!emailsString) {
+    return [];
+  }
+  return emailsString
+    .split(",")
+    .map(email => email.trim())
+    .filter(email => email.length > 0 && email.includes("@"));
+};
+
+const NOTIFICATION_EMAILS = parseNotificationEmails(NOTIFICATION_EMAILS_STRING);
 // Import Supabase client
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.43.2";
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -25,6 +39,11 @@ const handler = async (_request) => {
           },
         },
       );
+    }
+
+    // Check if notification emails are configured
+    if (!NOTIFICATION_EMAILS || NOTIFICATION_EMAILS.length === 0) {
+      console.warn("⚠️ NOTIFICATION_EMAILS environment variable is not set or empty. Admin notifications will not be sent.");
     }
     // 📦 Fetch bookings that haven't been notified
     const { data: bookings, error } = await supabase
@@ -129,31 +148,43 @@ const handler = async (_request) => {
           html,
         }),
       });
-      const res1 = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${RESEND_API_KEY}`,
-        },
-        body: JSON.stringify({
-          from: "GMB LUX NOTIFICATION <noreply@gmblux.com>",
-          to: [
-            `${NOTIFICATION_EMAILS}` // ${templates.booking.email}
-          ],
-          subject: `New Property ${request_type} Request.`,
-          html: html1,
-        }),
-      });
+      // Send admin notification emails to all configured recipients
+      let adminEmailSuccess = true;
+      if (NOTIFICATION_EMAILS && NOTIFICATION_EMAILS.length > 0) {
+        const res1 = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${RESEND_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: "GMB LUX NOTIFICATION <noreply@gmblux.com>",
+            to: NOTIFICATION_EMAILS, // Array of email addresses
+            subject: `New Property ${request_type} Request.`,
+            html: html1,
+          }),
+        });
+
+        const data1 = await res1.json();
+        if (!res1.ok) {
+          console.error("failed to send admin notification email for booking:", id, data1);
+          adminEmailSuccess = false;
+        } else {
+          console.log(`✅ Admin notification email sent to ${NOTIFICATION_EMAILS.length} recipient(s) for booking:`, id);
+        }
+      } else {
+        console.warn("⚠️ No notification emails configured. Skipping admin notification for booking:", id);
+      }
 
       const data = await res.json();
-      const data1 = await res1.json();
       if (!res.ok) {
         console.error("failed to send email for booking:", id, data);
         continue;
       }
-      if (!res1.ok) {
-        console.error("failed to send email for booking:", id, data1);
-        continue;
+
+      // Continue even if admin email fails, but log it
+      if (!adminEmailSuccess) {
+        console.warn("⚠️ Customer email sent but admin notification failed for booking:", id);
       }
 
       console.log("✅ Email sent for booking:", id);

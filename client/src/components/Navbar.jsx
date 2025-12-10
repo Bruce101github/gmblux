@@ -117,6 +117,13 @@ export function MobileNavbar({ menuOpen, setMenuOpen, setFilterOpen }) {
         <MobileNavbar4 setFilterOpen={setFilterOpen} />
       </>
     );
+
+  // Default navbar for all other pages (About, Privacy Policy, FAQ, Booking Guide, etc.)
+  return (
+    <>
+      <MobileNavbarDefault menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+    </>
+  );
 }
 
 function MobileNavbar1({ menuOpen, setMenuOpen, setFilterOpen }) {
@@ -394,6 +401,63 @@ function MobileNavbar4({ setFilterOpen }) {
           <SlidersHorizontal />
         </button>
       </div>
+    </div>
+  );
+}
+
+function MobileNavbarDefault({ menuOpen, setMenuOpen }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleBack = () => {
+    // If there's no history, fallback to home
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/"); // fallback
+    }
+  };
+
+  // Get page title based on route
+  const getPageTitle = () => {
+    const path = location.pathname;
+    if (path === "/about") return "About Us";
+    if (path === "/privacy-policy") return "Privacy Policy";
+    if (path === "/terms-and-conditions") return "Terms & Conditions";
+    if (path === "/cancellation-policy") return "Cancellation Policy";
+    if (path === "/viewing-policy") return "Viewing Policy";
+    if (path === "/booking-guide") return "Booking Guide";
+    if (path === "/faq") return "FAQ";
+    if (path === "/contact") return "Contact Us";
+    if (path === "/blog") return "Blog";
+    return "GMB Real Estate";
+  };
+
+  return (
+    <div className="flex items-center justify-between p-[5%] text-white">
+      <button
+        onClick={handleBack}
+        className="bg-white/10 p-2 rounded-full backdrop-blur-sm w-10 h-10 flex items-center justify-center"
+      >
+        <ChevronLeft size={24} />
+      </button>
+      <h2 className="text-lg font-medium flex-1 text-center">
+        {getPageTitle()}
+      </h2>
+      {setMenuOpen ? (
+        <button
+          className="bg-white/5 p-2 rounded-full w-10 h-10 flex items-center justify-center"
+          onClick={() => {
+            if (setMenuOpen) {
+              setMenuOpen(true);
+            }
+          }}
+        >
+          <TextAlignJustify size={24} />
+        </button>
+      ) : (
+        <div className="w-10 h-10"></div>
+      )}
     </div>
   );
 }

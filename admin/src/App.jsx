@@ -11,6 +11,7 @@ import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import Login from "./pages/Login";
 import SetPassword from "./pages/SetPassword";
+import Notifications from "./pages/Notifications";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "@/layouts/DashboardLayouts";
 import { Toaster, toast } from "react-hot-toast";
@@ -42,6 +43,7 @@ function App() {
           <Route path="tools" element={<Tools />} />
           <Route path="settings" element={<Settings />} />
           <Route path="help" element={<Help />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
       </Routes>
       <Toaster position="top-right" />
