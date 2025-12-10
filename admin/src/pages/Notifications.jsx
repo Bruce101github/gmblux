@@ -190,15 +190,12 @@ export default function Notifications() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white">Notifications</h1>
-          <p className="text-white/60 mt-1">
-            {unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}
-          </p>
-        </div>
-        <div className="flex gap-2">
+    <>
+      <div className="flex justify-between px-[5%] md:px-0 lg:px-0 mt-[-48px] lg:mt-4 mb-5">
+        <h2 className="text-white text-lg font-medium lg:text-xl lg:font-bold">
+          Notifications
+        </h2>
+        <div className="flex gap-2 lg:gap-6">
           <Button
             onClick={sendTestNotification}
             variant="outline"
@@ -217,9 +214,9 @@ export default function Notifications() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="hidden lg:block md:block bg-white/10 rounded-xl p-5 w-full mb-4">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <Filter size={18} />
             Filters
           </CardTitle>
@@ -286,7 +283,17 @@ export default function Notifications() {
       </Card>
 
       {/* Notifications List */}
-      <Card>
+      <Card className="hidden lg:block md:block bg-white/10 rounded-xl p-5 w-full">
+        <div className="flex justify-between text-white items-center mb-5 flex-wrap gap-4">
+          <p className="text-base font-medium">
+            {notifications.length} {notifications.length === 1 ? "Notification" : "Notifications"}
+            {unreadCount > 0 && (
+              <span className="ml-2 text-yellow-400">
+                ({unreadCount} unread)
+              </span>
+            )}
+          </p>
+        </div>
         <CardContent className="p-0">
           {loading ? (
             <div className="p-8 text-center text-white/60">Loading...</div>
@@ -355,6 +362,6 @@ export default function Notifications() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </>
   );
 }

@@ -13,7 +13,7 @@ export default function Blog() {
         description="Read the latest real estate news, property market insights, and helpful guides from GMB Real Estate Ghana. Stay informed about the Ghana property market."
         keywords="real estate blog Ghana, property market news, Ghana property insights, real estate tips, property investment Ghana"
       />
-      <div className="min-h-screen bg-[#121420] text-white px-[5%] py-10 lg:py-20">
+      <div className="min-h-screen bg-[#121420] text-white px-[5%] pt-24 pb-10 lg:pt-28 lg:pb-20">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="mb-12 text-center">

@@ -74,7 +74,7 @@ export default function Customers() {
           Customers
         </h2>
       </div>
-      <Card className="bg-white/10 rounded-xl p-5 w-full">
+      <Card className="hidden lg:block md:block bg-white/10 rounded-xl p-5 w-full">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

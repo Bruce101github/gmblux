@@ -9,7 +9,7 @@ export default function ViewingPolicy() {
         description="Learn about GMB Real Estate Ghana's property viewing policy. Understand scheduling procedures, viewing guidelines, and what to expect during property viewings in Ghana."
         keywords="property viewing policy Ghana, house viewing guidelines, property tour policy, real estate viewing rules, property inspection policy"
       />
-      <div className="min-h-screen bg-[#121420] text-white px-[5%] py-10 lg:py-20">
+      <div className="min-h-screen bg-[#121420] text-white px-[5%] pt-24 pb-10 lg:pt-28 lg:pb-20">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="mb-12">

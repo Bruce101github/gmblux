@@ -9,7 +9,7 @@ export default function CancellationPolicy() {
         description="Understand GMB Real Estate Ghana's cancellation policy for property bookings, tours, and reservations. Learn about refund terms and cancellation procedures."
         keywords="cancellation policy Ghana, property booking cancellation, real estate cancellation, refund policy Ghana, booking cancellation terms"
       />
-      <div className="min-h-screen bg-[#121420] text-white px-[5%] py-10 lg:py-20">
+      <div className="min-h-screen bg-[#121420] text-white px-[5%] pt-24 pb-10 lg:pt-28 lg:pb-20">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="mb-12">

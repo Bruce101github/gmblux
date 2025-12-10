@@ -329,12 +329,16 @@ export default function Dashboard() {
       <div className="w-full py-4 lg:grid flex flex-col-reverse lg:grid-cols-[70%_34%] gap-2 lg:gap-x-4 px-[5%] lg:mr-[5%] lg:px-[0]">
         <div className="">
           <div className="w-full mb-4">
-            <ChartAreaInteractive />
+            <Card className="hidden lg:block md:block bg-white/10 rounded-xl p-5 w-full">
+              <ChartAreaInteractive />
+            </Card>
           </div>
-          <Card className="p-4 bg-white/10">
-            <p className="text-lg font-bold text-white mb-4">
-              Booking {tableInfo.length > 0 && `(${tableInfo.length})`}
-            </p>
+          <Card className="hidden lg:block md:block bg-white/10 rounded-xl p-5 w-full">
+            <div className="flex justify-between text-white items-center mb-5 flex-wrap gap-4">
+              <p className="text-base font-medium">
+                {tableInfo.length} {tableInfo.length === 1 ? "Booking" : "Bookings"}
+              </p>
+            </div>
             {tableInfo.length === 0 ? (
               <div className="py-8 text-center">
                 <p className="text-white/60">No bookings found</p>

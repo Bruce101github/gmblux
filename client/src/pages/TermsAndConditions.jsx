@@ -9,7 +9,7 @@ export default function TermsAndConditions() {
         description="Read GMB Real Estate Ghana's terms and conditions. Understand the legal terms governing your use of our real estate services, property listings, and website in Ghana."
         keywords="terms and conditions Ghana, real estate terms, property brokerage terms, GMB terms of service, legal terms Ghana, property service agreement"
       />
-      <div className="min-h-screen bg-[#121420] text-white px-[5%] py-10 lg:py-20">
+      <div className="min-h-screen bg-[#121420] text-white px-[5%] pt-24 pb-10 lg:pt-28 lg:pb-20">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="mb-12">

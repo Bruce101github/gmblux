@@ -76,8 +76,8 @@ export default function Contact() {
         description="Contact GMB Real Estate Ghana for property inquiries, consultations, viewings, and real estate services. Call +233 55 394 4428 or send us a message."
         keywords="contact GMB Real Estate, property inquiry Ghana, real estate contact, property consultation Ghana, GMB contact information"
       />
-      <div className="min-h-screen bg-[#121420] text-white px-[5%] py-10 lg:py-20">
-        <div className="max-w-4xl mx-auto space-y-12">
+      <div className="min-h-screen bg-[#121420] text-white px-[5%] pt-24 pb-10 lg:pt-28 lg:pb-20">
+        <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="mb-12">
             <h1 className="text-4xl lg:text-5xl font-bold mb-4">Contact Us</h1>

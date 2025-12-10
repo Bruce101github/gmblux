@@ -12,7 +12,7 @@ export default function About() {
       />
       <div className="min-h-screen bg-[#121420] text-white px-[5%] pt-24 pb-10 lg:pt-28 lg:pb-20">
         {/* Hero Section */}
-        <div className="mb-12 lg:mb-16">
+        <div className="mb-12">
           <h1 className="text-4xl lg:text-6xl font-bold mb-4">
             About GMB Real Estate Ghana
           </h1>
@@ -22,7 +22,7 @@ export default function About() {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-4xl space-y-12">
+        <div className="max-w-4xl mx-auto space-y-8">
           {/* Our Mission */}
           <section className="space-y-4">
             <div className="flex items-center gap-3 mb-4">
